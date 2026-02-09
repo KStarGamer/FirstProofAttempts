@@ -1,0 +1,474 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- theorem environments ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- macros ----------
+\newcommand{\Sn}{S_n}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Supp}{\operatorname{Supp}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+
+\title[Interpolation ASEP weights at $q=1$]{Interpolation ASEP weights at $q=1$ on strict orbits:\\
+a positivity obstruction and a conditional reversible Markov chain}
+\author{}
+\date{}
+
+\begin{document}
+
+\begin{abstract}
+Let $\lambda=(\lambda_1>\cdots>\lambda_n\ge 0)$ be a strict partition which is \emph{restricted}
+(unique part $0$ and no part $1$), and let $\Sn(\lambda)$ be the set of all rearrangements of the parts of $\lambda$.
+A natural question asks whether there exists a \emph{nontrivial} Markov chain on $\Sn(\lambda)$ with stationary distribution
+\[
+\pi(\mu)=\frac{F^*_\mu(x_1,\dots,x_n; q=1,t)}{P^*_\lambda(x_1,\dots,x_n; q=1,t)}\qquad(\mu\in\Sn(\lambda)),
+\]
+where $F^*_\mu$ and $P^*_\lambda$ are the interpolation ASEP and interpolation Macdonald polynomials of Ben Dali--Williams.
+
+We give a complete resolution once one makes explicit the (necessary) requirement that $\pi$ be a genuine probability vector.
+First, we show that \emph{restrictedness does not guarantee positivity}: already for $n=2$ and $\lambda=(k,0)$ with $k\ge 2$,
+the ratio $F^*_\mu/P^*_\lambda$ takes negative values for some positive parameters $(x_1,x_2,t)\in(0,\infty)^2\times(0,1)$.
+Consequently, no Markov chain can realize the displayed formula \emph{uniformly over all positive parameters}.
+
+Second, we prove a conditional existence theorem: on the (nonempty) parameter domain where all weights
+$F^*_\mu(\bx;1,t)$ are strictly positive, we construct an explicit irreducible aperiodic nearest-neighbour
+heat-bath walk on the adjacent-transposition graph of $\Sn(\lambda)$, reversible with respect to $\pi(\mu)\propto F^*_\mu(\bx;1,t)$.
+The transition probabilities are described via signed multiline-queue partition functions (finite explicit sums of local weights),
+not by invoking the polynomials $F^*_\mu$ as black boxes.
+\end{abstract}
+
+\maketitle
+\vspace{-1cm}
+\tableofcontents
+
+%------------------------------------------------------------
+\section{Introduction}
+
+\subsection{The orbit and the target weights}
+
+Fix $n\ge 2$.
+A \emph{strict partition} is a vector $\lambda=(\lambda_1>\cdots>\lambda_n\ge 0)\in\ZZ_{\ge 0}^n$.
+Its \emph{symmetric-group orbit} is
+\[
+\Sn(\lambda):=\Bigl\{\mu\in\ZZ_{\ge 0}^n:\{\mu_1,\dots,\mu_n\}=\{\lambda_1,\dots,\lambda_n\}\Bigr\},
+\]
+the set of all rearrangements of the parts of $\lambda$.
+
+We assume throughout that $\lambda$ is \emph{restricted}:
+\begin{enumerate}[label=(\roman*), leftmargin=2.3em]
+\item $\lambda$ has a unique part of size $0$;
+\item $\lambda$ has no part of size $1$.
+\end{enumerate}
+
+Ben Dali--Williams \cite{BDW} define interpolation ASEP polynomials and interpolation Macdonald polynomials.
+We adopt the notation in the \emph{problem statement}:
+\[
+F^*_\mu(\bx;q,t)\quad(\mu\ \text{a composition}), \qquad P^*_\lambda(\bx;q,t)\quad(\lambda\ \text{a partition}),
+\]
+and we are interested in the specialization $q=1$.
+
+The problem asks whether there exists a \emph{nontrivial} Markov chain on the finite state space $\Sn(\lambda)$
+whose stationary distribution is
+\begin{equation}\label{eq:pi-target}
+\pi(\mu)=\frac{F^*_\mu(\bx;1,t)}{P^*_\lambda(\bx;1,t)}\qquad(\mu\in\Sn(\lambda)),
+\end{equation}
+with transition probabilities not described using the polynomials $F^*_\mu$ as primitives.
+
+\subsection{A necessary clarification: parameters must be fixed}
+A Markov chain requires \emph{numerical} transition probabilities.
+Thus one must fix $(\bx,t)$ in some real parameter domain before the question makes literal probabilistic sense.
+In integrable-probability applications one typically takes
+\begin{equation}\label{eq:prob-domain}
+x_i>0\quad(1\le i\le n),\qquad 0<t<1.
+\end{equation}
+In this regime $t$ is a deformation parameter and $\bx$ are inhomogeneous rates (cf.\ the inhomogeneous $t$-PushTASEP
+interpretation at $q=1$ \cite{AMW}).
+
+Even after fixing parameters, for \eqref{eq:pi-target} to be a stationary distribution of a genuine Markov chain,
+it is necessary that $\pi(\mu)\ge 0$ for all $\mu$ and $\sum_\mu \pi(\mu)=1$.
+The sum-to-one property holds whenever the denominator is nonzero, by the symmetrization identity
+$P^*_\lambda=\sum_{\mu\in\Sn(\lambda)}F^*_\mu$ (see \S\ref{sec:BDWfacts}).
+The sign constraint is the real issue.
+
+\subsection{Main results}
+Our results split into an obstruction and a conditional existence theorem.
+
+\begin{theorem}[Positivity obstruction]\label{thm:obstruction}
+In the standard probabilistic regime \eqref{eq:prob-domain}, the ratios \eqref{eq:pi-target} need not be nonnegative.
+Already for $n=2$ and any restricted strict partition $\lambda=(k,0)$ with $k\ge 2$, there exist parameters
+$(x_1,x_2,t)\in(0,\infty)^2\times(0,1)$ such that
+\[
+\frac{F^*_{(k,0)}(x_1,x_2;1,t)}{P^*_{(k,0)}(x_1,x_2;1,t)}<0.
+\]
+Consequently, there is no Markov chain on $\Sn(\lambda)$ whose stationary distribution equals \eqref{eq:pi-target}
+\emph{for all} positive parameter choices \eqref{eq:prob-domain}.
+\end{theorem}
+
+\begin{theorem}[Conditional existence via a reversible nearest-neighbour chain]\label{thm:metropolis}
+Fix $\lambda$ and fix parameters $(\bx,t)$ with $0<t<1$ such that
+\begin{equation}\label{eq:positivity-assumption}
+F^*_\mu(\bx;1,t)>0\qquad \text{for all }\mu\in\Sn(\lambda).
+\end{equation}
+Then there exists an explicit irreducible aperiodic Markov chain on $\Sn(\lambda)$ whose unique stationary distribution is
+\eqref{eq:pi-target}. The chain is a nearest-neighbour heat-bath walk on the adjacent-transposition graph of $\Sn(\lambda)$.
+
+Moreover, the transition probabilities can be written directly in terms of the signed multiline-queue partition functions of
+\cite{BDW} (finite sums of explicit local weights), rather than by calling the polynomials $F^*_\mu$ as black boxes.
+\end{theorem}
+
+\begin{proposition}[Nonemptiness of the positivity domain]\label{prop:nonempty}
+For each fixed $t\in(0,1)$, there exists $\bx\in(0,\infty)^n$ such that \eqref{eq:positivity-assumption} holds.
+Hence Theorem~\ref{thm:metropolis} applies on a nonempty open subset of parameter space.
+\end{proposition}
+
+\begin{remark}[Resolution of the original question]
+Theorem~\ref{thm:obstruction} shows that \emph{restrictedness does not ensure} the ratio \eqref{eq:pi-target}
+defines a probability distribution on the full positive domain \eqref{eq:prob-domain}; hence a uniform-in-parameters Markov model
+cannot exist.
+
+On the other hand, Theorem~\ref{thm:metropolis} shows that whenever the ratios are actually nonnegative, a nontrivial Markov chain
+with that stationary law exists. This is the strongest unconditional statement possible without proving a full positivity theorem
+for the interpolation ASEP weights.
+\end{remark}
+
+%------------------------------------------------------------
+\section{Facts from Ben Dali--Williams}\label{sec:BDWfacts}
+
+\subsection{Notation and a caution on signs}
+Ben Dali--Williams construct a \emph{signed} multiline-queue (signed MLQ) model for interpolation ASEP polynomials.
+Individual signed-MLQ weights can be negative even at $q=1$ (see Example~1.13 in \cite{BDW}).
+Thus, any attempt to deduce positivity term-by-term from local factors is invalid in general:
+positivity, when it holds, must come from cancellations in the signed sum.
+
+\subsection{Symmetrization identity}
+Ben Dali--Williams prove that the interpolation Macdonald polynomial $P^*_\lambda$ symmetrizes the interpolation ASEP polynomials:
+\begin{proposition}[Ben Dali--Williams \cite{BDW}, Prop.~2.15]\label{prop:symmetrization}
+For any partition $\lambda$,
+\[
+P^*_\lambda(\bx;q,t)=\sum_{\mu\in\Sn(\lambda)} f^*_\mu(\bx;q,t),
+\]
+where $f^*_\mu$ denotes the interpolation ASEP polynomial in the notation of \cite{BDW}.
+\end{proposition}
+
+In this paper we do not distinguish $f^*_\mu$ and $F^*_\mu$, since \cite{BDW} identifies the polynomial with its signed-MLQ
+weight generating function (Theorem~1.15 of \cite{BDW}); see \S\ref{sec:MLQ}.
+
+\begin{corollary}\label{cor:sum1}
+Fix $(\bx,t)$ such that $P^*_\lambda(\bx;1,t)\neq 0$.
+Then the vector $\pi$ defined by \eqref{eq:pi-target} satisfies $\sum_{\mu\in\Sn(\lambda)}\pi(\mu)=1$.
+\end{corollary}
+
+\subsection{Signed-MLQ partition functions}\label{sec:MLQ}
+Let $\mathrm{MLQ}^\pm(\mu)$ be the (finite) set of signed multiline queues of type $\mu$ in the sense of \cite{BDW},
+and let $\mathrm{wt}(Q^\pm;\bx;q,t)$ be the weight of a signed MLQ.
+Ben Dali--Williams define
+\[
+F^*_\mu(\bx;q,t):=\sum_{Q^\pm\in \mathrm{MLQ}^\pm(\mu)} \mathrm{wt}(Q^\pm;\bx;q,t)
+\]
+and show that this equals the interpolation ASEP polynomial (Theorem~1.15 in \cite{BDW}).
+In particular, the values $F^*_\mu(\bx;1,t)$ can be computed from explicit local weights, without using the polynomials
+as symbolic objects.
+
+%------------------------------------------------------------
+\section{The $q=1$ factorization identities}\label{sec:q1factor}
+
+This section recalls the $q=1$ factorization formulas in \cite[\S7]{BDW}, which we use to obtain the explicit rank-two counterexample.
+
+\subsection{Inhomogeneous elementary symmetric polynomials}
+For $0\le k\le n$, define \cite[\S7]{BDW}
+\begin{equation}\label{eq:estar}
+e_k^*(x_1,\dots,x_n;t)
+=
+\sum_{S\subseteq [n],\,|S|=k}\ \prod_{i\in S}
+\Bigl(x_i-\frac{t^{\#(S^c\cap [i-1])}}{t^{n-1}}\Bigr),
+\end{equation}
+where $[n]=\{1,2,\dots,n\}$, $S^c=[n]\setminus S$, and $[i-1]=\{1,2,\dots,i-1\}$.
+
+\subsection{Support and partial symmetrization}
+For $\mu\in\ZZ_{\ge 0}^n$, define the support
+\[
+\Supp(\mu):=\{i\in[n]: \mu_i>0\}.
+\]
+
+\begin{theorem}[Ben Dali--Williams \cite{BDW}, Theorem~7.1]\label{thm:BDW71}
+Let $\lambda$ be a partition with $\lambda_1>0$ and let $S\subseteq[n]$ with $|S|=\ell(\lambda)$
+(the number of positive parts of $\lambda$). Then at $q=1$,
+\begin{equation}\label{eq:BDW50}
+\sum_{\mu\in\Sn(\lambda):\,\Supp(\mu)=S} F^*_\mu(\bx;1,t)
+=
+\prod_{i\in S}\Bigl(x_i-\frac{t^{\#(S^c\cap[i-1])}}{t^{n-1}}\Bigr)\cdot
+\prod_{2\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t),
+\end{equation}
+where $\lambda'$ denotes the conjugate partition.
+\end{theorem}
+
+Summing \eqref{eq:BDW50} over all supports yields the factorization of $P^*_\lambda(\bx;1,t)$.
+
+\begin{corollary}[Ben Dali--Williams \cite{BDW}, Eq.~(51)]\label{cor:BDW51}
+At $q=1$,
+\begin{equation}\label{eq:BDW51}
+P^*_\lambda(\bx;1,t)=\prod_{j=1}^{\lambda_1} e^*_{\lambda'_j}(\bx;t).
+\end{equation}
+\end{corollary}
+
+%------------------------------------------------------------
+\section{A rank-two counterexample: proof of Theorem~\ref{thm:obstruction}}\label{sec:rank2}
+
+Fix $n=2$ and $\lambda=(k,0)$ with $k\ge 2$.
+Then $\lambda$ is strict and restricted, and
+\[
+\Sn(\lambda)=\{(k,0),(0,k)\}.
+\]
+
+\subsection{Explicit formulas}
+We first compute $e_1^*$ from \eqref{eq:estar}.
+For $n=2$ and $k=1$, there are two subsets $S=\{1\}$ and $S=\{2\}$:
+\begin{equation}\label{eq:e1star}
+e_1^*(x_1,x_2;t)=(x_1-t^{-1})+(x_2-1).
+\end{equation}
+
+The conjugate partition of $(k)$ is $(1^k)$, hence $\lambda'_j=1$ for $1\le j\le k$.
+By \eqref{eq:BDW51},
+\begin{equation}\label{eq:Pstar-k0}
+P^*_{(k,0)}(x_1,x_2;1,t)=\prod_{j=1}^k e_1^*(x_1,x_2;t) = \bigl(e_1^*(x_1,x_2;t)\bigr)^k.
+\end{equation}
+
+Now apply Theorem~\ref{thm:BDW71} with supports $S=\{1\}$ and $S=\{2\}$.
+Since each support class contains a single orbit element, the sum in \eqref{eq:BDW50} has one term:
+\begin{align}
+F^*_{(k,0)}(x_1,x_2;1,t)
+&=(x_1-t^{-1})\cdot\bigl(e_1^*(x_1,x_2;t)\bigr)^{k-1},\label{eq:Fk0}\\
+F^*_{(0,k)}(x_1,x_2;1,t)
+&=(x_2-1)\cdot\bigl(e_1^*(x_1,x_2;t)\bigr)^{k-1}.\label{eq:F0k}
+\end{align}
+
+\subsection{The normalized weights and a negativity region}
+Combining \eqref{eq:Pstar-k0}, \eqref{eq:Fk0}, \eqref{eq:F0k}, and \eqref{eq:e1star}, we get
+\begin{equation}\label{eq:pi-explicit}
+\pi(k,0)=\frac{x_1-t^{-1}}{(x_1-t^{-1})+(x_2-1)},\qquad
+\pi(0,k)=\frac{x_2-1}{(x_1-t^{-1})+(x_2-1)}.
+\end{equation}
+(These formulas are independent of $k\ge 2$.)
+
+\begin{lemma}\label{lem:neg}
+Fix $t\in(0,1)$.
+If $0<x_1<t^{-1}$ and $x_2>1$ is chosen so that $(x_2-1)>(t^{-1}-x_1)$, then
+the denominator in \eqref{eq:pi-explicit} is positive and $\pi(k,0)<0$.
+\end{lemma}
+
+\begin{proof}
+Under the hypothesis, $x_1-t^{-1}<0$ but $(x_1-t^{-1})+(x_2-1)>0$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:obstruction}]
+Take for instance $t=\tfrac12$, $x_1=1$, $x_2=10$.
+Then $t^{-1}=2$ and \eqref{eq:pi-explicit} gives
+\[
+\pi(k,0)=\frac{1-2}{(1-2)+(10-1)}=\frac{-1}{8}<0.
+\]
+Hence \eqref{eq:pi-target} fails to define a probability distribution at this positive parameter point, so it cannot be the stationary
+distribution of any genuine Markov chain at this point. In particular, there is no Markov chain whose stationary distribution equals
+\eqref{eq:pi-target} uniformly over all positive parameters \eqref{eq:prob-domain}.
+\end{proof}
+
+\begin{remark}[The positivity region when $n=2$]
+From \eqref{eq:pi-explicit}, the normalized vector $\pi$ is a genuine probability distribution precisely on the region where both
+weights are nonnegative and the denominator is nonzero, i.e.
+either $x_1\ge t^{-1}$ and $x_2\ge 1$ (with not both equalities), or $x_1\le t^{-1}$ and $x_2\le 1$ (again excluding the zero denominator).
+This illustrates that positivity is parameter-dependent even in the smallest restricted case.
+\end{remark}
+
+%------------------------------------------------------------
+\section{A conditional Markov chain on the positivity domain}\label{sec:metropolis}
+
+We now prove Theorem~\ref{thm:metropolis} and Proposition~\ref{prop:nonempty}.
+The construction is standard in Markov chain Monte Carlo: a reversible heat-bath (Metropolis-type) walk on a connected graph,
+with acceptance probabilities determined by the target weights.
+
+\subsection{A nonempty positivity domain}
+
+Fix $t\in(0,1)$ and define the positivity domain
+\[
+\mathcal{D}_\lambda(t):=\Bigl\{\bx\in(0,\infty)^n:\ F^*_\mu(\bx;1,t)>0\ \text{for all }\mu\in\Sn(\lambda)\Bigr\}.
+\]
+
+\begin{lemma}\label{lem:top-hom}
+For each $\mu$, the polynomial $F^*_\mu(\bx;1,t)$ has total degree $|\mu|$, and its top homogeneous component is the (usual) ASEP polynomial
+$f_\mu(\bx;1,t)$ (in the notation of \cite{BDW} and \cite{AMW}).
+\end{lemma}
+
+\begin{proof}
+This is stated in \cite[Def.~1.2]{BDW}: the interpolation ASEP polynomial is defined as $f^*_\mu=T_{\sigma_\mu}\cdot E^*_\lambda$,
+and its top homogeneous part is $f_\mu=T_{\sigma_\mu}\cdot E_\lambda$; moreover $\deg f^*_\mu=|\mu|$.
+\end{proof}
+
+\begin{lemma}\label{lem:nonempty}
+Fix $t\in(0,1)$. Then $\mathcal{D}_\lambda(t)\neq\varnothing$.
+\end{lemma}
+
+\begin{proof}
+Fix any $\by\in(0,\infty)^n$. For each $\mu\in\Sn(\lambda)$, write
+\[
+F^*_\mu(R\by;1,t)=R^{|\mu|} f_\mu(\by;1,t) + O\bigl(R^{|\mu|-1}\bigr)\qquad(R\to\infty),
+\]
+because the top homogeneous part is $f_\mu$ by Lemma~\ref{lem:top-hom}.
+
+By \cite{AMW}, at $q=1$ the quantities $f_\mu(\by;1,t)$ appear as stationary weights of an inhomogeneous $t$-PushTASEP
+and are therefore strictly positive for $\by>0$ and $0<t<1$.
+Thus for each fixed $\mu$ there exists $R_\mu$ such that $F^*_\mu(R\by;1,t)>0$ for all $R\ge R_\mu$.
+Since $\Sn(\lambda)$ is finite, taking $R\ge \max_\mu R_\mu$ yields $R\by\in\mathcal{D}_\lambda(t)$.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:nonempty}]
+Take any $t\in(0,1)$ and apply Lemma~\ref{lem:nonempty}.
+Openness follows from continuity of the finitely many polynomials $F^*_\mu(\bx;1,t)$.
+\end{proof}
+
+\subsection{The adjacent-transposition graph}
+Because $\lambda$ has distinct parts, each $\mu\in\Sn(\lambda)$ determines a unique permutation $\sigma\in\Sn$ such that
+$\mu=\sigma\cdot\lambda$. Adjacent transpositions generate $\Sn$, hence they connect $\Sn(\lambda)$.
+
+Let $s_i$ be the adjacent transposition swapping coordinates $i$ and $i+1$, acting on $\mu$ by $(s_i\mu)_i=\mu_{i+1}$,
+$(s_i\mu)_{i+1}=\mu_i$, other coordinates fixed. The \emph{adjacent-transposition graph} on $\Sn(\lambda)$ has an (undirected) edge
+between $\mu$ and $s_i\mu$ for each $i\in\{1,\dots,n-1\}$.
+
+\subsection{The heat-bath chain}
+Assume \eqref{eq:positivity-assumption} and define positive weights
+\begin{equation}\label{eq:Wdef}
+W(\mu):=F^*_\mu(\bx;1,t)\qquad(\mu\in\Sn(\lambda)).
+\end{equation}
+
+\begin{definition}[Nearest-neighbour heat-bath chain]\label{def:HB}
+Define a Markov chain $(X_m)_{m\ge 0}$ on $\Sn(\lambda)$ as follows.
+Given $X_m=\mu$:
+\begin{enumerate}[label=\textup{(\arabic*)}, leftmargin=2.3em]
+\item Choose $i$ uniformly from $\{1,2,\dots,n-1\}$.
+\item Let $\nu=s_i\mu$.
+\item Set
+\[
+X_{m+1}=\begin{cases}
+\nu, & \text{with probability }\displaystyle \frac{W(\nu)}{W(\mu)+W(\nu)},\\[1.25ex]
+\mu, & \text{with probability }\displaystyle \frac{W(\mu)}{W(\mu)+W(\nu)}.
+\end{cases}
+\]
+\end{enumerate}
+\end{definition}
+
+\begin{remark}[Nontriviality and ``not using $F^*_\mu$'']
+The chain is nontrivial: it moves along adjacent-transposition edges with positive probability as long as $W$ is not constant.
+
+Moreover, by \S\ref{sec:MLQ} the values $W(\mu)$ can be written as explicit finite signed sums of local signed-MLQ weights
+(Definition~1.14 and Theorem~1.15 of \cite{BDW}), rather than by invoking $F^*_\mu$ as a symbolic polynomial.
+Thus the transition probabilities are expressible entirely in terms of the signed-MLQ partition functions.
+\end{remark}
+
+\subsection{Irreducibility and aperiodicity}
+\begin{lemma}\label{lem:irreducible}
+Under \eqref{eq:positivity-assumption}, the chain in Definition~\ref{def:HB} is irreducible and aperiodic.
+\end{lemma}
+
+\begin{proof}
+If $\nu=s_i\mu$, then $P(\mu\to\nu)=\frac{1}{n-1}\frac{W(\nu)}{W(\mu)+W(\nu)}>0$ since $W(\cdot)>0$.
+The adjacent-transposition graph on $\Sn(\lambda)$ is connected, hence the chain is irreducible.
+
+Also, for every state $\mu$ and any choice of $i$, there is a self-loop probability
+$\frac{1}{n-1}\frac{W(\mu)}{W(\mu)+W(s_i\mu)}>0$, hence the period is $1$.
+\end{proof}
+
+\subsection{Stationarity via detailed balance}
+Define
+\begin{equation}\label{eq:piW}
+\pi(\mu):=\frac{W(\mu)}{\sum_{\eta\in\Sn(\lambda)}W(\eta)}.
+\end{equation}
+
+\begin{proposition}[Detailed balance]\label{prop:DB}
+The measure $\pi$ in \eqref{eq:piW} satisfies detailed balance for the chain in Definition~\ref{def:HB}.
+In particular, $\pi$ is stationary.
+\end{proposition}
+
+\begin{proof}
+Fix an edge $\mu\leftrightarrow\nu$ with $\nu=s_i\mu$.
+Then
+\[
+P(\mu\to\nu)=\frac{1}{n-1}\frac{W(\nu)}{W(\mu)+W(\nu)},\qquad
+P(\nu\to\mu)=\frac{1}{n-1}\frac{W(\mu)}{W(\mu)+W(\nu)}.
+\]
+Thus
+\[
+\pi(\mu)P(\mu\to\nu)
+=\frac{W(\mu)}{\sum_\eta W(\eta)}\cdot \frac{1}{n-1}\frac{W(\nu)}{W(\mu)+W(\nu)}
+=\pi(\nu)P(\nu\to\mu).
+\]
+All other off-diagonal transitions are $0$, so detailed balance holds for all pairs.
+\end{proof}
+
+\begin{corollary}[Identification with the ratio $F^*/P^*$]\label{cor:identify}
+Under \eqref{eq:positivity-assumption}, the unique stationary distribution of Definition~\ref{def:HB} equals
+\[
+\pi(\mu)=\frac{F^*_\mu(\bx;1,t)}{P^*_\lambda(\bx;1,t)}\qquad(\mu\in\Sn(\lambda)).
+\]
+\end{corollary}
+
+\begin{proof}
+By Proposition~\ref{prop:DB} and Lemma~\ref{lem:irreducible}, the chain has a unique stationary distribution, given by \eqref{eq:piW}.
+Using $W(\mu)=F^*_\mu(\bx;1,t)$ and Proposition~\ref{prop:symmetrization} at $q=1$,
+\[
+\sum_{\eta\in\Sn(\lambda)}W(\eta)=\sum_{\eta\in\Sn(\lambda)}F^*_\eta(\bx;1,t)=P^*_\lambda(\bx;1,t),
+\]
+so \eqref{eq:piW} matches \eqref{eq:pi-target}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:metropolis}]
+Combine Lemma~\ref{lem:irreducible}, Proposition~\ref{prop:DB}, and Corollary~\ref{cor:identify}.
+\end{proof}
+
+%------------------------------------------------------------
+\section{Discussion and open directions}
+
+\begin{remark}[What this does and does not solve]
+Theorems~\ref{thm:obstruction} and \ref{thm:metropolis} together give a sharp ``if and only if'' at the level of basic feasibility:
+a Markov chain with stationary law \eqref{eq:pi-target} exists precisely at those parameter points where the right-hand side defines
+a probability distribution (equivalently, where $F^*_\mu(\bx;1,t)\ge 0$ for all $\mu$ and not all are zero).
+
+What remains open---and is closer to the integrable-probability spirit of the $t$-PushTASEP correspondence \cite{AMW}---is to construct
+a \emph{natural local interacting-particle dynamics} whose stationary law is \eqref{eq:pi-target} on a large parameter domain,
+without resorting to generic Metropolis/heat-bath machinery.
+\end{remark}
+
+\begin{remark}[Why the ``restricted'' hypothesis does not force positivity]
+Restrictedness (unique $0$ and no $1$) is useful in certain $q=1$ normalization identities in \cite{BDW}, which are relevant to attempts
+to build stochastic kernels from queue recursions.
+However, Theorem~\ref{thm:obstruction} shows that restrictedness alone does not prevent sign changes in the normalized weights.
+\end{remark}
+
+%------------------------------------------------------------
+\begin{thebibliography}{99}
+
+\bibitem{AMW}
+A.~Ayyer, J.~B.~Martin, and L.~K.~Williams,
+\emph{The inhomogeneous $t$-PushTASEP and Macdonald polynomials},
+arXiv:2403.10485 (2024).
+
+\bibitem{BDW}
+H.~Ben Dali and L.~K.~Williams,
+\emph{A combinatorial formula for interpolation Macdonald polynomials},
+arXiv:2510.02587 (2025).
+
+\end{thebibliography}
+
+\end{document}
