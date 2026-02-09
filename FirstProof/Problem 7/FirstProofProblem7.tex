@@ -1,0 +1,461 @@
+\documentclass[11pt]{amsart}
+
+% --- page layout ---
+\usepackage[margin=1.55in]{geometry}
+
+% --- AMS + basic packages ---
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+% --- theorem environments ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- macros ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\Fix}{Fix}
+
+\title[Torsion obstructions for rationally acyclic universal covers]{Torsion obstructions for closed manifolds with rationally acyclic universal covers}
+
+\author{}
+\date{}
+
+\subjclass[2020]{57N65, 55N91, 20F65}
+\keywords{compactly supported cohomology, Poincar\'e duality, Lefschetz number, torsion, lattices}
+
+\begin{document}
+
+\begin{abstract}
+We prove a purely topological obstruction to torsion in fundamental groups: if $M^n$ is a
+closed connected topological manifold and its universal cover $\widetilde M$ is acyclic over
+$\Q$, then $\pi_1(M)$ is torsion-free. In particular, a uniform lattice in a real semisimple Lie
+group that contains $2$-torsion cannot be isomorphic to the fundamental group of any closed
+manifold whose universal cover is $\Q$-acyclic. The argument uses Poincar\'e duality with
+compact supports to compute $H_c^\ast(\widetilde M;\Q)$ and a Lefschetz fixed point theorem
+for proper maps on locally compact ENRs (in particular, manifolds) to rule out fixed-point-free
+finite-order deck transformations.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+Let $G$ be a real semisimple Lie group and let $\Gamma<G$ be a \emph{uniform lattice}, i.e.\ a
+discrete subgroup such that $G/\Gamma$ is compact. If $\Gamma$ has torsion, then $G/\Gamma$ is a
+compact orbifold rather than a manifold. This motivates the following problem.
+
+\medskip\noindent
+\textbf{Problem.}
+\emph{Suppose that $\Gamma$ is a uniform lattice in a real semisimple Lie group, and that
+$\Gamma$ contains some $2$-torsion. Is it possible for $\Gamma$ to be the fundamental group of a
+compact manifold without boundary whose universal cover is acyclic over $\Q$?}
+\medskip
+
+We answer this in the negative, and in fact show that the lattice hypothesis is unnecessary:
+\emph{any} fundamental group of a closed manifold with $\Q$-acyclic universal cover must be
+torsion-free.
+
+\begin{definition}[$k$-acyclicity]\label{def:kacyclic}
+Let $k$ be a field. A space $X$ is \emph{$k$-acyclic} if $\widetilde H_i(X;k)=0$ for all $i\ge 0$,
+equivalently $H_0(X;k)\cong k$ and $H_i(X;k)=0$ for all $i>0$.
+\end{definition}
+
+\begin{theorem}\label{thm:main}
+Let $M^n$ be a compact connected topological manifold without boundary and let $X=\widetilde M$
+be its universal cover with deck group $\pi_1(M)$. If $X$ is $\Q$-acyclic, then $\pi_1(M)$ is
+torsion-free.
+\end{theorem}
+
+\begin{corollary}\label{cor:lattice}
+Let $\Gamma$ be a uniform lattice in a real semisimple Lie group. If $\Gamma$ contains an
+element of order $2$ (indeed, any nontrivial torsion), then $\Gamma$ is not isomorphic to the
+fundamental group of any closed manifold whose universal cover is $\Q$-acyclic.
+\end{corollary}
+
+\begin{remark}
+The proof of Theorem~\ref{thm:main} works verbatim over any field $k$ in place of $\Q$; see
+Remark~\ref{rem:field}.
+\end{remark}
+
+\subsection*{Conventions}
+All manifolds are Hausdorff, second countable, and without boundary unless explicitly stated
+otherwise. Cohomology is singular cohomology unless specified. Throughout, coefficients are in a
+fixed field $k$ (specialized to $k=\Q$ in the main statements). All group actions are by
+homeomorphisms.
+
+\section{Compactly supported cohomology}\label{sec:Hc}
+
+We recall the compactly supported cohomology of a locally compact Hausdorff space.
+
+\begin{definition}[Compactly supported cohomology]
+Let $X$ be locally compact Hausdorff and $k$ a field. Define
+\[
+H_c^i(X;k)\;:=\;\varinjlim_{K\subseteq X\ \mathrm{compact}} H^i\!\bigl(X,\,X\setminus K;\,k\bigr),
+\]
+where the direct limit is taken over compact subsets ordered by inclusion using the maps induced
+by inclusions of pairs $(X,X\setminus K)\hookrightarrow (X,X\setminus K')$ for $K\subseteq K'$.
+\end{definition}
+
+\begin{lemma}[Functoriality for proper maps]\label{lem:properfunctor}
+If $f:X\to Y$ is a proper continuous map between locally compact Hausdorff spaces, then
+pullback on relative cohomology induces natural maps
+\[
+f^\ast:H_c^i(Y;k)\to H_c^i(X;k)\qquad\text{for all }i\ge 0.
+\]
+\end{lemma}
+
+\begin{proof}
+For each compact $K\subseteq Y$, properness implies $f^{-1}(K)\subseteq X$ is compact, and $f$
+restricts to a map of pairs
+\[
+f:(X,\,X\setminus f^{-1}(K))\longrightarrow (Y,\,Y\setminus K).
+\]
+Thus we obtain pullback maps $H^i(Y,Y\setminus K;k)\to H^i(X,X\setminus f^{-1}(K);k)$ compatible
+with the directed system in $K$. Passing to the direct limit gives $f^\ast:H_c^i(Y;k)\to H_c^i(X;k)$.
+\end{proof}
+
+\begin{definition}[Compactly supported Euler characteristic]\label{def:chic}
+Assume $H_c^i(X;k)$ is finite-dimensional for all $i$ and $H_c^i(X;k)=0$ for $i\gg 0$. Then the
+\emph{compactly supported Euler characteristic} is
+\[
+\chi_c(X;k):=\sum_{i\ge 0} (-1)^i \dim_k H_c^i(X;k)\in \Z.
+\]
+When coefficients are clear, we write $\chi_c(X)$.
+\end{definition}
+
+\section{Duality with compact supports}\label{sec:duality}
+
+\subsection{Orientability of simply connected manifolds}
+
+\begin{lemma}\label{lem:orientable}
+If $X$ is a connected simply connected topological manifold, then $X$ is orientable.
+\end{lemma}
+
+\begin{proof}
+The orientation local system of a manifold is classified by the homomorphism
+$\pi_1(X)\to\{\pm 1\}$ recording whether loops preserve or reverse local orientation. If
+$\pi_1(X)=0$, this homomorphism is trivial, hence the local system is constant, i.e.\ $X$ is
+orientable.
+\end{proof}
+
+\subsection{Poincar\'e duality with compact supports}
+
+We use the standard duality isomorphism for oriented noncompact manifolds. A convenient
+reference is Hatcher's \emph{Algebraic Topology}, Theorem 3.35, which gives duality with compact
+supports for $R$-oriented manifolds for any commutative ring $R$ (and hence for fields).
+
+\begin{theorem}[Poincar\'e duality with compact supports]\label{thm:PD}
+Let $X$ be an oriented $n$-manifold without boundary and let $k$ be a field. Then cap product
+with the (Borel--Moore) fundamental class induces natural isomorphisms
+\[
+H_c^i(X;k)\;\cong\;H_{n-i}(X;k)\qquad\text{for all }i\ge 0.
+\]
+\end{theorem}
+
+\begin{remark}
+For non-orientable $X$, the same statement holds with coefficients twisted by the orientation
+local system. In this paper we apply Theorem~\ref{thm:PD} only to simply connected manifolds,
+which are orientable by Lemma~\ref{lem:orientable}.
+\end{remark}
+
+\section{The compactly supported cohomology of a $k$-acyclic universal cover}\label{sec:compute}
+
+Let $M^n$ be a compact connected $n$-manifold and let $X=\widetilde M$ be its universal cover.
+
+\begin{lemma}[Noncompactness]\label{lem:noncompact}
+Assume $n\ge 1$ and $X$ is $k$-acyclic for a field $k$. Then $X$ is noncompact (equivalently,
+$\pi_1(M)$ is infinite).
+\end{lemma}
+
+\begin{proof}
+If $\pi_1(M)$ were finite, then $X\to M$ would be a finite-sheeted covering, hence $X$ would be
+compact. Being simply connected, $X$ is orientable by Lemma~\ref{lem:orientable}. For a compact
+connected orientable $n$-manifold, $H_n(X;k)\cong k\neq 0$. This contradicts $k$-acyclicity when
+$n\ge 1$.
+\end{proof}
+
+\begin{proposition}\label{prop:Hc}
+Let $M^n$ be a compact connected $n$-manifold without boundary and let $X=\widetilde M$. If $X$
+is $k$-acyclic for a field $k$, then
+\[
+H_c^i(X;k)\;\cong\;
+\begin{cases}
+k, & i=n,\\
+0, & i\neq n,
+\end{cases}
+\qquad\text{and hence}\qquad
+\chi_c(X;k)=(-1)^n\in\{\pm 1\}.
+\]
+\end{proposition}
+
+\begin{proof}
+The universal cover $X$ is a connected simply connected $n$-manifold, hence orientable by
+Lemma~\ref{lem:orientable}. By Poincar\'e duality with compact supports
+(Theorem~\ref{thm:PD}),
+\[
+H_c^i(X;k)\cong H_{n-i}(X;k).
+\]
+Since $X$ is $k$-acyclic, $H_{n-i}(X;k)=0$ for $n-i>0$, i.e.\ for $i<n$, and $H_0(X;k)\cong k$
+gives $H_c^n(X;k)\cong k$. Also $H_c^i(X;k)=0$ for $i>n$ because $H_{n-i}(X;k)=0$ for negative
+degrees. The Euler characteristic formula follows.
+\end{proof}
+
+\section{A Lefschetz vanishing principle for proper maps}\label{sec:lefschetz}
+
+Let $X$ be a locally compact Hausdorff space such that each $H_c^i(X;k)$ is finite-dimensional
+and $H_c^i(X;k)=0$ for $i\gg 0$. For a proper map $f:X\to X$ we define the
+\emph{compactly supported Lefschetz number}
+\[
+L_c(f;X):=\sum_{i\ge 0} (-1)^i \operatorname{tr}\!\left(f^\ast:H_c^i(X;k)\to H_c^i(X;k)\right)\in k.
+\]
+
+\begin{remark}\label{rem:ENR}
+Every topological manifold is a locally compact separable metric ANR (hence an ENR), so the
+standard fixed point index theory on ENRs applies to manifolds. References include Borsuk's
+\emph{Theory of Retracts} and modern treatments in fixed point theory; for our application we
+only require the vanishing implication in Theorem~\ref{thm:properL}.
+\end{remark}
+
+\begin{theorem}[Proper Lefschetz fixed point theorem: vanishing direction]\label{thm:properL}
+Let $X$ be a locally compact ENR (in particular, a topological manifold) and let $f:X\to X$ be
+a proper continuous map. Assume that $\Fix(f)$ is compact and that $H_c^i(X;k)$ is
+finite-dimensional for all $i$ and vanishes for $i\gg 0$. Then $L_c(f;X)$ agrees with the fixed
+point index of $f$ (defined for ENRs), and in particular:
+\[
+\Fix(f)=\varnothing \quad\Longrightarrow\quad L_c(f;X)=0.
+\]
+\end{theorem}
+
+\begin{remark}\label{rem:refsLefschetz}
+A full treatment proceeds via the fixed point index for ENRs and its identification with a
+Lefschetz number. Foundational sources include Dold's construction of the fixed point index for
+ENRs \cite{DoldENR} and the development of local/global indices and Lefschetz formulas
+(e.g.\ Thompson \cite{ThompsonIndex} and Brown's monograph \cite{BrownLefschetz}). The passage
+to noncompact spaces is handled by working with compactly supported (or ``compact carrier'')
+(co)homology and by using the fact that $\Fix(f)$ is compact, so the index is defined and
+localized. We use only the displayed implication, which is the formal vanishing property of the
+index when no fixed points are present.
+\end{remark}
+
+\section{Torsion-freeness of $\pi_1$ and the lattice corollary}\label{sec:main}
+
+\subsection{Deck transformations are fixed-point-free}
+
+\begin{lemma}\label{lem:deckfree}
+Let $p:X\to M$ be a covering map. If $\varphi:X\to X$ is a deck transformation and
+$\varphi(x)=x$ for some $x\in X$, then $\varphi=\mathrm{id}_X$. In particular, the deck group
+acts freely.
+\end{lemma}
+
+\begin{proof}
+Since $\varphi$ is a deck transformation, $p\circ\varphi=p$. Both $\varphi$ and $\mathrm{id}_X$
+are lifts of $p$ through $p$ that agree at $x$. By uniqueness of lifts, $\varphi=\mathrm{id}_X$.
+\end{proof}
+
+\subsection{Main theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+If $n=0$, then $M$ is a point and $\pi_1(M)=1$ is torsion-free. Assume henceforth $n\ge 1$.
+
+Let $X=\widetilde M$ and $\Gamma=\pi_1(M)$ act on $X$ by deck transformations. By
+Lemma~\ref{lem:deckfree}, this action is free.
+
+By Proposition~\ref{prop:Hc} (with $k=\Q$), we have $H_c^i(X;\Q)=0$ for $i\neq n$ and
+$H_c^n(X;\Q)\cong \Q$, hence $L_c(f;X)=(-1)^n\operatorname{tr}(f^\ast|H_c^n(X;\Q))$ for any
+proper self-map $f$ of $X$.
+
+Assume for contradiction that $\Gamma$ contains an element $g$ of finite order $m>1$. Then $g$
+acts on $X$ by a deck transformation, hence by a homeomorphism. Homeomorphisms of locally compact
+Hausdorff spaces are proper, so $g:X\to X$ is proper. Since the action is free,
+$\Fix(g)=\varnothing$.
+
+By Theorem~\ref{thm:properL}, $\Fix(g)=\varnothing$ implies $L_c(g;X)=0$.
+
+On the other hand, since $H_c^n(X;\Q)$ is $1$-dimensional over $\Q$, the linear map
+$g^\ast:H_c^n(X;\Q)\to H_c^n(X;\Q)$ is multiplication by some $\lambda\in\Q^\times$; and because
+$g^m=\mathrm{id}$ we have $(g^\ast)^m=\mathrm{id}$, hence $\lambda^m=1$. The only roots of unity
+in $\Q$ are $\pm 1$, so $\lambda=\pm 1$. Therefore
+\[
+L_c(g;X)=(-1)^n\,\operatorname{tr}(g^\ast|H_c^n(X;\Q))=(-1)^n\lambda\in\{\pm 1\}\neq 0,
+\]
+a contradiction. Hence $\Gamma$ has no nontrivial torsion.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:lattice}]
+If $\Gamma\cong \pi_1(M)$ for a closed manifold $M$ with $\Q$-acyclic universal cover, then
+$\Gamma$ would be torsion-free by Theorem~\ref{thm:main}. This contradicts the hypothesis that
+$\Gamma$ contains an element of order $2$.
+\end{proof}
+
+\section{Variants and additional structure}\label{sec:variants}
+
+\begin{remark}[Fields other than $\Q$]\label{rem:field}
+The argument above works over any field $k$. Indeed, if $\widetilde M$ is $k$-acyclic then
+Proposition~\ref{prop:Hc} gives $H_c^n(\widetilde M;k)\cong k$, and for a finite-order element
+$g$ the induced map on this one-dimensional vector space is multiplication by $\lambda\in k^\times$
+satisfying $\lambda^m=1$, hence $\lambda\neq 0$. The Lefschetz number is $(-1)^n\lambda\neq 0$,
+contradicting Theorem~\ref{thm:properL}. Thus $\pi_1(M)$ is torsion-free for any field
+coefficients.
+\end{remark}
+
+\begin{remark}[An Euler characteristic proof]
+One may alternatively combine Proposition~\ref{prop:Hc} with multiplicativity of $\chi_c$ under
+finite free group actions (Appendix~\ref{app:transfer}) to show that if a finite group $G$ acts
+freely on $X=\widetilde M$, then $|G|$ divides $\chi_c(X)=\pm 1$, forcing $G=1$.
+\end{remark}
+
+\appendix
+\section{Transfer, invariants, and multiplicativity of $\chi_c$}\label{app:transfer}
+
+This appendix records a standard transfer formalism for compactly supported cohomology and
+derives multiplicativity of $\chi_c$ for finite free quotients. While not needed for the main
+argument, it provides a second proof strategy and makes explicit the constructions sometimes
+left implicit.
+
+\subsection{Deck transformations act freely}
+
+Lemma~\ref{lem:deckfree} already provides the freeness of deck actions; we will also use that a
+finite free action on a manifold yields a manifold quotient.
+
+\begin{lemma}\label{lem:quotientcover}
+Let a finite group $G$ act freely on a topological manifold $X$ by homeomorphisms. Then the
+quotient $Y:=X/G$ is a topological manifold and the quotient map $p:X\to Y$ is a regular
+covering with deck group $G$.
+\end{lemma}
+
+\begin{proof}
+Fix $x\in X$. Choose a coordinate chart $U\cong \R^n$ about $x$. Since the action is free and $G$
+is finite, after shrinking $U$ we may assume the translates $\{gU\}_{g\in G}$ are pairwise
+disjoint. Then $p|_U:U\to p(U)$ is a homeomorphism and
+$p^{-1}(p(U))=\bigsqcup_{g\in G} gU$, giving the usual local trivialization of a covering. The
+charts on $Y$ are inherited from these evenly covered neighborhoods.
+\end{proof}
+
+\subsection{Transfer for compactly supported cohomology}
+
+Let $p:X\to Y$ be a finite covering of degree $m$ between locally compact Hausdorff spaces.
+Since $p$ is proper, $p^\ast:H_c^i(Y;k)\to H_c^i(X;k)$ is defined by
+Lemma~\ref{lem:properfunctor}.
+
+\begin{lemma}[Transfer]\label{lem:transfer}
+For a finite covering $p:X\to Y$ of degree $m$, there exists a natural transfer map
+\[
+\operatorname{tr}:H_c^i(X;k)\to H_c^i(Y;k)
+\]
+such that $\operatorname{tr}\circ p^\ast = m\cdot \mathrm{id}$ for all $i$.
+\end{lemma}
+
+\begin{proof}
+Fix a compact $K\subseteq Y$. Then $p^{-1}(K)\subseteq X$ is compact. The restriction
+$p: (X, X\setminus p^{-1}(K))\to (Y, Y\setminus K)$ is a finite covering of pairs. Define a map
+on singular cochains representing the classical transfer on relative cohomology by summing, for
+each relative singular simplex in $Y$, the pullbacks along its $m$ distinct lifts to $X$ over an
+evenly covered neighborhood. This yields a homomorphism
+\[
+\operatorname{tr}_K:H^i(X, X\setminus p^{-1}(K);k)\to H^i(Y, Y\setminus K;k)
+\]
+satisfying $\operatorname{tr}_K\circ p^\ast = m\cdot \mathrm{id}$.
+These transfers are compatible as $K$ increases, hence pass to the direct limit defining
+$H_c^i(-;k)$ and give $\operatorname{tr}:H_c^i(X;k)\to H_c^i(Y;k)$ with the stated property.
+\end{proof}
+
+\begin{lemma}\label{lem:norm}
+If $p:X\to Y$ is a regular finite cover with deck group $G$ of order $m$, then on $H_c^i(X;k)$ one
+has
+\[
+p^\ast\circ \operatorname{tr}\;=\;\sum_{g\in G} g^\ast.
+\]
+\end{lemma}
+
+\begin{proof}
+This is checked on the cochain-level definition of the transfer: transferring amounts to summing
+over sheets of the covering, while pulling back then sums the translates by all deck
+transformations. Passing to cohomology yields the identity.
+\end{proof}
+
+\begin{proposition}\label{prop:invariants}
+Let $p:X\to Y$ be a regular finite cover with deck group $G$ of order $m$. Assume each
+$H_c^i(X;k)$ is finite-dimensional. Then for all $i$,
+\[
+p^\ast:H_c^i(Y;k)\;\xrightarrow{\ \cong\ }\;H_c^i(X;k)^G
+\]
+is an isomorphism onto the $G$-invariant subspace.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:transfer}, $p^\ast$ is injective. It lands in invariants since $p\circ g=p$
+for all $g\in G$.
+
+Conversely, if $v\in H_c^i(X;k)^G$, then by Lemma~\ref{lem:norm},
+\[
+p^\ast\!\Big(\frac{1}{m}\operatorname{tr}(v)\Big)
+=\frac{1}{m}\sum_{g\in G} g^\ast v
+=\frac{1}{m}\sum_{g\in G} v
+=v,
+\]
+so $v$ lies in the image.
+\end{proof}
+
+\subsection{Multiplicativity of $\chi_c$ under finite free quotients}
+
+\begin{proposition}[Multiplicativity]\label{prop:mult}
+Let $X$ be a manifold such that $H_c^i(X;k)$ is finite-dimensional for all $i$ and vanishes for
+$i\gg 0$. Suppose a finite group $G$ acts freely on $X$ by homeomorphisms, and set $Y:=X/G$.
+Then
+\[
+\chi_c(X;k)=|G|\cdot \chi_c(Y;k).
+\]
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:quotientcover}, the quotient map $p:X\to Y$ is a regular covering with deck
+group $G$, $m:=|G|$. For each $i$, Proposition~\ref{prop:invariants} gives
+$H_c^i(Y;k)\cong H_c^i(X;k)^G$.
+
+Let $V^i:=H_c^i(X;k)$ and let $P^i:=\frac{1}{m}\sum_{g\in G} g^\ast\in \mathrm{End}(V^i)$ be the
+averaging projector. Since $V^i$ is finite-dimensional, $\operatorname{tr}(P^i)=\dim_k (V^i)^G$.
+Therefore,
+\[
+\chi_c(Y;k)=\sum_i (-1)^i \dim_k (V^i)^G
+=\sum_i (-1)^i \operatorname{tr}(P^i)
+=\frac{1}{m}\sum_{g\in G}\sum_i (-1)^i \operatorname{tr}(g^\ast|V^i)
+=\frac{1}{m}\sum_{g\in G} L_c(g;X).
+\]
+For $g=\mathrm{id}$, $L_c(g;X)=\chi_c(X;k)$. For $g\neq \mathrm{id}$, the action is free so
+$\Fix(g)=\varnothing$. Since $g$ is a homeomorphism it is proper, and Theorem~\ref{thm:properL}
+gives $L_c(g;X)=0$. Hence $\chi_c(Y;k)=\chi_c(X;k)/m$.
+\end{proof}
+
+\begin{thebibliography}{99}
+
+\bibitem{BrownLefschetz}
+R.~F.~Brown, \emph{The Lefschetz Fixed Point Theorem}, Scott, Foresman and Co., Glenview, IL,
+1971.
+
+\bibitem{DoldENR}
+A.~Dold, \emph{Fixed point index and fixed point theorem for Euclidean neighborhood retracts},
+Topology \textbf{4} (1965), 1--8.
+
+\bibitem{HatcherAT}
+A.~Hatcher, \emph{Algebraic Topology}, Cambridge University Press, 2002.
+
+\bibitem{ThompsonIndex}
+R.~B.~Thompson, \emph{A unified approach to local and global fixed point indices}, Advances in
+Mathematics \textbf{3} (1969), 1--71.
+
+\end{thebibliography}
+
+\end{document}
