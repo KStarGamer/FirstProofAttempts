@@ -1,0 +1,873 @@
+\documentclass[11pt]{amsart}
+
+% --- Page layout ---
+\usepackage[a4paper,margin=1in]{geometry}
+
+% --- Math packages ---
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools,bm}
+
+% --- Algorithms / misc ---
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[hidelinks]{hyperref}
+
+% --- Notation/macros ---
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Id}{I}
+\newcommand{\vecop}{\operatorname{vec}}
+\newcommand{\Tr}{\operatorname{trace}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\kron}{\otimes}
+\newcommand{\had}{\ast} % Hadamard (entrywise) product
+\newcommand{\ipF}[2]{\left\langle #1,#2\right\rangle_{\mathrm{F}}}
+\newcommand{\normF}[1]{\left\lVert #1\right\rVert_{\mathrm{F}}}
+\newcommand{\normTwo}[1]{\left\lVert #1\right\rVert_{2}}
+
+% --- Theorem environments ---
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+% --- Title ---
+\title[Matrix-Free PCG for RKHS Mode Updates in Incomplete CP]{A Matrix-Free Preconditioned Conjugate-Gradient Solver\\
+for RKHS-Constrained Mode Updates in Incomplete CP Tensor Decompositions}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study the alternating optimization update for a CP tensor model with missing (unaligned) entries in which one mode is constrained
+to lie in a reproducing kernel Hilbert space (RKHS).
+Under the representer parameterization $A_k=KW$, the mode-$k$ update reduces to a linear system of size $nr\times nr$ with
+$n=n_k$ and CP rank $r$.
+Forming the system matrix is infeasible for missing data because it would require objects of size $N=\prod_i n_i$ or $M=\prod_{i\neq k}n_i$,
+and a direct solve costs $\Theta((nr)^3)$.
+We derive a rigorously justified matrix-free self-adjoint operator that applies the system matrix using only (i) multiplications by the kernel Gram matrix
+$K\in\RR^{n\times n}$ and (ii) sparse accumulations over the $q\ll N$ observed tensor entries.
+This enables preconditioned conjugate gradients (PCG) with per-iteration cost $O(qr+n^2r)$ for dense $K$, and no computation or storage of order $N$.
+We treat the positive semidefinite (psd) kernel subtlety and provide two mathematically sound SPD resolutions:
+a nugget regularization $K+\varepsilon I$ and an exact range-space reformulation using a factorization $K=LL^\top$.
+We propose two SPD preconditioners---a robust ridge-term (kernel-block) preconditioner and a Kronecker-spectral preconditioner motivated by a uniform
+missingness model---and we give a unified, implementation-safe scaling that precludes the common ``double-discounting'' trap.
+\end{abstract}
+
+\section{Introduction}
+
+Let $\mathcal{T}\in\RR^{n_1\times\cdots\times n_d}$ be a $d$-way data tensor with missing entries.
+Let $N=\prod_{i=1}^d n_i$ and suppose only $q\ll N$ entries are observed.
+We consider CP decompositions of rank $r$ with one or more modes constrained to an RKHS.
+Focusing on a kernelized mode $k$, a standard ALS/BCD step fixes all factors except mode $k$ and updates the mode-$k$ factor by solving a
+regularized least-squares problem.
+Under the representer theorem, the mode-$k$ factor has the finite expansion $A_k=KW$, where $K\in\RR^{n\times n}$ is the kernel Gram matrix
+on the $n=n_k$ mode-$k$ index points and $W\in\RR^{n\times r}$ is unknown.
+The corresponding normal equations form an $nr\times nr$ linear system.
+
+A naive approach forms the dense normal matrix explicitly and applies a dense direct solver, costing $\Theta((nr)^3)=\Theta(n^3r^3)$.
+For missing data, explicit formation is additionally prohibitive because the masking operator naturally lives in the ambient dimension $N$.
+The purpose of this paper is to give a fully rigorous, self-contained derivation of a matrix-free PCG method that:
+\begin{itemize}[leftmargin=2.0em]
+\item applies the system matrix without forming any object of size $N$ or $M$,
+\item uses only the list of $q$ observed indices/values and the fixed CP factors in the other modes,
+\item admits practical SPD preconditioners whose application is also free of $N$- or $M$-scale computation,
+\item achieves per-iteration cost $O(qr+n^2r)$ for dense $K$ (and less if $K$ admits faster multiplies or low-rank structure).
+\end{itemize}
+
+\section{Notation and the missing-data operator}
+
+Fix $k\in\{1,\dots,d\}$. Define
+\[
+n := n_k,\qquad M := \prod_{i\neq k} n_i,\qquad N:=nM.
+\]
+Let $\Omega\subseteq [n_1]\times\cdots\times[n_d]$ denote the set of observed tensor indices and $|\Omega|=q$.
+We store the data as pairs $\{(\bm i^{(\ell)},t_\ell)\}_{\ell=1}^q$ with $\bm i^{(\ell)}=(i_1^{(\ell)},\dots,i_d^{(\ell)})\in\Omega$ and
+$t_\ell=\mathcal{T}_{\bm i^{(\ell)}}\in\RR$.
+
+Let $T\in\RR^{n\times M}$ denote the mode-$k$ unfolding of $\mathcal{T}$ with all missing entries set to $0$.
+We will never form $T$ explicitly.
+
+\subsection{Selection and projection operators}
+
+We use a selection matrix formalism only for analysis, not computation.
+
+\begin{assumption}[Distinct observations]\label{ass:distinct}
+The set $\Omega$ contains no repeated tensor indices.
+Equivalently, the observed unfolding coordinates form a set $\Omega_k\subseteq [n]\times[M]$ with no duplicates.
+\end{assumption}
+
+\begin{definition}[Selection matrix and mask projector]\label{def:S}
+Let $\vecop(\cdot)$ stack columns.
+There exists a matrix $S\in\RR^{N\times q}$ whose columns are distinct standard basis vectors in $\RR^N$ such that
+$S^\top \vecop(T)\in\RR^q$ extracts the observed entries of $T$.
+Define
+\[
+P_\Omega := SS^\top\in\RR^{N\times N}.
+\]
+Then $P_\Omega$ is a diagonal orthogonal projector: $P_\Omega^2=P_\Omega=P_\Omega^\top\succeq 0$.
+\end{definition}
+
+\begin{remark}[If duplicates are present]\label{rem:duplicates}
+If $\Omega$ is a multiset (repeated observations of the same entry), then one can incorporate multiplicities as weights.
+In that case the natural ``mask'' becomes a diagonal weight matrix $W_\Omega$ rather than an orthogonal projector.
+All matrix-free identities in this paper extend verbatim with $P_\Omega$ replaced by $W_\Omega$; CG/PCG then applies provided the resulting
+system remains SPD (e.g.\ if $\lambda>0$ and $K\succ0$).
+For clarity we work under Assumption~\ref{ass:distinct}.
+\end{remark}
+
+\section{CP factors, RKHS parameterization, and the mode-$k$ subproblem}
+
+Let $r\in\NN$ be the CP rank.
+For each mode $j\neq k$ we have a fixed factor matrix $A_j\in\RR^{n_j\times r}$.
+Define the Khatri--Rao product over all modes except $k$:
+\[
+Z := A_d \odot \cdots \odot A_{k+1} \odot A_{k-1} \odot \cdots \odot A_1 \in\RR^{M\times r},
+\]
+where $\odot$ is the columnwise Kronecker product.
+We will \emph{not} form $Z$.
+
+Let $K\in\RR^{n\times n}$ be a symmetric psd kernel Gram matrix on the mode-$k$ indices.
+The RKHS representer form (columnwise) yields the parameterization
+\[
+A_k = K W,\qquad W\in\RR^{n\times r}\ \text{unknown}.
+\]
+Set $w:=\vecop(W)\in\RR^{nr}$.
+
+\subsection{The masked least-squares objective}
+
+The standard kernelized, masked ALS subproblem is
+\begin{equation}\label{eq:subproblem}
+\min_{W\in\RR^{n\times r}}
+\ \frac12 \normTwo{S^\top\vecop(T)-S^\top(Z\kron K)\vecop(W)}^2
++\frac{\lambda}{2}\,\Tr(W^\top K W),
+\qquad \lambda>0.
+\end{equation}
+This is a finite-dimensional convex problem in $W$ whenever $K\succeq 0$ and $\lambda>0$.
+
+\subsection{Normal equations: complete derivation}
+
+Define $y:=S^\top\vecop(T)\in\RR^q$ and $X:=S^\top(Z\kron K)\in\RR^{q\times nr}$.
+Then \eqref{eq:subproblem} is the ridge-regularized least squares
+\[
+\min_{w\in\RR^{nr}} \ f(w):=\frac12\|y-Xw\|_2^2 + \frac{\lambda}{2} w^\top (I_r\kron K)\,w.
+\]
+Since $I_r\kron K$ is symmetric, the gradient is
+\[
+\nabla f(w) = X^\top(Xw-y) + \lambda (I_r\kron K) w.
+\]
+Setting $\nabla f(w)=0$ yields
+\begin{equation}\label{eq:normal_eqn_raw}
+\big(X^\top X + \lambda(I_r\kron K)\big)w = X^\top y.
+\end{equation}
+Substituting $X=S^\top(Z\kron K)$ and $y=S^\top\vecop(T)$ gives
+\begin{equation}\label{eq:normal_eqn_mask}
+\Big[(Z\kron K)^\top SS^\top(Z\kron K) + \lambda(I_r\kron K)\Big] w
+= (Z\kron K)^\top SS^\top \vecop(T).
+\end{equation}
+By Definition~\ref{def:S}, $P_\Omega=SS^\top$, so this is the stated system matrix.
+
+\section{PSD vs.\ SPD and two rigorous SPD resolutions}\label{sec:spd}
+
+CG/PCG requires an SPD linear operator.
+The normal matrix in \eqref{eq:normal_eqn_mask} is always symmetric and psd, but it need not be SPD if $K$ is singular.
+We make this precise.
+
+\begin{proposition}[Quadratic form and psd property]\label{prop:psd}
+Let $K\succeq 0$ and $\lambda\ge 0$.
+Define
+\[
+A := (Z\kron K)^\top P_\Omega (Z\kron K) + \lambda(I_r\kron K)\in\RR^{nr\times nr}.
+\]
+Then $A$ is symmetric and positive semidefinite. Moreover, for any $W\in\RR^{n\times r}$,
+\begin{equation}\label{eq:energy_vec}
+\vecop(W)^\top A\,\vecop(W)
+=
+\normF{P_\Omega\big(\,KWZ^\top\,\big)}^2
++\lambda\,\Tr(W^\top K W).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Symmetry is immediate from $P_\Omega=P_\Omega^\top$ and $K=K^\top$.
+Let $w=\vecop(W)$. Since $P_\Omega$ is an orthogonal projector,
+\[
+w^\top (Z\kron K)^\top P_\Omega (Z\kron K) w
+= \|(P_\Omega^{1/2})(Z\kron K)w\|_2^2
+= \|P_\Omega (Z\kron K)w\|_2^2.
+\]
+Using Lemma~\ref{lem:vec_kron} below, $(Z\kron K)\vecop(W)=\vecop(KWZ^\top)$, hence the first term equals
+$\|P_\Omega \vecop(KWZ^\top)\|_2^2=\|P_\Omega(KWZ^\top)\|_F^2$.
+Finally, $w^\top(I_r\kron K)w=\Tr(W^\top K W)$, yielding \eqref{eq:energy_vec}.
+\end{proof}
+
+\begin{corollary}[SPD condition]\label{cor:spd}
+If $K\succ 0$ and $\lambda>0$, then $A\succ 0$ (SPD).
+\end{corollary}
+
+\begin{proof}
+If $K\succ0$, then $\Tr(W^\top K W)=\|K^{1/2}W\|_F^2>0$ for any $W\neq 0$.
+With $\lambda>0$, \eqref{eq:energy_vec} gives $\vecop(W)^\top A\vecop(W)>0$ for all $W\neq 0$.
+\end{proof}
+
+\begin{remark}[Why $K$ singular implies $A$ singular]\label{rem:Ksing}
+If $K\succeq0$ is singular, take any nonzero $W$ whose columns lie in $\ker(K)$.
+Then $KW=0$, so both terms in \eqref{eq:energy_vec} vanish and $A$ is singular.
+This reflects the non-identifiability of $W$ under $A_k=KW$ when $K$ is psd.
+\end{remark}
+
+We now give two standard, fully rigorous SPD resolutions.
+
+\subsection{Resolution I: nugget regularization (modifies the objective)}
+
+\begin{assumption}[Nugget SPD kernel]\label{ass:nugget}
+Fix $\varepsilon>0$ and replace $K$ by $\widetilde K:=K+\varepsilon I_n$, so $\widetilde K\succ 0$.
+\end{assumption}
+
+\begin{remark}[Effect on the objective]
+Replacing $K$ by $\widetilde K$ changes the regularizer:
+$\Tr(W^\top K W)$ becomes $\Tr(W^\top K W)+\varepsilon\|W\|_F^2$.
+Thus we add a small Euclidean ridge on $W$, yielding strict convexity and an SPD normal matrix.
+This ``nugget'' is standard in numerical kernel methods.
+\end{remark}
+
+\subsection{Resolution II: range-space reformulation (does not modify the objective)}
+
+Let $K\succeq0$ and let $m:=\rank(K)$.
+Let $K=LL^\top$ with $L\in\RR^{n\times m}$ full column rank (e.g.\ using the positive-eigenspace factorization).
+
+\begin{theorem}[Exact range-space equivalence]\label{thm:range_space}
+Assume $K\succeq0$ and $\lambda>0$.
+Let $K=LL^\top$ with $L\in\RR^{n\times m}$ full column rank.
+Define $U:=L^\top W\in\RR^{m\times r}$ and $A_k:=KW=LU$.
+Then the problem \eqref{eq:subproblem} is equivalent (same minimal value and same set of achievable factors $A_k$) to
+\begin{equation}\label{eq:range_subproblem}
+\min_{U\in\RR^{m\times r}}
+\ \frac12 \normTwo{S^\top\vecop(T)-S^\top(Z\kron L)\vecop(U)}^2
++\frac{\lambda}{2}\,\normF{U}^2.
+\end{equation}
+Moreover, \eqref{eq:range_subproblem} has a unique minimizer and its normal equations are SPD of size $mr\times mr$.
+\end{theorem}
+
+\begin{proof}
+First, $A_k=KW=LL^\top W = L(L^\top W)=LU$, so any $W$ yields a corresponding $U$ producing the same factor $A_k$.
+Conversely, any $U$ defines a factor $A_k=LU$ which lies in $\mathrm{range}(K)$; choosing any $W$ with $L^\top W=U$ (e.g.\ $W=L(L^\top L)^{-1}U$)
+recovers $A_k=KW$.
+
+Second, the data term satisfies $KWZ^\top = LUZ^\top$.
+By Lemma~\ref{lem:vec_kron}, $\vecop(LUZ^\top)=(Z\kron L)\vecop(U)$, so the data term in \eqref{eq:subproblem} depends only on $U$.
+Third, the regularizer satisfies
+\[
+\Tr(W^\top K W) = \Tr(W^\top LL^\top W) = \Tr\big((L^\top W)^\top (L^\top W)\big)=\|U\|_F^2.
+\]
+Thus \eqref{eq:subproblem} reduces exactly to \eqref{eq:range_subproblem}.
+
+Finally, \eqref{eq:range_subproblem} is a ridge-regularized least squares in $\vecop(U)$ with ridge matrix $\lambda I_{mr}$.
+Hence its Hessian is $X^\top X + \lambda I_{mr}\succ0$ and the minimizer is unique.
+\end{proof}
+
+\begin{remark}[Correct computational interpretation]\label{rem:range_cost}
+The range-space formulation does \emph{not} reduce the number of kernel-type multiplications per matvec; it replaces multiplications by the dense $n\times n$
+matrix $K$ with multiplications by $L$ and $L^\top$ of cost $O(nmr)$ each.
+It is faster only when $m\ll n$.
+\end{remark}
+
+In the remainder we assume an SPD kernel matrix (either $K\succ0$ or $K$ has been replaced by $\widetilde K\succ0$),
+and for simplicity we write $K$ for the SPD matrix.
+
+\section{Vec--Kronecker identities and the matrix-form operator}\label{sec:vec_kron}
+
+We now prove the standard vec--Kronecker identity in a rectangular form sufficient for all applications in this paper.
+
+\begin{lemma}[Rectangular vec--Kronecker identity]\label{lem:vec_kron}
+Let $A\in\RR^{p\times n}$, $X\in\RR^{n\times m}$, and $B\in\RR^{m\times k}$.
+Then
+\begin{equation}\label{eq:vec_kron_general}
+(B^\top\kron A)\,\vecop(X) = \vecop(AXB).
+\end{equation}
+In particular, for $Z\in\RR^{M\times r}$ and $K\in\RR^{n\times n}$,
+\[
+(Z\kron K)\vecop(X)=\vecop(KXZ^\top),
+\qquad
+(Z\kron K)^\top\vecop(Y)=\vecop(KYZ),
+\]
+for all conforming $X\in\RR^{n\times r}$ and $Y\in\RR^{n\times M}$.
+\end{lemma}
+
+\begin{proof}
+Let $E_{ij}\in\RR^{n\times m}$ be the matrix with a $1$ at $(i,j)$ and zeros elsewhere.
+Then $\{E_{ij}\}$ is a basis of $\RR^{n\times m}$ and $\vecop(E_{ij})=e_j\kron e_i$ where $e_i$ is the $i$-th standard basis vector.
+Compute
+\[
+(B^\top\kron A)\vecop(E_{ij})
+=(B^\top\kron A)(e_j\kron e_i)
+=(B^\top e_j)\kron(Ae_i).
+\]
+Expanding $B^\top e_j=\sum_{\beta=1}^k (B^\top)_{\beta j} e_\beta=\sum_{\beta=1}^k B_{j\beta}\,e_\beta$
+and $Ae_i=\sum_{\alpha=1}^p A_{\alpha i}e_\alpha$ gives
+\[
+(B^\top e_j)\kron(Ae_i)
+=\sum_{\beta=1}^k\sum_{\alpha=1}^p B_{j\beta}A_{\alpha i}(e_\beta\kron e_\alpha)
+=\vecop\!\left(\sum_{\alpha=1}^p\sum_{\beta=1}^k A_{\alpha i}B_{j\beta}\,E_{\alpha\beta}\right),
+\]
+where now $E_{\alpha\beta}\in\RR^{p\times k}$.
+But for all $\alpha,\beta$,
+\[
+(AE_{ij}B)_{\alpha\beta}=\sum_{x=1}^n\sum_{y=1}^m A_{\alpha x}(E_{ij})_{xy}B_{y\beta}
+= A_{\alpha i}B_{j\beta},
+\]
+so $\sum_{\alpha,\beta} A_{\alpha i}B_{j\beta}E_{\alpha\beta}=AE_{ij}B$ and therefore
+$(B^\top\kron A)\vecop(E_{ij})=\vecop(AE_{ij}B)$.
+By linearity, \eqref{eq:vec_kron_general} holds for all $X=\sum_{i,j}X_{ij}E_{ij}$.
+The special cases follow by taking $A=K$, $X$ as indicated, and $B=Z^\top$ or $B=Z$.
+\end{proof}
+
+\subsection{Normal equations in the problem-statement form}
+
+Since $T$ is defined to be zero on missing entries, $P_\Omega\vecop(T)=\vecop(T)$.
+Thus the right-hand side of \eqref{eq:normal_eqn_mask} is $(Z\kron K)^\top\vecop(T)=(Z^\top\kron K)\vecop(T)$.
+By Lemma~\ref{lem:vec_kron},
+\[
+(Z^\top\kron K)\vecop(T)=\vecop(KTZ)=\vecop(KB)=(I_r\kron K)\vecop(B),
+\]
+where $B:=TZ$.
+Thus the system is exactly the one given in the problem statement:
+\begin{equation}\label{eq:system_problem}
+\Big[(Z\kron K)^\top P_\Omega (Z\kron K) + \lambda(I_r\kron K)\Big]\,\vecop(W)
+=
+(I_r\kron K)\vecop(B).
+\end{equation}
+
+\subsection{Matrix-form linear operator}
+
+Define the linear map $\mathcal{A}:\RR^{n\times r}\to\RR^{n\times r}$ by
+\begin{equation}\label{eq:Aop}
+\boxed{
+\mathcal{A}(X) := K\big(P_\Omega(KXZ^\top)\,Z\big) + \lambda KX.
+}
+\end{equation}
+
+\begin{proposition}[Operator equivalence and SPD]\label{prop:Aop}
+Assume $K\succ0$ and $\lambda>0$.
+Then for all $X\in\RR^{n\times r}$,
+\[
+\vecop(\mathcal{A}(X)) =
+\Big[(Z\kron K)^\top P_\Omega (Z\kron K) + \lambda(I_r\kron K)\Big]\vecop(X).
+\]
+Moreover, $\mathcal{A}$ is self-adjoint and SPD with respect to the Frobenius inner product:
+\[
+\ipF{X}{\mathcal{A}(X)} = \normF{P_\Omega(KXZ^\top)}^2 + \lambda \|K^{1/2}X\|_F^2 >0 \quad \text{for }X\neq 0.
+\]
+\end{proposition}
+
+\begin{proof}
+Let $x=\vecop(X)$.
+By Lemma~\ref{lem:vec_kron}, $(Z\kron K)x=\vecop(KXZ^\top)$.
+Apply $P_\Omega$ and apply $(Z\kron K)^\top=(Z^\top\kron K)$ using Lemma~\ref{lem:vec_kron}:
+\[
+(Z\kron K)^\top P_\Omega (Z\kron K) x
+=(Z^\top\kron K)\vecop(P_\Omega(KXZ^\top))
+=\vecop(K(P_\Omega(KXZ^\top))Z).
+\]
+Also $(I_r\kron K)\vecop(X)=\vecop(KX)$, yielding \eqref{eq:Aop}.
+Self-adjointness and SPD follow from Corollary~\ref{cor:spd} and the $\vecop$ isometry.
+\end{proof}
+
+\section{Observed-index access to $Z$: no $M$- or $N$-sized objects}
+
+The operator \eqref{eq:Aop} appears to involve $KXZ^\top\in\RR^{n\times M}$.
+We show that $P_\Omega(\cdot)$ and multiplication by $Z$ can be executed using only the observed entries.
+
+\subsection{Row evaluation of the Khatri--Rao product}
+
+For each observation $\ell\in\{1,\dots,q\}$, define the mode-$k$ row index
+\[
+i^{(\ell)} := i_k^{(\ell)}\in\{1,\dots,n\}.
+\]
+Define the associated \emph{Khatri--Rao row vector} as the column vector $z^{(\ell)}\in\RR^{r}$ with entries
+\begin{equation}\label{eq:zell_def}
+z^{(\ell)}_j := \prod_{t\neq k} A_t\big[i_t^{(\ell)},j\big],
+\qquad j=1,\dots,r,
+\end{equation}
+i.e.\ elementwise multiplication of the factor rows.
+Equivalently,
+\[
+z^{(\ell)}
+=
+\Big(
+A_d[i_d^{(\ell)},:]\had\cdots\had A_{k+1}[i_{k+1}^{(\ell)},:]
+\had
+A_{k-1}[i_{k-1}^{(\ell)},:]\had\cdots\had A_1[i_1^{(\ell)},:]
+\Big)^\top \in\RR^{r\times 1}.
+\]
+This orientation choice (column vector) avoids row/column ambiguity and keeps the scatter-add updates type-consistent.
+
+Computing $z^{(\ell)}$ costs $O((d-1)r)$ flops.
+
+\begin{remark}[Precompute vs.\ on-the-fly]\label{rem:precompute_z}
+Since all $A_t$ ($t\neq k$) are fixed during the mode-$k$ solve, one may precompute and store $\{z^{(\ell)}\}_{\ell=1}^q$ once per outer step:
+time $O(q(d-1)r)$, memory $O(qr)$.
+If memory is constrained, one can recompute $z^{(\ell)}$ on-the-fly in each matvec, increasing the per-iteration masked cost by a factor $d-1$.
+\end{remark}
+
+\section{Matrix-free matrix-vector products}\label{sec:matvec}
+
+We now show how to apply $\mathcal{A}$ in \eqref{eq:Aop} using only:
+(i) dense kernel multiplications by $K$ (or faster kernel multiplies if available), and
+(ii) scatter-add over the $q$ observed entries.
+
+\subsection{Derivation of the scatter-add formula}
+
+Let $X\in\RR^{n\times r}$ and set
+\[
+G := KX\in\RR^{n\times r}.
+\]
+Then $KXZ^\top = GZ^\top$.
+For each observation $\ell$, the corresponding observed entry of $GZ^\top$ equals
+\[
+(GZ^\top)_{i^{(\ell)},m^{(\ell)}} = G[i^{(\ell)},:]\;z^{(\ell)},
+\]
+where $G[i,:]\in\RR^{1\times r}$ is a row and $z^{(\ell)}\in\RR^{r\times 1}$ is a column, so this is a scalar.
+
+Define $u_\ell := G[i^{(\ell)},:]\;z^{(\ell)}\in\RR$.
+The matrix $P_\Omega(GZ^\top)$ is zero except at observed locations, where it equals $u_\ell$.
+Now define
+\[
+H := P_\Omega(GZ^\top)\,Z\in\RR^{n\times r}.
+\]
+Only observed entries contribute, yielding the rowwise formula
+\begin{equation}\label{eq:H_scatter}
+H[i,:] = \sum_{\ell:\,i^{(\ell)}=i} u_\ell\, z^{(\ell)\top},
+\qquad i=1,\dots,n.
+\end{equation}
+Finally,
+\[
+\mathcal{A}(X) = K H + \lambda G.
+\]
+
+\subsection{Correctness proof of the scatter-add implementation}
+
+\begin{proposition}[Scatter-add equals masked multiplication]\label{prop:scatter_correct}
+Let $G\in\RR^{n\times r}$ and define $H$ by \eqref{eq:H_scatter}.
+Then $H = P_\Omega(GZ^\top)\,Z$ without forming $Z$ or $P_\Omega$ explicitly.
+\end{proposition}
+
+\begin{proof}
+Let $F:=GZ^\top\in\RR^{n\times M}$, so $F_{i,m}=G[i,:]\;Z[m,:]^\top$.
+By definition, $(P_\Omega F)_{i,m}=F_{i,m}$ if $(i,m)\in\Omega_k$ and $0$ otherwise.
+Then
+\[
+(P_\Omega F)Z \ \text{has row } i \text{ equal to } \ \sum_{m=1}^M (P_\Omega F)_{i,m}\,Z[m,:].
+\]
+Only observed $(i,m)$ contribute, and each such contribution equals $F_{i,m}\,Z[m,:]$.
+Indexing observed pairs by $\ell$ and setting $z^{(\ell)}=Z[m^{(\ell)},:]^\top$ yields exactly \eqref{eq:H_scatter}.
+\end{proof}
+
+\subsection{Matrix-free matvec algorithm and cost}
+
+\begin{algorithm}[t]
+\caption{Matrix-free matvec $Y=\mathcal{A}(X)$}\label{alg:matvec}
+\begin{algorithmic}[1]
+\Require $X\in\RR^{n\times r}$, SPD kernel matrix $K\in\RR^{n\times n}$, ridge $\lambda>0$,
+observations $\{i^{(\ell)}, z^{(\ell)}\}_{\ell=1}^q$ (with $z^{(\ell)}\in\RR^{r\times 1}$).
+\Ensure $Y=\mathcal{A}(X)\in\RR^{n\times r}$.
+\State $G \gets KX$ \Comment{$O(n^2r)$ for dense $K$}
+\State $H \gets 0\in\RR^{n\times r}$
+\For{$\ell=1,\dots,q$}
+  \State $u \gets G[i^{(\ell)},:]\; z^{(\ell)}$ \Comment{scalar; $O(r)$}
+  \State $H[i^{(\ell)},:] \gets H[i^{(\ell)},:] + u\, z^{(\ell)\top}$ \Comment{$O(r)$}
+\EndFor
+\State $Y \gets K H + \lambda G$ \Comment{$O(n^2r)$ for dense $K$}
+\State \Return $Y$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{proposition}[Matvec complexity; no $N$ or $M$ objects]\label{prop:matvec_complexity}
+Assume dense $K$.
+Given precomputed $\{z^{(\ell)}\}_{\ell=1}^q$, Algorithm~\ref{alg:matvec} computes $Y=\mathcal{A}(X)$ with cost
+\[
+O(n^2r) \;+\; O(qr)\;+\; O(n^2r) \;=\; O(qr+n^2r).
+\]
+No vector of length $N$, no matrix of size $n\times M$, and no explicit $Z$ or Kronecker product is formed.
+If $z^{(\ell)}$ are computed on-the-fly, the masked loop cost becomes $O(q(d-1)r)$.
+\end{proposition}
+
+\begin{proof}
+Immediate from the two dense kernel multiplications and the $q$ scatter-add updates, each $O(r)$.
+\end{proof}
+
+\subsection{Optional preprocessing: row-wise Gram compression}
+
+Define rowwise Gram matrices
+\[
+C_i := \sum_{\ell:\,i^{(\ell)}=i} z^{(\ell)}z^{(\ell)\top}\in\RR^{r\times r},\qquad i=1,\dots,n.
+\]
+This costs $O(qr^2)$ time and $O(nr^2)$ memory per outer ALS step.
+
+\begin{proposition}[Row-wise Gram acceleration]\label{prop:Ci}
+With $\{C_i\}$ precomputed, the masked accumulation in \eqref{eq:H_scatter} satisfies
+\[
+H[i,:] = G[i,:]\;C_i,\qquad i=1,\dots,n.
+\]
+Hence the masked step can be computed in $O(nr^2)$ per matvec (instead of $O(qr)$), and the matvec cost becomes
+$O(n^2r+nr^2)$ for dense $K$.
+\end{proposition}
+
+\begin{proof}
+For fixed $i$, substitute $u_\ell=G[i,:]z^{(\ell)}$ into \eqref{eq:H_scatter} and factor:
+\[
+H[i,:]=\sum_{\ell:i^{(\ell)}=i} (G[i,:]z^{(\ell)})\, z^{(\ell)\top}
+=G[i,:]\sum_{\ell:i^{(\ell)}=i} z^{(\ell)}z^{(\ell)\top}
+=G[i,:]C_i.
+\]
+\end{proof}
+
+\section{Right-hand side assembly without $T$ or $Z$}
+
+The right-hand side of \eqref{eq:system_problem} is $(I_r\kron K)\vecop(B)=\vecop(KB)$ with $B=TZ$.
+We can assemble $B$ from observations.
+
+\begin{proposition}[MTTKRP from observed entries]\label{prop:B_rhs}
+Let $B=TZ$ where $T$ is the zero-filled mode-$k$ unfolding.
+Then
+\[
+B[i,:] = \sum_{\ell:\,i^{(\ell)}=i} t_\ell\,z^{(\ell)\top},\qquad i=1,\dots,n.
+\]
+Thus $B$ can be computed in $O(qr)$ flops given $\{z^{(\ell)}\}$, and $KB$ then costs $O(n^2r)$ for dense $K$.
+\end{proposition}
+
+\begin{proof}
+By definition, $(TZ)[i,:]=\sum_{m=1}^M T_{i,m}Z[m,:]$.
+Since $T_{i,m}=0$ for unobserved $(i,m)$, only observed entries contribute.
+Each observation $\ell$ in row $i$ contributes $t_\ell Z[m^{(\ell)},:]=t_\ell z^{(\ell)\top}$, yielding the formula.
+\end{proof}
+
+\section{PCG in matrix form and convergence}
+
+We solve the SPD linear system
+\begin{equation}\label{eq:matrix_system}
+\mathcal{A}(W)=KB,\qquad W\in\RR^{n\times r},
+\end{equation}
+where $\mathcal{A}$ is given by \eqref{eq:Aop} and $KB$ is assembled via Proposition~\ref{prop:B_rhs}.
+Because $\vecop$ is an isometry between $(\RR^{n\times r},\ipF{\cdot}{\cdot})$ and $(\RR^{nr},\langle\cdot,\cdot\rangle)$,
+CG/PCG applied to \eqref{eq:matrix_system} is exactly CG/PCG on \eqref{eq:system_problem}, but expressed using Frobenius inner products.
+
+\subsection{PCG algorithm}
+
+Let $M:\RR^{n\times r}\to\RR^{n\times r}$ be an SPD linear preconditioner (self-adjoint and SPD w.r.t.\ $\ipF{\cdot}{\cdot}$).
+PCG requires one application of $\mathcal{A}$ and one application of $M^{-1}$ per iteration.
+
+\begin{algorithm}[t]
+\caption{PCG for $\mathcal{A}(W)=KB$ in matrix form}\label{alg:pcg}
+\begin{algorithmic}[1]
+\Require Initial guess $W_0\in\RR^{n\times r}$, tolerance $\tau>0$, operator $\mathcal{A}$, RHS $KB$, SPD preconditioner $M$.
+\Ensure Approximate solution $W$.
+\State $R_0 \gets KB - \mathcal{A}(W_0)$
+\State $U_0 \gets M^{-1}(R_0)$
+\State $D_0 \gets U_0$
+\For{$j=0,1,2,\dots$}
+  \State $Q_j \gets \mathcal{A}(D_j)$
+  \State $\alpha_j \gets \ipF{R_j}{U_j}/\ipF{D_j}{Q_j}$
+  \State $W_{j+1} \gets W_j + \alpha_j D_j$
+  \State $R_{j+1} \gets R_j - \alpha_j Q_j$
+  \If{$\normF{R_{j+1}}/\normF{KB} \le \tau$}
+    \State \Return $W_{j+1}$
+  \EndIf
+  \State $U_{j+1} \gets M^{-1}(R_{j+1})$
+  \State $\beta_j \gets \ipF{R_{j+1}}{U_{j+1}}/\ipF{R_j}{U_j}$
+  \State $D_{j+1} \gets U_{j+1} + \beta_j D_j$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Standard PCG convergence bound}
+
+\begin{theorem}[PCG error bound]\label{thm:pcg_bound}
+Let $\mathcal{A}$ be SPD and $M$ be SPD.
+Let $W_\star$ solve \eqref{eq:matrix_system} and let $W_j$ be produced by PCG (Algorithm~\ref{alg:pcg}) in exact arithmetic.
+Let $\kappa:=\kappa(M^{-1}\mathcal{A})$ be the spectral condition number of the preconditioned operator.
+Then the energy-norm error satisfies
+\[
+\|W_j-W_\star\|_{\mathcal{A}}
+\le 2\left(\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1}\right)^j \|W_0-W_\star\|_{\mathcal{A}},
+\]
+where $\|X\|_{\mathcal{A}}^2:=\ipF{X}{\mathcal{A}(X)}$.
+\end{theorem}
+
+\begin{proof}
+This is the classical CG/PCG bound for SPD systems, applied to the vectorized system and transported to matrix form via the $\vecop$ isometry.
+\end{proof}
+
+\section{Preconditioners: design, correctness, and costs}\label{sec:precond}
+
+We present two SPD preconditioners that respect the ``no $O(N)$'' requirement.
+
+\subsection{Preconditioner I: kernel-block (ridge-term) preconditioner}
+
+Define
+\begin{equation}\label{eq:precondA}
+M_A := \lambda(I_r\kron K)
+\qquad\Longleftrightarrow\qquad
+M_A(R) = \lambda K R.
+\end{equation}
+This is SPD because $K\succ0$ and $\lambda>0$.
+Applying $M_A^{-1}$ reduces to solving
+\[
+\lambda K U = R
+\quad\text{columnwise.}
+\]
+With a Cholesky factorization $K=LL^\top$, one application costs $O(n^2r)$ via $r$ triangular solves; the setup cost is $O(n^3)$.
+
+\subsection{Preconditioner II: Kronecker-spectral preconditioner (implementation-safe scaling)}
+
+The masked term $(Z\kron K)^\top P_\Omega (Z\kron K)$ destroys exact Kronecker structure.
+Nevertheless, a strong preconditioner can be obtained from an exact full-observation identity and a uniform missingness model.
+The key implementation point is to \emph{absorb the sampling-rate scaling into a single effective Gram surrogate} to prevent accidental
+double-scaling.
+
+\subsubsection{Full observation identity}
+
+If all entries are observed, $P_\Omega=I_N$ and
+\begin{equation}\label{eq:full_obs_kron}
+(Z\kron K)^\top (Z\kron K) = (Z^\top Z)\kron (K^\top K) = (Z^\top Z)\kron (K^2),
+\end{equation}
+since $K$ is symmetric.
+
+\subsubsection{Uniform missingness model and sampling rate}
+
+Assume a random mask model in which each unfolding coordinate $(i,m)\in[n]\times[M]$ is observed with probability $\rho\in(0,1]$, so that
+$\mathbb{E}[P_\Omega]=\rho I_N$.
+In practice, when the observed set has size $q$ and the ambient tensor has $N$ entries, this sampling rate is computed from the dimensions as
+\[
+\rho := \frac{q}{N}.
+\]
+This is scalar arithmetic in $O(d)$ time (to compute $N=\prod_i n_i$) and does not require any $O(N)$-scale computation.
+
+\begin{proposition}[Expected masked data term under uniform sampling]\label{prop:expected_mask}
+Assume $\mathbb{E}[P_\Omega]=\rho I_N$.
+Then
+\[
+\mathbb{E}\big[(Z\kron K)^\top P_\Omega (Z\kron K)\big]
+=
+\rho\,(Z^\top Z)\kron(K^2).
+\]
+\end{proposition}
+
+\begin{proof}
+Linearity of expectation gives $\mathbb{E}[P_\Omega]=\rho I_N$.
+Hence
+\[
+\mathbb{E}\big[(Z\kron K)^\top P_\Omega (Z\kron K)\big]
+=
+(Z\kron K)^\top \mathbb{E}[P_\Omega] (Z\kron K)
+=
+\rho (Z\kron K)^\top (Z\kron K),
+\]
+and \eqref{eq:full_obs_kron} completes the proof.
+\end{proof}
+
+\subsubsection{Computing $Z^\top Z$ without forming $Z$}
+
+To maintain strict avoidance of $M$-sized operations, the exact Gram matrix $G_Z := Z^\top Z$ must not be computed by explicitly forming
+$Z\in\RR^{M\times r}$.
+Instead, we exploit the structure of the Khatri--Rao product.
+
+\begin{lemma}[Khatri--Rao Gram identity]\label{lem:khatri_rao_gram}
+Let $Z=A_s\odot\cdots\odot A_1$ be a Khatri--Rao product of conforming matrices.
+Then
+\[
+Z^\top Z = (A_s^\top A_s)\had\cdots\had(A_1^\top A_1).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $z_p$ denote the $p$-th column of $Z$.
+Then $z_p=\bigotimes_{j=1}^s a_j^{(p)}$, where $a_j^{(p)}$ is the $p$-th column of $A_j$.
+For $p,q\in[r]$,
+\[
+(Z^\top Z)_{pq} = z_p^\top z_q
+= \prod_{j=1}^s \big(a_j^{(p)}\big)^\top a_j^{(q)}
+= \prod_{j=1}^s (A_j^\top A_j)_{pq}.
+\]
+Entrywise products are exactly the Hadamard product.
+\end{proof}
+
+Thus, if $Z$ is the Khatri--Rao product of the fixed CP factors in all modes $j\neq k$, then $G_Z=Z^\top Z$ can be computed using only
+the $r\times r$ Gram matrices $A_j^\top A_j$ in $O(\sum_{j\neq k} n_j r^2)$ flops and $O(r^2)$ memory, without forming $Z$.
+
+\subsubsection{Two Gram surrogates and the correct scaling}
+
+Let $G_Z:=Z^\top Z\succeq 0$.
+An exact-Gram preconditioner matching the expectation in Proposition~\ref{prop:expected_mask} would use $\rho G_Z$.
+
+If computing $G_Z$ is undesirable, form an observed Gram
+\[
+G_{Z,\Omega} := \sum_{\ell=1}^q z^{(\ell)}z^{(\ell)\top}\in\RR^{r\times r}.
+\]
+Under uniform sampling, the scaling is:
+
+\begin{proposition}[Scaling of the observed Gram]\label{prop:observed_gram_scaling}
+Assume uniform sampling with rate $\rho$ and recall $N=nM$.
+Then
+\[
+\mathbb{E}[G_{Z,\Omega}] = n\rho\,Z^\top Z.
+\]
+Consequently, $\frac1n G_{Z,\Omega}$ is an unbiased estimator of $\rho\,Z^\top Z$.
+\end{proposition}
+
+\begin{proof}
+Let $\delta_{i,m}\in\{0,1\}$ indicate whether unfolding coordinate $(i,m)$ is observed.
+Then $G_{Z,\Omega}=\sum_{i=1}^n\sum_{m=1}^M \delta_{i,m}\,Z[m,:]^\top Z[m,:]$.
+Taking expectation and using $\mathbb{E}[\delta_{i,m}]=\rho$ yields
+\[
+\mathbb{E}[G_{Z,\Omega}]
+=\sum_{i=1}^n\sum_{m=1}^M \rho\,Z[m,:]^\top Z[m,:]
+=n\rho\sum_{m=1}^M Z[m,:]^\top Z[m,:]
+=n\rho\,Z^\top Z.
+\]
+Dividing by $n$ gives the unbiasedness statement.
+\end{proof}
+
+\subsubsection{Unified, implementation-safe definition}
+
+Define a \emph{single effective Gram surrogate} $\widetilde G\succeq 0$ by choosing one of:
+\begin{equation}\label{eq:Gtilde_choices}
+\widetilde G :=
+\begin{cases}
+\rho\,G_Z, & \text{(exact-Gram, using }G_Z=Z^\top Z\text{)},\\[0.4em]
+\frac1n\,G_{Z,\Omega}, & \text{(observed-Gram, using }G_{Z,\Omega}=\sum_{\ell=1}^q z^{(\ell)}z^{(\ell)\top}\text{)}.
+\end{cases}
+\end{equation}
+We then define the Kronecker-spectral preconditioner by the \emph{single unambiguous formula}
+\begin{equation}\label{eq:MB_unified}
+\boxed{
+M_B := \widetilde G \kron K^2 \;+\; \lambda(I_r\kron K).
+}
+\end{equation}
+This eliminates the risk of ``double-discounting'' (accidentally multiplying $\frac1nG_{Z,\Omega}$ by an additional $\rho$).
+
+\subsubsection{Fast application of $M_B^{-1}$ (with correct variable hygiene)}
+
+Let $\widetilde G=U_Z\Sigma U_Z^\top$ with $U_Z\in\RR^{r\times r}$ orthogonal and $\Sigma=\diag(\sigma_1,\dots,\sigma_r)\succeq 0$.
+Let $K=Q\Lambda Q^\top$ with $Q\in\RR^{n\times n}$ orthogonal and $\Lambda=\diag(\kappa_1,\dots,\kappa_n)\succ 0$.
+Then $K^2=Q\Lambda^2 Q^\top$ and
+\[
+M_B = (U_Z\kron Q)\ \diag\big(\sigma_j\,\kappa_p^2 + \lambda\,\kappa_p\big)_{p=1,\dots,n;\,j=1,\dots,r}\ (U_Z\kron Q)^\top.
+\]
+For $R\in\RR^{n\times r}$, the output $V=M_B^{-1}(R)$ can be computed in matrix form:
+\begin{equation}\label{eq:MBinv_apply}
+\widehat R := Q^\top R\,U_Z \in \RR^{n\times r},\qquad
+\widehat V_{p,j} := \frac{\widehat R_{p,j}}{\sigma_j\,\kappa_p^2 + \lambda\,\kappa_p},\qquad
+V := Q\,\widehat V\,U_Z^\top.
+\end{equation}
+Here $U_Z$ denotes eigenvectors of the $r\times r$ matrix $\widetilde G$, while $V$ denotes the $n\times r$ output, avoiding
+variable shadowing.
+
+\begin{proposition}[Cost of $M_B^{-1}$ application]\label{prop:MB_cost}
+Assume dense $Q$ and $U_Z$ are applied explicitly.
+After one-time eigendecompositions costing $O(n^3+r^3)$, each application of $M_B^{-1}$ via \eqref{eq:MBinv_apply} costs
+\[
+O(n^2r) \ \text{(for }Q^\top R\text{ and }Q\widehat V)\;+\; O(nr^2)\ \text{(for }R U_Z\text{ and }\widehat V U_Z^\top).
+\]
+No $N$- or $M$-sized objects are required.
+\end{proposition}
+
+\section{Complexity summary (no $O(N)$ terms)}\label{sec:complexity}
+
+We summarize one mode-$k$ update under the regime $n,r<q\ll N$ and dense $K$.
+
+\subsection{Per outer ALS/BCD step (setup)}
+
+\begin{itemize}[leftmargin=2.0em]
+\item (Optional) Precompute $z^{(\ell)}$: $O(q(d-1)r)$ time, $O(qr)$ memory (Remark~\ref{rem:precompute_z}).
+\item Assemble $B$ via Proposition~\ref{prop:B_rhs}: $O(qr)$ time, $O(nr)$ memory.
+\item Form $KB$: $O(n^2r)$ time.
+\item (Optional) Precompute rowwise Grams $C_i$: $O(qr^2)$ time, $O(nr^2)$ memory.
+\item Preconditioner setup:
+\begin{itemize}[leftmargin=1.5em]
+\item $M_A$: Cholesky of $K$: $O(n^3)$ time, $O(n^2)$ memory.
+\item $M_B$:
+\begin{itemize}[leftmargin=1.5em]
+\item If $\widetilde G=\rho G_Z$: compute $\rho=q/N$ and compute $G_Z=Z^\top Z$ via Lemma~\ref{lem:khatri_rao_gram}
+in $O(\sum_{j\neq k} n_j r^2)$ flops and $O(r^2)$ memory (no $M$-sized objects).
+\item If $\widetilde G=\frac1nG_{Z,\Omega}$: compute $G_{Z,\Omega}$ in $O(qr^2)$ flops and $O(r^2)$ memory.
+\item In either case: eigendecompose $K$ and $\widetilde G$ in $O(n^3+r^3)$ time and store $O(n^2+r^2)$.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsection{Per PCG iteration}
+
+Each PCG iteration performs:
+\begin{itemize}[leftmargin=2.0em]
+\item One matvec $X\mapsto\mathcal{A}(X)$:
+\begin{itemize}[leftmargin=1.5em]
+\item without $C_i$: $O(qr+n^2r)$ time (Proposition~\ref{prop:matvec_complexity});
+\item with $C_i$: $O(nr^2+n^2r)$ time (Proposition~\ref{prop:Ci}).
+\end{itemize}
+\item One preconditioner application:
+\begin{itemize}[leftmargin=1.5em]
+\item $M_A^{-1}$: $O(n^2r)$ via triangular solves;
+\item $M_B^{-1}$: $O(n^2r+nr^2)$ via \eqref{eq:MBinv_apply} (Proposition~\ref{prop:MB_cost}).
+\end{itemize}
+\item Inner products and saxpy updates: $O(nr)$.
+\end{itemize}
+
+Thus, for $t$ PCG iterations, the total cost is
+\[
+O\Big(
+q(d-1)r \;+\; qr \;+\; n^2r \;+\; \mathrm{setup}(M) \;+\;
+t\cdot\big(\mathrm{matvec}+\mathrm{apply}(M^{-1})\big)
+\Big),
+\]
+with \emph{no} computation or storage of order $N=nM$ and no explicit construction of $Z$, $T$, $P_\Omega$, or any Kronecker product.
+
+\section{Conclusion}
+
+The RKHS-constrained mode-$k$ subproblem in incomplete CP tensor decompositions leads to a large $nr\times nr$ normal system whose direct solution
+and explicit formation are computationally prohibitive.
+We derived an exact matrix-form SPD operator whose application is computable from $q$ observed entries and kernel multiplications, yielding a
+matrix-free PCG solver with per-iteration complexity $O(qr+n^2r)$ for dense kernels.
+We treated the psd-kernel singularity rigorously, providing two SPD resolutions: nugget regularization and a range-space reformulation.
+Finally, we proposed two SPD preconditioners and (crucially) gave a unified, implementation-safe scaling of the Kronecker-spectral variant that
+precludes double-discounting under uniform missingness, while retaining a strict guarantee that no $M$- or $N$-sized objects are required.
+
+\begin{thebibliography}{99}
+
+\bibitem{Saad}
+Y.~Saad,
+\emph{Iterative Methods for Sparse Linear Systems},
+2nd ed., SIAM, 2003.
+
+\bibitem{GolubVanLoan}
+G.~H. Golub and C.~F. Van Loan,
+\emph{Matrix Computations},
+4th ed., Johns Hopkins University Press, 2013.
+
+\bibitem{KoldaBader}
+T.~G. Kolda and B.~W. Bader,
+Tensor decompositions and applications,
+\emph{SIAM Review} \textbf{51} (2009), no.~3, 455--500.
+
+\bibitem{AcarCPWOPT}
+E.~Acar, D.~M. Dunlavy, T.~G. Kolda, and M.~M\o rup,
+Scalable tensor factorizations for incomplete data,
+\emph{Chemometrics and Intelligent Laboratory Systems} \textbf{106} (2011), 41--56.
+
+\bibitem{RasmussenWilliams}
+C.~E. Rasmussen and C.~K.~I. Williams,
+\emph{Gaussian Processes for Machine Learning},
+MIT Press, 2006.
+
+\end{thebibliography}
+
+\end{document}

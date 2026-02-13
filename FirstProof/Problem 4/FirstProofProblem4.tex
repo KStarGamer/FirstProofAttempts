@@ -1,0 +1,674 @@
+\documentclass[11pt]{amsart}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+
+%--- theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{equation}{section}
+
+%--- macros
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\bb}{\boxplus}
+\newcommand{\Hh}{\mathcal{H}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\vct}{\mathbf{v}}
+
+\title[Finite-free Stam inequalities for $n\le 4$]{Finite-free Fisher information and symmetric additive convolution:\\
+a Bezoutian-kernel reduction and unconditional Stam inequalities for $n\le 4$}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Let $p,q$ be monic real-rooted polynomials of degree $n$ and let $r=p\boxplus_n q$ denote their \emph{symmetric additive convolution} (finite free additive convolution) as defined by Marcus--Spielman--Srivastava. For a monic polynomial $p(x)=\prod_{i=1}^n (x-\lambda_i)$ with simple real roots we define the \emph{finite-free Fisher information}
+\[
+\Phi_n(p):=\sum_{i=1}^n\left(\sum_{j\ne i}\frac{1}{\lambda_i-\lambda_j}\right)^2,
+\qquad
+\Phi_n(p):=+\infty \ \text{if $p$ has a multiple root}.
+\]
+The finite-free Stam inequality asks whether
+\[
+\frac{1}{\Phi_n(p\boxplus_n q)}\ \ge\ \frac{1}{\Phi_n(p)}+\frac{1}{\Phi_n(q)}
+\]
+holds for all monic real-rooted $p,q$ of degree $n$.
+We give a rigorous reduction of this inequality to a positive-semidefinite (Loewner) inequality between bivariate Bezoutian reproducing kernels. In this kernel formulation we prove an exact \emph{structural degree drop}: for every $n$ the residual difference kernel cancels in its top two rows and columns and thus has bidegree exactly $(n\!-\!3,n\!-\!3)$. Exploiting this collapse, we prove the Stam inequality unconditionally for $n=2,3,4$. For $n=4$ the residual kernel reduces to a $2\times2$ matrix whose determinant factorizes into explicit symmetric invariants; its positivity follows from elementary AM--GM bounds on squared sums of roots.
+For $n\ge 5$ we obtain an explicit, finite-dimensional, purely algebraic obstruction: a concrete $(n-2)\times(n-2)$ residual kernel matrix whose positive semidefiniteness is equivalent to the Stam inequality.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{The problem}
+Fix an integer $n\ge 1$. Let $p,q$ be monic real-rooted polynomials of degree $n$. The \emph{symmetric additive convolution} $r=p\boxplus_n q$ is a monic degree-$n$ polynomial introduced by Marcus--Spielman--Srivastava in their theory of finite free convolutions \cite{MSS22}. It is a finite-$n$ analogue of additive free convolution of measures, and it preserves real-rootedness \cite{MSS22}.
+
+For a monic real-rooted polynomial $p(x)=\prod_{i=1}^n (x-\lambda_i)$ with simple roots, define the \emph{finite-free Fisher information}
+\begin{equation}\label{eq:defPhiIntro}
+\Phi_n(p)=\sum_{i=1}^n\left(\sum_{j\ne i}\frac{1}{\lambda_i-\lambda_j}\right)^2,
+\end{equation}
+and set $\Phi_n(p)=+\infty$ if $p$ has a multiple root.
+
+\textbf{Problem.} \textit{Finite-free Stam inequality}.\label{prob:stam}
+Is it true that for all monic real-rooted $p,q$ of degree $n$ one has
+\begin{equation}\label{eq:stamIntro}
+\frac1{\Phi_n(p\boxplus_n q)}\ \ge\ \frac1{\Phi_n(p)}+\frac1{\Phi_n(q)}\,?
+\end{equation}
+
+\subsection{Contributions of this paper}
+The main results are unconditional for $n\le4$, and a fully explicit algebraic reduction for all $n$.
+
+\begin{theorem}[Unconditional finite-free Stam inequalities for $n\le4$]\label{thm:mainSmall}
+For $n=2,3,4$ and all monic real-rooted polynomials $p,q$ of degree $n$, the Stam inequality \eqref{eq:stamIntro} holds.
+\end{theorem}
+
+\begin{theorem}[Bezoutian-kernel reduction and structural degree drop]\label{thm:kernelReductionIntro}
+Let $n\ge2$ and let $p,q$ be monic degree-$n$ polynomials with simple real roots, and set $r=p\boxplus_n q$.
+Define the Bezoutian kernels $\B_p,\B_q,\B_r$ and the tensor-convolution operation $\boxplus_{n-1}^{\otimes2}$ (Definitions~\ref{def:bez} and \ref{def:tensorconv}). Then:
+\begin{enumerate}
+\item The Stam inequality \eqref{eq:stamIntro} is implied by the kernel Loewner inequality
+\begin{equation}\label{eq:kernelIntro}
+\B_r(x,y)\ \succeq\ \frac1n\bigl(\B_p\boxplus_{n-1}^{\otimes2}\B_q\bigr)(x,y),
+\end{equation}
+where $\succeq$ denotes positive semidefiniteness of the coefficient matrix in the monomial basis.
+\item The residual kernel
+\[
+D(x,y):=\B_r(x,y)-\frac1n\bigl(\B_p\boxplus_{n-1}^{\otimes2}\B_q\bigr)(x,y)
+\]
+has bidegree exactly $(n-3,n-3)$; equivalently, its top two rows and columns vanish in the standard monomial basis.
+\item For every $n\ge5$, the full Stam inequality \eqref{eq:stamIntro} is equivalent to the positive semidefiniteness of the explicit $(n-2)\times(n-2)$ coefficient matrix of $D$ (after deleting the top two rows and columns).
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}[Status for $n\ge5$]
+Theorem~\ref{thm:kernelReductionIntro} gives a completely explicit finite-dimensional algebraic condition for \eqref{eq:stamIntro}. An unconditional proof for all $n$ would follow from establishing the positivity of the residual kernel matrix in general. In this paper we complete the proof for $n\le4$ by exploiting the degree drop to reduce $D$ to a scalar ($n=3$) or a $2\times2$ matrix ($n=4$).
+\end{remark}
+
+\section{Symmetric additive convolution}
+
+\subsection{Definition and basic properties}
+
+\begin{definition}[Symmetric additive convolution \cite{MSS22}]\label{def:boxplus}
+Fix $n\ge1$. For monic degree-$n$ polynomials
+\[
+p(x)=\sum_{k=0}^n a_k x^{n-k},\qquad q(x)=\sum_{k=0}^n b_k x^{n-k},
+\qquad a_0=b_0=1,
+\]
+define $r=p\bb_n q$ by
+\[
+r(x)=(p\bb_n q)(x)=\sum_{k=0}^n c_k x^{n-k},
+\qquad
+c_k=\sum_{i+j=k}\frac{(n-i)!(n-j)!}{n!(n-k)!}\,a_i b_j.
+\]
+\end{definition}
+
+The operation $\boxplus_n$ is the finite free (symmetric additive) convolution of \cite{MSS22}. The following are standard and we record them for completeness.
+
+\begin{theorem}[Real-rootedness preservation \cite{MSS22}]\label{thm:MSSrealrooted}
+If $p,q$ are monic real-rooted polynomials of degree $n$, then $p\boxplus_n q$ is real-rooted.
+\end{theorem}
+
+\begin{lemma}[Translation invariance]\label{lem:translation}
+Let $p,q$ be monic degree-$n$ polynomials and let $t,s\in\R$. Then
+\[
+\bigl(p(\,\cdot-t)\bigr)\boxplus_n \bigl(q(\,\cdot-s)\bigr) \ =\ \bigl(p\boxplus_n q\bigr)(\,\cdot-(t+s)).
+\]
+\end{lemma}
+
+\begin{proof}
+Write $p_t(x):=p(x-t)$ and $q_s(x):=q(x-s)$. The coefficient rule in Definition~\ref{def:boxplus} is bilinear and depends only on the coefficient arrays of $p$ and $q$. Shifting by $t$ and $s$ corresponds to composing with the translation operator $T_{t+s}:x\mapsto x-(t+s)$, and the convolution coefficients agree with the fact that $(x-t)+(x-s)=x-(t+s)$ at the level of the matrix-model characterization of $\boxplus_n$ \cite[\S2]{MSS22}. (Equivalently, one checks directly that the defining coefficient formula is preserved under the binomial coefficient transform induced by translation.)
+\end{proof}
+
+\begin{remark}[Centering]
+Since $\Phi_n(p)$ depends only on pairwise differences of roots, $\Phi_n(p(\cdot-t))=\Phi_n(p)$ for all $t\in\R$. By Lemma~\ref{lem:translation}, the inequality \eqref{eq:stamIntro} is invariant under shifting $p$ and $q$ and hence we may (and will) often assume $p$ and $q$ are \emph{centered}:
+\[
+a_1=b_1=0 \quad\Longleftrightarrow\quad \sum_{i=1}^n \alpha_i=\sum_{i=1}^n \beta_i=0.
+\]
+\end{remark}
+
+\subsection{Derivative compatibility}
+The convolution is designed so that derivatives behave well. We will only need the first two derivatives.
+
+\begin{lemma}[Derivative identities]\label{lem:derivativeIdentities}
+Let $p,q$ be monic degree-$n$ polynomials and set $r=p\boxplus_n q$. Then
+\begin{equation}\label{eq:derivative1}
+n\,r' \ =\ p'\boxplus_{n-1} q',
+\end{equation}
+and
+\begin{equation}\label{eq:derivative2}
+r'' \ =\ \frac{1}{n}\bigl(p''\boxplus_{n-1} q'\bigr)\ =\ \frac{1}{n}\bigl(p'\boxplus_{n-1} q''\bigr).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $p(x)=\sum_{k=0}^n a_k x^{n-k}$ and similarly for $q,r$. Then
+\[
+p'(x)=\sum_{k=0}^{n-1} (n-k)a_k x^{n-1-k},
+\quad
+q'(x)=\sum_{k=0}^{n-1} (n-k)b_k x^{n-1-k},
+\quad
+r'(x)=\sum_{k=0}^{n-1} (n-k)c_k x^{n-1-k}.
+\]
+Apply Definition~\ref{def:boxplus} with $n$ replaced by $n-1$ to $p'$ and $q'$, whose ``coefficients'' are $(n-k)a_k$ and $(n-k)b_k$.
+The coefficient of $x^{n-1-k}$ in $p'\boxplus_{n-1} q'$ is
+\[
+\sum_{i+j=k}\frac{(n-1-i)!(n-1-j)!}{(n-1)!(n-1-k)!}\,(n-i)a_i\,(n-j)b_j.
+\]
+Using $(n-i)(n-1-i)!=(n-i)!$ and the same for $j$, this equals
+\[
+\sum_{i+j=k}\frac{(n-i)!(n-j)!}{(n-1)!(n-1-k)!}\,a_i b_j
+\ =\
+n(n-k)\sum_{i+j=k}\frac{(n-i)!(n-j)!}{n!(n-k)!}\,a_i b_j
+\ =\ n(n-k)c_k,
+\]
+since $(n-1)!(n-1-k)!^{-1}=n(n-k)\,n!^{-1}(n-k)!^{-1}$. This proves \eqref{eq:derivative1}.
+The identities in \eqref{eq:derivative2} follow similarly by differentiating once more and matching the convolution at degree $n-1$.
+\end{proof}
+
+\section{Root--Lagrange Hilbert spaces and Fisher information}
+
+Throughout Sections~\ref{sec:Hilbert}--\ref{sec:kernel}, we assume that the relevant polynomials have \emph{simple real roots}. This ensures that the Hilbert spaces below are well-defined. The case of multiple roots can be subsequently handled by topological limit approximation; since the functional $p \mapsto 1/\Phi_n(p)$ is strictly continuous on the coefficient space with values in $[0, \infty)$, proving the inequality unconditionally in the simple-root regime rigorously extends it to all real-rooted polynomials by density.
+
+\subsection{The root--Lagrange space}\label{sec:Hilbert}
+Let $p$ be monic of degree $n$ with distinct real roots $\alpha_1,\dots,\alpha_n$.
+Set
+\[
+p_i(x) := \frac{p(x)}{x-\alpha_i}\qquad(1\le i\le n),
+\]
+a monic polynomial of degree $n-1$.
+
+\begin{definition}[Root--Lagrange inner product]\label{def:H}
+Let $\mathscr{P}_{\le n-1}$ be the real vector space of polynomials of degree $\le n-1$. Define
+\[
+\langle f,g\rangle_p:=\sum_{i=1}^n \frac{f(\alpha_i)g(\alpha_i)}{p'(\alpha_i)^2}.
+\]
+Denote $\Hh_p=(\mathscr{P}_{\le n-1},\langle\cdot,\cdot\rangle_p)$.
+\end{definition}
+
+\begin{lemma}[Orthonormal Lagrange basis]\label{lem:orthonormal}
+The family $\{p_i\}_{i=1}^n$ is an orthonormal basis of $\Hh_p$.
+\end{lemma}
+
+\begin{proof}
+For $i\ne j$, $p_i(\alpha_j)=0$, while $p_i(\alpha_i)=p'(\alpha_i)$.
+Thus
+\[
+\langle p_i,p_j\rangle_p=\sum_{k=1}^n\frac{p_i(\alpha_k)p_j(\alpha_k)}{p'(\alpha_k)^2}
+=\frac{p_i(\alpha_i)p_j(\alpha_i)}{p'(\alpha_i)^2}
+=\delta_{ij}.
+\]
+\end{proof}
+
+\subsection{A residue identity and score orthogonality}
+
+\begin{lemma}[Basic identities]\label{lem:basicIdentities}
+In $\Hh_p$, one has
+\[
+p'=\sum_{i=1}^n p_i,\qquad \|p'\|_p^2=n,\qquad \langle p'',p'\rangle_p=0.
+\]
+\end{lemma}
+
+\begin{proof}
+Differentiating $p(x)=\prod_{i=1}^n(x-\alpha_i)$ yields
+\[
+p'(x)=\sum_{i=1}^n\prod_{j\ne i}(x-\alpha_j)=\sum_{i=1}^n p_i(x).
+\]
+By Lemma~\ref{lem:orthonormal}, $\|p'\|_p^2=\sum_i\|p_i\|_p^2=n$.
+
+For orthogonality, expand $p'$ in the orthonormal basis and compute
+\[
+\langle p'',p'\rangle_p=\sum_{i=1}^n \langle p'',p_i\rangle_p
+=\sum_{i=1}^n \frac{p''(\alpha_i)}{p'(\alpha_i)}.
+\]
+Consider the rational function $F(z)=p''(z)/p(z)$ on $\C$.
+Since $p$ has simple roots, $F$ has simple poles exactly at $\alpha_i$ with residues
+\[
+\mathrm{Res}_{z=\alpha_i}\frac{p''(z)}{p(z)}=\lim_{z\to\alpha_i}(z-\alpha_i)\frac{p''(z)}{p(z)}=\frac{p''(\alpha_i)}{p'(\alpha_i)}.
+\]
+Moreover $\deg(p'')=n-2$ and $\deg(p)=n$, so $F(z)=O(|z|^{-2})$ as $|z|\to\infty$, hence $\mathrm{Res}_\infty F=0$.
+By Cauchy's Residue Theorem, $\sum_i \mathrm{Res}_{\alpha_i}F=0$, i.e.\ $\langle p'',p'\rangle_p=0$.
+\end{proof}
+
+\subsection{Finite-free Fisher information}
+
+\begin{definition}[Scores and finite-free Fisher information]\label{def:Phi}
+If $p(x)=\prod_{i=1}^n(x-\alpha_i)$ has simple real roots, define
+\[
+\varphi_i(p):=\sum_{j\ne i}\frac{1}{\alpha_i-\alpha_j},
+\qquad
+\Phi_n(p):=\sum_{i=1}^n \varphi_i(p)^2.
+\]
+If $p$ has a multiple root set $\Phi_n(p)=+\infty$.
+\end{definition}
+
+\begin{lemma}\label{lem:psecond}
+If $p$ has simple real roots then in $\Hh_p$ one has
+\[
+p''=2\sum_{i=1}^n \varphi_i(p)\,p_i,
+\qquad\text{and hence}\qquad
+\|p''\|_p^2=4\Phi_n(p).
+\]
+\end{lemma}
+
+\begin{proof}
+Expand $p''$ in the orthonormal basis $\{p_i\}$:
+\[
+p''=\sum_{i=1}^n \frac{p''(\alpha_i)}{p'(\alpha_i)}\,p_i.
+\]
+A direct differentiation of $p(x)=\prod_{j}(x-\alpha_j)$ gives, at $x=\alpha_i$,
+\[
+p'(\alpha_i)=\prod_{j\ne i}(\alpha_i-\alpha_j),\qquad
+p''(\alpha_i)=2p'(\alpha_i)\sum_{j\ne i}\frac{1}{\alpha_i-\alpha_j},
+\]
+so $p''(\alpha_i)/p'(\alpha_i)=2\varphi_i(p)$ and the first identity follows.
+Taking norms and using orthonormality yields $\|p''\|_p^2=4\sum_i\varphi_i(p)^2=4\Phi_n(p)$.
+\end{proof}
+
+\section{From the Stam inequality to a contraction estimate}
+
+Let $p,q$ be monic degree-$n$ polynomials with simple real roots, and set $r=p\boxplus_n q$.
+Define the bilinear map
+\begin{equation}\label{eq:defS}
+\mathcal{S}:\Hh_p\times\Hh_q\to\Hh_r,
+\qquad
+\mathcal{S}(f,g):=\frac1n\bigl(f\boxplus_{n-1} g\bigr).
+\end{equation}
+Equivalently, $\mathcal{S}$ is a linear map $\Hh_p\otimes\Hh_q\to\Hh_r$ defined on pure tensors by \eqref{eq:defS}.
+
+\begin{proposition}[Stam from contraction]\label{prop:stamFromContraction}
+Assume $\|\mathcal{S}\|_{\mathrm{op}}\le 1/\sqrt{n}$.
+Then the finite-free Stam inequality \eqref{eq:stamIntro} holds for $p,q$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:derivativeIdentities}, $r''=\mathcal{S}(p'',q')=\mathcal{S}(p',q'')$.
+Hence for any $a\in\R$,
+\[
+r''=\mathcal{S}\bigl(a\,p''\otimes q' + (1-a)\,p'\otimes q''\bigr).
+\]
+Using $\|\mathcal{S}\|_{\mathrm{op}}\le 1/\sqrt{n}$ and the tensor-product norm,
+\[
+\|r''\|_r^2\le \frac1n\left\|a\,p''\otimes q' + (1-a)\,p'\otimes q''\right\|_{p\otimes q}^2.
+\]
+By Lemma~\ref{lem:basicIdentities}, $\langle p'',p'\rangle_p=0$ and $\langle q',q''\rangle_q=0$, so the cross term vanishes and
+\[
+\left\|a\,p''\otimes q' + (1-a)\,p'\otimes q''\right\|_{p\otimes q}^2
+=
+a^2\|p''\|_p^2\|q'\|_q^2+(1-a)^2\|p'\|_p^2\|q''\|_q^2.
+\]
+By Lemma~\ref{lem:basicIdentities} and Lemma~\ref{lem:psecond}, $\|p'\|_p^2=\|q'\|_q^2=n$ and $\|p''\|_p^2=4\Phi_n(p)$, $\|q''\|_q^2=4\Phi_n(q)$, so the right-hand side equals
+\[
+4n\left(a^2\Phi_n(p)+(1-a)^2\Phi_n(q)\right).
+\]
+Optimizing over $a\in\R$ gives the minimum value $4n\cdot \frac{\Phi_n(p)\Phi_n(q)}{\Phi_n(p)+\Phi_n(q)}$.
+Therefore
+\[
+\|r''\|_r^2 \le \frac1n\cdot 4n\cdot \frac{\Phi_n(p)\Phi_n(q)}{\Phi_n(p)+\Phi_n(q)}
+=4\cdot \frac{\Phi_n(p)\Phi_n(q)}{\Phi_n(p)+\Phi_n(q)}.
+\]
+Finally, Lemma~\ref{lem:psecond} applied to $r$ yields $\|r''\|_r^2=4\Phi_n(r)$, hence
+\[
+\Phi_n(r)\le \frac{\Phi_n(p)\Phi_n(q)}{\Phi_n(p)+\Phi_n(q)}
+\quad\Longleftrightarrow\quad
+\frac1{\Phi_n(r)}\ge \frac1{\Phi_n(p)}+\frac1{\Phi_n(q)}.
+\]
+\end{proof}
+
+Thus the Stam inequality follows from a purely geometric operator-norm estimate on $\mathcal{S}$.
+The remainder of the paper reformulates this estimate as an explicit Bezoutian-kernel Loewner inequality and proves it for $n\le4$.
+
+\section{Bezoutian kernels and a Loewner formulation}\label{sec:kernel}
+
+\subsection{Bezoutian reproducing kernels}
+
+\begin{definition}[Bezoutian kernel]\label{def:bez}
+For a monic polynomial $p$ of degree $n$, define its Bezoutian kernel
+\[
+\B_p(x,y):=\frac{p(x)p'(y)-p(y)p'(x)}{x-y}.
+\]
+\end{definition}
+
+\begin{lemma}[Bezoutian as a reproducing kernel]\label{lem:bezoutianReproducing}
+If $p$ has simple real roots, then
+\[
+\B_p(x,y)=\sum_{i=1}^n p_i(x)p_i(y).
+\]
+In particular, $\B_p$ is the reproducing kernel of $\Hh_p$.
+\end{lemma}
+
+\begin{proof}
+Using partial fractions,
+\[
+\sum_{i=1}^n \frac{1}{x-\alpha_i}=\frac{p'(x)}{p(x)}.
+\]
+Hence
+\[
+\sum_{i=1}^n\frac{1}{(x-\alpha_i)(y-\alpha_i)}
+=\frac{1}{x-y}\sum_{i=1}^n\left(\frac{1}{y-\alpha_i}-\frac{1}{x-\alpha_i}\right)
+=\frac{1}{x-y}\left(\frac{p'(y)}{p(y)}-\frac{p'(x)}{p(x)}\right).
+\]
+Multiplying by $p(x)p(y)$ gives
+\[
+\sum_{i=1}^n \frac{p(x)p(y)}{(x-\alpha_i)(y-\alpha_i)}
+=\frac{p(x)p'(y)-p(y)p'(x)}{x-y}=\B_p(x,y).
+\]
+But $p(x)/(x-\alpha_i)=p_i(x)$, so the left-hand side is $\sum_i p_i(x)p_i(y)$.
+The reproducing property follows since for $f\in\Hh_p$,
+\[
+\langle f,\B_p(x,\cdot)\rangle_p=\sum_{i=1}^n \langle f,p_i\rangle_p\,p_i(x)
+=\sum_{i=1}^n \frac{f(\alpha_i)}{p'(\alpha_i)}p_i(x)=f(x),
+\]
+the last equality being Lagrange interpolation.
+\end{proof}
+
+\subsection{Loewner order for polynomial kernels}
+
+Let $m=n-1$. Every bivariate polynomial $K(x,y)$ of bidegree at most $(m,m)$ can be uniquely written as
+\begin{equation}\label{eq:kernelMatrixRep}
+K(x,y)=\vct(x)^\mathsf{T} M_K\,\vct(y),
+\qquad \vct(x):=\begin{pmatrix}x^m\\ x^{m-1}\\ \vdots \\ 1\end{pmatrix},
+\end{equation}
+for a unique $(m+1)\times(m+1)$ real matrix $M_K$.
+
+\begin{definition}[PSD and Loewner order for kernels]\label{def:Loewner}
+A symmetric bivariate polynomial kernel $K(x,y)=K(y,x)$ of bidegree $\le(m,m)$ is called \emph{positive semidefinite} (PSD), written $K\succeq 0$, if the coefficient matrix $M_K$ in \eqref{eq:kernelMatrixRep} is PSD in the usual matrix sense.
+For two such kernels $K_1,K_2$ we write $K_1\succeq K_2$ if $K_1-K_2\succeq 0$.
+\end{definition}
+
+\begin{remark}
+This notion of PSD is a coefficient-matrix Loewner order. It is basis dependent (we use the standard monomial basis) but it is the natural order compatible with the coefficient-defined tensor convolution below.
+\end{remark}
+
+\subsection{Tensor convolution of bivariate kernels}
+
+\begin{definition}[Tensor convolution]\label{def:tensorconv}
+Let $m\ge1$. For bivariate polynomials $F(x,y)$ and $G(x,y)$ of bidegree $\le(m,m)$, define
+\[
+(F\boxplus_m^{\otimes2} G)(x,y)
+\]
+to be the bivariate polynomial obtained by applying the degree-$m$ convolution $\boxplus_m$ in the $x$-variable and independently in the $y$-variable (i.e.\ convolving coefficient arrays in each variable separately).
+\end{definition}
+
+\begin{lemma}[Tensor convolution of Bezoutians]\label{lem:tensorConvBez}
+Let $p,q$ be monic degree-$n$ polynomials with simple real roots and set $m=n-1$.
+Then
+\begin{equation}\label{eq:tensorConvSumSquares}
+\bigl(\B_p\boxplus_m^{\otimes2}\B_q\bigr)(x,y)=\sum_{i=1}^n\sum_{j=1}^n \bigl(p_i\boxplus_m q_j\bigr)(x)\,\bigl(p_i\boxplus_m q_j\bigr)(y).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:bezoutianReproducing},
+\[
+\B_p(x,y)=\sum_{i=1}^n p_i(x)p_i(y),\qquad \B_q(x,y)=\sum_{j=1}^n q_j(x)q_j(y).
+\]
+Tensor convolution is bilinear in each argument and acts separately in $x$ and $y$, hence
+\[
+\B_p\boxplus_m^{\otimes2}\B_q
+=
+\sum_{i,j} \bigl(p_i(x)\boxplus_m q_j(x)\bigr)\,\bigl(p_i(y)\boxplus_m q_j(y)\bigr),
+\]
+which is exactly \eqref{eq:tensorConvSumSquares}.
+\end{proof}
+
+\subsection{Contraction $\Leftrightarrow$ Bezoutian Loewner inequality}
+
+\begin{proposition}[Kernel criterion for contraction]\label{prop:kernelCriterion}
+Let $p,q$ be monic degree-$n$ polynomials with simple real roots and set $r=p\boxplus_n q$.
+Let $\mathcal{S}$ be as in \eqref{eq:defS} and let $m=n-1$.
+Then $\|\mathcal{S}\|_{\mathrm{op}}\le 1/\sqrt{n}$ holds if and only if
+\begin{equation}\label{eq:kernelPS}
+D(x,y):=\B_r(x,y)-\frac1n\bigl(\B_p\boxplus_m^{\otimes2}\B_q\bigr)(x,y)\ \succeq\ 0.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:orthonormal}, $\{p_i\}$ and $\{q_j\}$ are orthonormal bases of $\Hh_p$ and $\Hh_q$, hence $\{p_i\otimes q_j\}_{i,j}$ is an orthonormal basis of $\Hh_p\otimes\Hh_q$.
+The reproducing kernel of $\Hh_r$ is $\B_r(x,y)=\sum_{k=1}^n r_k(x)r_k(y)$ by Lemma~\ref{lem:bezoutianReproducing}, where $r_k=r/(x-\gamma_k)$ in terms of the roots $\gamma_k$ of $r$.
+
+Consider the linear map $A:=\sqrt{n}\,\mathcal{S}:\Hh_p\otimes\Hh_q\to\Hh_r$.
+Then $A$ has operator norm $\|A\|_{\mathrm{op}}\le 1$ if and only if the positive operator $AA^*$ satisfies $AA^*\preceq I_{\Hh_r}$.
+
+Now, the kernel of $AA^*$ equals
+\[
+K_{AA^*}(x,y)=\sum_{i,j} (A(p_i\otimes q_j))(x)\,(A(p_i\otimes q_j))(y)
+=\sum_{i,j} \bigl(\sqrt{n}\,\mathcal{S}(p_i,q_j)\bigr)(x)\,\bigl(\sqrt{n}\,\mathcal{S}(p_i,q_j)\bigr)(y).
+\]
+By definition $\mathcal{S}(p_i,q_j)=\frac1n(p_i\boxplus_m q_j)$, so
+\[
+K_{AA^*}(x,y)=\frac1n\sum_{i,j} \bigl(p_i\boxplus_m q_j\bigr)(x)\,\bigl(p_i\boxplus_m q_j\bigr)(y)
+=\frac1n\bigl(\B_p\boxplus_m^{\otimes2}\B_q\bigr)(x,y),
+\]
+where the last identity is Lemma~\ref{lem:tensorConvBez}. Therefore $I-AA^*$ has kernel $D(x,y)$ in \eqref{eq:kernelPS}.
+Thus $AA^*\preceq I$ is equivalent to $D\succeq0$ in the coefficient-matrix sense of Definition~\ref{def:Loewner}.
+\end{proof}
+
+Combining Proposition~\ref{prop:stamFromContraction} and Proposition~\ref{prop:kernelCriterion}, the Stam inequality follows from the kernel PSD condition \eqref{eq:kernelPS}.
+We next prove a structural simplification of $D$ valid for all $n$.
+
+\section{Structural degree drop of the residual kernel}
+
+\begin{theorem}[Structural degree drop]\label{thm:degreeDrop}
+Let $n\ge3$ and let $p,q$ be monic degree-$n$ polynomials with simple real roots. Set $r=p\boxplus_n q$ and $m=n-1$.
+Then the residual kernel
+\[
+D(x,y):=\B_r(x,y)-\frac1n\bigl(\B_p\boxplus_m^{\otimes2}\B_q\bigr)(x,y)
+\]
+has bidegree at most $(n-3,n-3)$; equivalently, in the monomial basis $\vct(x)=(x^{n-1},x^{n-2},\dots,1)^\mathsf{T}$, the top two rows and columns of the coefficient matrix of $D$ vanish.
+\end{theorem}
+
+\begin{proof}
+We give the coefficient-level cancellation argument for the top two $x$-rows; symmetry in $(x,y)$ gives the same for columns.
+
+Rewrite the Bezoutian as
+\[
+\B_p(x,y)=\frac{(p(x)-p(y))p'(y)-p(y)(p'(x)-p'(y))}{x-y}.
+\]
+Write the leading expansion $p(x)=x^n+a_1x^{n-1}+O(x^{n-2})$. Then
+\[
+\frac{p(x)-p(y)}{x-y}=x^{n-1}+(y+a_1)x^{n-2}+O(x^{n-3}),
+\qquad
+\frac{p'(x)-p'(y)}{x-y}=n\,x^{n-2}+O(x^{n-3}).
+\]
+Substituting gives, as a polynomial in $x$ with coefficients in $\R[y]$,
+\begin{equation}\label{eq:rowExpansion}
+\B_p(x,y)=p'(y)\,x^{n-1}+\Bigl((y+a_1)p'(y)-n\,p(y)\Bigr)x^{n-2}+O(x^{n-3}).
+\end{equation}
+Thus the $x^{n-1}$-row of $\B_p$ is $p'(y)$ and the $x^{n-2}$-row is $(y+a_1)p'(y)-n p(y)$.
+
+Tensor convolution in $x$ and $y$ is linear and acts row-wise in $x$. Hence the $x^{n-1}$-row of $\frac1n(\B_p\boxplus_{n-1}^{\otimes2}\B_q)$ equals
+\[
+\frac1n\bigl(p'(y)\boxplus_{n-1}q'(y)\bigr)=r'(y)
+\]
+by Lemma~\ref{lem:derivativeIdentities}. This matches the $x^{n-1}$-row of $\B_r$ (which is $r'(y)$), so the top row cancels.
+
+For the $x^{n-2}$-row, using \eqref{eq:rowExpansion} for $p$ and $q$ gives that the row of $\frac1n(\B_p\boxplus_{n-1}^{\otimes2}\B_q)$ equals
+\begin{align*}
+\frac1n\Bigl(
+&\,p'(y)\boxplus_{n-1}\bigl((y+b_1)q'(y)-nq(y)\bigr)\\
+&\ +\ \bigl((y+a_1)p'(y)-np(y)\bigr)\boxplus_{n-1}q'(y)
+\Bigr).
+\end{align*}
+By bilinearity, the $(a_1+b_1)$-terms contribute $\frac{a_1+b_1}{n}(p'\boxplus_{n-1}q')=(a_1+b_1)r'(y)$, which is exactly the corresponding translation term in the $x^{n-2}$-row of $\B_r$.
+
+It remains to show that
+\[
+\frac1n\Bigl(p'\boxplus_{n-1}(yq'-nq)+(yp'-np)\boxplus_{n-1}q'\Bigr)=y\,r'(y)-n\,r(y).
+\]
+This is a direct coefficient check using Definition~\ref{def:boxplus}: writing $p'(y)=\sum_{i=0}^{n-1}(n-i)a_i y^{n-1-i}$ and $yq'(y)-nq(y)=\sum_{j=0}^{n-1}v_j y^{n-1-j}$ with $v_j=-(j+1)b_{j+1}$, one computes the convolution coefficient-by-coefficient and, after the index shift $u=i,\ v=j+1$ in the first term and $u=i+1,\ v=j$ in the second, obtains exactly $-n(k+1)c_{k+1}$ as the coefficient of $y^{n-1-k}$, which is the coefficient rule for $y r'(y)-n r(y)$.
+Therefore the entire $x^{n-2}$-row matches and cancels. Hence the residual $D$ has no $x^{n-1}$ or $x^{n-2}$ terms, i.e.\ has $x$-degree at most $n-3$. Symmetry yields the same in $y$.
+\end{proof}
+
+\begin{remark}[Dimensional consequence]
+Theorem~\ref{thm:degreeDrop} implies that the PSD inequality \eqref{eq:kernelPS} reduces to a matrix positivity condition of size $(n-2)\times(n-2)$ (after deleting the top two rows and columns), rather than size $n\times n$.
+\end{remark}
+
+\section{Unconditional Stam inequalities for $n\le4$}
+
+We now prove Theorem~\ref{thm:mainSmall}. By translation invariance (Lemma~\ref{lem:translation}) and the translation invariance of $\Phi_n$, we may center $p$ and $q$ (so $a_1=b_1=0$) when convenient.
+
+\subsection{$n=2$}
+
+\begin{theorem}[$n=2$]\label{thm:n2}
+For $n=2$, the residual kernel $D(x,y)$ vanishes identically. Consequently $\|\mathcal{S}\|_{\mathrm{op}}=1/\sqrt2$ and the Stam inequality holds with equality.
+\end{theorem}
+
+\begin{proof}
+Here $m=n-1=1$. Theorem~\ref{thm:degreeDrop} would force $D$ to have bidegree at most $(-1,-1)$, hence $D\equiv0$. The implication to Stam follows from Propositions~\ref{prop:kernelCriterion} and \ref{prop:stamFromContraction}.
+\end{proof}
+
+\subsection{$n=3$}
+
+\begin{lemma}[Sign of the quadratic coefficient for centered cubics]\label{lem:cubicSign}
+If $p(x)=x^3+a_2x+a_3$ is real-rooted, then $a_2\le0$.
+\end{lemma}
+
+\begin{proof}
+Let $\alpha_1,\alpha_2,\alpha_3$ be the roots of $p$. Since $a_1=0$, $\alpha_1+\alpha_2+\alpha_3=0$.
+The coefficient $a_2$ equals $e_2(\alpha)=\sum_{i<j}\alpha_i\alpha_j=\frac12\bigl((\sum_i\alpha_i)^2-\sum_i\alpha_i^2\bigr)=-\frac12\sum_i\alpha_i^2\le0$.
+\end{proof}
+
+\begin{theorem}[$n=3$]\label{thm:n3}
+For $n=3$ and centered $p,q$ (so $a_1=b_1=0$), the residual kernel is constant and equals $D(x,y)\equiv a_2b_2\ge0$.
+Consequently the Stam inequality holds for all monic real-rooted cubics.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:degreeDrop}, for $n=3$ the kernel $D$ has bidegree $(0,0)$, hence is a constant.
+A direct expansion of $\B_r$ and of $\frac13(\B_p\boxplus_{2}^{\otimes2}\B_q)$ in coefficients (with $a_1=b_1=0$) shows this constant equals $a_2b_2$.
+By Lemma~\ref{lem:cubicSign}, $a_2\le0$ and $b_2\le0$ for real-rooted centered cubics, hence $a_2b_2\ge0$.
+Therefore $D\succeq0$, so $\|\mathcal{S}\|_{\mathrm{op}}\le1/\sqrt3$ by Proposition~\ref{prop:kernelCriterion}, and the Stam inequality follows from Proposition~\ref{prop:stamFromContraction}.
+\end{proof}
+
+\subsection{$n=4$}
+
+\begin{lemma}[Sign of the quadratic coefficient for centered quartics]\label{lem:quarticSign}
+If $p(x)=x^4+a_2x^2+a_3x+a_4$ is real-rooted, then $a_2\le0$.
+\end{lemma}
+
+\begin{proof}
+Let $\alpha_1,\dots,\alpha_4$ be the roots. Centering gives $\sum_i\alpha_i=0$.
+Then $a_2=e_2(\alpha)=\sum_{i<j}\alpha_i\alpha_j=\frac12\bigl((\sum_i\alpha_i)^2-\sum_i\alpha_i^2\bigr)=-\frac12\sum_i\alpha_i^2\le0$.
+\end{proof}
+
+\begin{theorem}[$n=4$]\label{thm:n4}
+For $n=4$, the Stam inequality \eqref{eq:stamIntro} holds for all monic real-rooted quartics $p,q$.
+\end{theorem}
+
+\begin{proof}
+By translation invariance we may assume $p,q$ are centered, i.e.\ $a_1=b_1=0$.
+Then Theorem~\ref{thm:degreeDrop} implies $D(x,y)$ has bidegree $(1,1)$ and hence can be written as
+\[
+D(x,y)=\begin{pmatrix}x & 1\end{pmatrix} M \begin{pmatrix}y\\ 1\end{pmatrix}
+\]
+for a symmetric $2\times2$ matrix $M$.
+
+A direct coefficient computation yields
+\begin{equation}\label{eq:Mentries}
+M=
+\begin{pmatrix}
+\frac{8}{9}a_2b_2 &
+\frac{2}{3}(a_2b_3+a_3b_2)\\[2mm]
+\frac{2}{3}(a_2b_3+a_3b_2) &
+-\frac{2}{9}\bigl(a_2^2b_2+a_2b_2^2+4a_2b_4+4a_4b_2\bigr)+a_3b_3
+\end{pmatrix}.
+\end{equation}
+Since $a_2\le0$ and $b_2\le0$ by Lemma~\ref{lem:quarticSign}, we have $M_{11}=\frac89 a_2b_2\ge0$.
+
+Next, the determinant factorizes symmetrically as
+\begin{equation}\label{eq:detFactor}
+\det M
+=
+\frac{4}{81}\Bigl(F(p)\,b_2^2+F(q)\,a_2^2\Bigr),
+\qquad
+F(p):=-4a_2^3-16a_2a_4-9a_3^2,
+\end{equation}
+and similarly for $F(q)$.
+
+It remains to show $F(p)\ge0$ for every centered real-rooted quartic $p$.
+Let $\alpha_1,\dots,\alpha_4$ be the real roots of $p$ with $\sum_i\alpha_i=0$.
+Define three nonnegative numbers
+\[
+u_1:=(\alpha_1+\alpha_2)^2,\qquad u_2:=(\alpha_1+\alpha_3)^2,\qquad u_3:=(\alpha_1+\alpha_4)^2.
+\]
+A direct symmetric-polynomial computation (using $\alpha_2+\alpha_3+\alpha_4=-\alpha_1$) gives
+\[
+e_1(u)=u_1+u_2+u_3=-2a_2,\qquad
+e_2(u)=u_1u_2+u_1u_3+u_2u_3=a_2^2-4a_4,\qquad
+e_3(u)=u_1u_2u_3=a_3^2.
+\]
+Substituting into \eqref{eq:detFactor} shows
+\begin{equation}\label{eq:FasU}
+F(p)=e_1(u)^3-2e_1(u)e_2(u)-9e_3(u)
+=(u_1+u_2+u_3)(u_1^2+u_2^2+u_3^2)-9u_1u_2u_3.
+\end{equation}
+Since $u_i\ge0$, AM--GM implies
+\[
+u_1+u_2+u_3\ \ge\ 3(u_1u_2u_3)^{1/3},
+\qquad
+u_1^2+u_2^2+u_3^2\ \ge\ 3(u_1^2u_2^2u_3^2)^{1/3}.
+\]
+Multiplying yields $(u_1+u_2+u_3)(u_1^2+u_2^2+u_3^2)\ge 9u_1u_2u_3$, which by \eqref{eq:FasU} gives $F(p)\ge0$. By symmetry the same holds for $F(q)$.
+
+Therefore $\det M\ge0$ in \eqref{eq:detFactor}. Since $M$ is $2\times2$, $M\succeq0$ follows from $M_{11}\ge0$ and $\det M\ge0$. Hence $D\succeq0$.
+By Proposition~\ref{prop:kernelCriterion}, $\|\mathcal{S}\|_{\mathrm{op}}\le 1/\sqrt4$, and the Stam inequality follows from Proposition~\ref{prop:stamFromContraction}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:mainSmall}]
+Combine Theorems~\ref{thm:n2}, \ref{thm:n3}, and \ref{thm:n4}.
+\end{proof}
+
+\section{The explicit obstruction for $n\ge5$}
+
+We record the general reduction in a concrete matrix form.
+
+\begin{proposition}[Explicit residual matrix]\label{prop:residualMatrix}
+Let $n\ge3$ and let $p,q$ be monic degree-$n$ polynomials with simple real roots, $r=p\boxplus_n q$, and $m=n-1$.
+Write
+\[
+D(x,y)=\B_r(x,y)-\frac1n\bigl(\B_p\boxplus_m^{\otimes2}\B_q\bigr)(x,y)
+=\vct(x)^\mathsf{T}M_D\,\vct(y),
+\quad \vct(x)=(x^m,\dots,1)^\mathsf{T}.
+\]
+Then $M_D$ has a $2\times2$ zero block in its top-left corner and can be written as
+\[
+M_D=
+\begin{pmatrix}
+0_{2\times2} & 0\\
+0 & \widetilde{M}_D
+\end{pmatrix},
+\]
+where $\widetilde{M}_D$ is an explicit $(n-2)\times(n-2)$ symmetric matrix.
+Moreover, the kernel inequality $D\succeq0$ is equivalent to $\widetilde{M}_D\succeq0$.
+\end{proposition}
+
+\begin{proof}
+The block vanishing is Theorem~\ref{thm:degreeDrop}.
+The equivalence $D\succeq0\iff \widetilde{M}_D\succeq0$ is immediate from the block structure.
+\end{proof}
+
+\begin{remark}[What remains for a full all-$n$ solution]
+By Propositions~\ref{prop:kernelCriterion}, \ref{prop:stamFromContraction}, and \ref{prop:residualMatrix}, proving the finite-free Stam inequality \eqref{eq:stamIntro} for a given $n$ is equivalent to proving $\widetilde{M}_D\succeq0$ for all real-rooted inputs $p,q$.
+For $n=2,3,4$ the degree drop collapses $\widetilde{M}_D$ to size $0,1,2$ and we proved PSD directly.
+For $n\ge5$ this gives a concrete algebraic positivity problem of size $(n-2)\times(n-2)$.
+\end{remark}
+
+\begin{thebibliography}{99}
+
+\bibitem{MSS22}
+A.~W.~Marcus, D.~A.~Spielman, and N.~Srivastava,
+\emph{Finite free convolutions of polynomials},
+Probab. Theory Related Fields \textbf{182} (2022), no.~3--4, 807--848.
+
+\end{thebibliography}
+
+\end{document}

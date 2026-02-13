@@ -1,0 +1,545 @@
+\documentclass[11pt]{amsart}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[hidelinks]{hyperref}
+
+% --- theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- operators and macros
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\colsp}{colsp}
+\DeclareMathOperator{\spanop}{span}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\odotop}{\odot}
+
+\title[Determinantal tests for separable scalings]{Universal determinantal tests for separable block scalings of stacked $4$-view determinant tensors}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Fix $n\ge 5$ and let $A^{(1)},\dots,A^{(n)}\in \R^{3\times 4}$ be Zariski-generic.
+For each quadruple $(\alpha,\beta,\gamma,\delta)\in[n]^4$ we form a tensor
+$Q^{(\alpha\beta\gamma\delta)}\in \R^{3\times 3\times 3\times 3}$ whose entries are $4\times 4$ determinants of selected rows of
+$A^{(\alpha)},A^{(\beta)},A^{(\gamma)},A^{(\delta)}$.
+Given a blockwise scaling tensor $\lambda\in \R^{n\times n\times n\times n}$ that vanishes precisely on the diagonal
+$\{(m,m,m,m)\}$, we construct a \emph{universal} family of polynomial relations, with degree bounded independently of $n$, that
+vanish on the scaled family $\big(\lambda_{\alpha\beta\gamma\delta}Q^{(\alpha\beta\gamma\delta)}\big)$ if and only if
+$\lambda$ factors as a pure tensor $u\otimes v\otimes w\otimes x$ on the off-diagonal.
+Concretely, we stack the blocks into a $(3n)^4$-tensor $\mathcal Z$ and take $\mathbf F_n$ to be the vector of all $5\times 5$
+minors of the four standard mode-flattenings of $\mathcal Z$. Each coordinate has degree $5$ (independent of $n$), and for
+Zariski-generic cameras $\mathbf F_n(\mathcal Z)=0$ holds if and only if
+$\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta$ for all $(\alpha,\beta,\gamma,\delta)\neq(m,m,m,m)$.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Let $n\ge 5$. For each $\alpha\in[n]:=\{1,\dots,n\}$, let $A^{(\alpha)}\in \R^{3\times 4}$.
+For $\alpha,\beta,\gamma,\delta\in[n]$, define $Q^{(\alpha\beta\gamma\delta)}\in \R^{3\times 3\times 3\times 3}$ by
+\begin{equation}\label{eq:defQ}
+Q^{(\alpha\beta\gamma\delta)}_{ijkl}
+=\det
+\begin{bmatrix}
+A^{(\alpha)}(i,:)\\
+A^{(\beta)}(j,:)\\
+A^{(\gamma)}(k,:)\\
+A^{(\delta)}(\ell,:)
+\end{bmatrix}
+\qquad (1\le i,j,k,\ell\le 3).
+\end{equation}
+Write the $i$th row of $A^{(\alpha)}$ as a row vector $a_{\alpha i}\in\R^4$.
+
+We are interested in universal algebraic relations on the family $\{Q^{(\alpha\beta\gamma\delta)}\}$ under blockwise scaling.
+Let $\lambda\in \R^{n\times n\times n\times n}$ satisfy
+\begin{equation}\label{eq:lambdaSupport}
+\lambda_{\alpha\beta\gamma\delta}\ne 0
+\ \ \Longleftrightarrow\ \
+(\alpha,\beta,\gamma,\delta)\neq (m,m,m,m)\ \text{ for all }m\in[n].
+\end{equation}
+Define $Z^{(\alpha\beta\gamma\delta)}:=\lambda_{\alpha\beta\gamma\delta}Q^{(\alpha\beta\gamma\delta)}$.
+The diagonal blocks $Q^{(mmmm)}$ vanish identically:
+\begin{equation}\label{eq:diagQzero}
+Q^{(mmmm)}\equiv 0\qquad\text{for all }m\in[n],
+\end{equation}
+since any $4\times 4$ matrix made from four rows of a $3\times 4$ matrix repeats a row.
+Thus the values $\lambda_{mmmm}$ do not affect the scaled data, and the factorization condition is meaningful only off the diagonal.
+
+\medskip
+\noindent\textbf{Problem.}
+Does there exist a polynomial map $\mathbf F:\R^{81n^4}\to\R^N$ (for some $N$) such that:
+\begin{enumerate}
+\item $\mathbf F$ does not depend on $A^{(1)},\dots,A^{(n)}$;
+\item the degrees of the coordinate functions of $\mathbf F$ do not depend on $n$;
+\item for $\lambda$ satisfying \eqref{eq:lambdaSupport},
+\[
+\mathbf F\big(\lambda_{\alpha\beta\gamma\delta}Q^{(\alpha\beta\gamma\delta)}\big)=0
+\ \Longleftrightarrow\
+\exists\,u,v,w,x\in(\R^\ast)^n:\ 
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta
+\ \text{ for all off-diagonal }(\alpha,\beta,\gamma,\delta).
+\]
+\end{enumerate}
+
+We answer this in the affirmative, by a bounded-degree determinantal test on the mode-flattenings of an explicitly constructed
+stacked tensor.
+
+\section{Stacking and flattenings}\label{sec:stack}
+
+\subsection{Stacked tensor}
+
+Let $I:=[n]\times\{1,2,3\}$, so $|I|=3n$.
+Given tensors $T^{(\alpha\beta\gamma\delta)}\in\R^{3\times 3\times 3\times 3}$, define the stacked tensor
+$\mathcal T\in\R^{I\times I\times I\times I}\cong \R^{(3n)^4}$ by
+\begin{equation}\label{eq:stack}
+\mathcal T_{(\alpha,i),(\beta,j),(\gamma,k),(\delta,\ell)}
+:=T^{(\alpha\beta\gamma\delta)}_{ijkl}.
+\end{equation}
+Stacking $\{Q^{(\alpha\beta\gamma\delta)}\}$ gives $\mathcal Q$, and stacking $\{Z^{(\alpha\beta\gamma\delta)}\}$ gives $\mathcal Z$.
+
+\subsection{Mode-flattenings and determinantal rank test}
+
+For $r\in\{1,2,3,4\}$, let $M_r(\mathcal T)$ denote the standard mode-$r$ flattening of $\mathcal T$, i.e.\ the matrix obtained by using the
+$r$th index of $\mathcal T$ as the row index and concatenating the other three indices as the column index. Thus
+$M_r(\mathcal T)\in \R^{(3n)\times (3n)^3}$.
+
+We use the basic determinantal criterion:
+
+\begin{lemma}\label{lem:rankDet}
+Let $B$ be a matrix over a field. Then $\rank(B)\le 4$ if and only if every $5\times 5$ minor of $B$ vanishes.
+\end{lemma}
+\begin{proof}
+A matrix has rank at least $5$ if and only if it contains a nonsingular $5\times 5$ submatrix.
+\end{proof}
+
+\section{The polynomial map \texorpdfstring{$\mathbf F_n$}{Fn}}\label{sec:F}
+
+For fixed $n$, define $\mathbf F_n:\R^{(3n)^4}\cong \R^{81n^4}\to\R^{N_n}$ to be the polynomial map whose coordinates are \emph{all}
+$5\times 5$ minors of each of the four flattenings $M_1(\mathcal T),M_2(\mathcal T),M_3(\mathcal T),M_4(\mathcal T)$ of the input tensor
+$\mathcal T$. (Here $N_n$ is the total number of such minors; its value is irrelevant.)
+
+\begin{proposition}\label{prop:F12}
+For each $n$, the map $\mathbf F_n$ does not depend on $A^{(1)},\dots,A^{(n)}$, and each coordinate of $\mathbf F_n$ is homogeneous of degree $5$.
+In particular, the degree bound is independent of $n$.
+\end{proposition}
+\begin{proof}
+Each coordinate is a $5\times 5$ determinant in the entries of a flattening of the input tensor, hence is a homogeneous polynomial of degree $5$ with coefficients in $\{0,\pm 1\}$.
+\end{proof}
+
+\section{A Hodge-star factorization}\label{sec:hodge}
+
+\subsection{Definition of the $\star$-map}
+
+Fix the standard dot product on $\R^4$.
+For any fixed $b,c,d\in\R^4$, the map $a\mapsto \det[a;b;c;d]$ is linear in $a$, hence there is a unique vector
+$\star(b\wedge c\wedge d)\in \R^4$ such that
+\begin{equation}\label{eq:hodge}
+\det\begin{bmatrix}a\\ b\\ c\\ d\end{bmatrix}
+= a\cdot \star(b\wedge c\wedge d)
+\qquad\text{for all }a\in\R^4.
+\end{equation}
+This defines a linear map $\star:\Lambda^3(\R^4)\to \R^4$.
+
+\subsection{Block matrices $W_{\beta\gamma\delta}$}
+
+For each triple $(\beta,\gamma,\delta)\in[n]^3$, define the matrix
+\[
+W_{\beta\gamma\delta}\in \R^{4\times 27}
+\]
+whose columns are the vectors $\star(a_{\beta j}\wedge a_{\gamma k}\wedge a_{\delta\ell})$ for all $(j,k,\ell)\in\{1,2,3\}^3$ in some fixed order.
+
+\begin{lemma}[Block formula]\label{lem:blockFormula}
+Let $\mathcal Q$ be the stacked tensor of $\{Q^{(\alpha\beta\gamma\delta)}\}$.
+For each $(\alpha;\beta,\gamma,\delta)$ the $(3\times 27)$ block of $M_1(\mathcal Q)$ indexed by row-camera $\alpha$ and column-triple $(\beta,\gamma,\delta)$ equals
+\begin{equation}\label{eq:blockM1Q}
+\big(M_1(\mathcal Q)\big)_{\alpha;\beta\gamma\delta}
+= A^{(\alpha)}\,W_{\beta\gamma\delta}.
+\end{equation}
+Consequently, for $\mathcal Z=\lambda\odotop \mathcal Q$,
+\begin{equation}\label{eq:blockM1Z}
+\big(M_1(\mathcal Z)\big)_{\alpha;\beta\gamma\delta}
+= \lambda_{\alpha\beta\gamma\delta}\,A^{(\alpha)}\,W_{\beta\gamma\delta}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Fix $\alpha,\beta,\gamma,\delta$. The entry in row $i$ and column $(j,k,\ell)$ of $A^{(\alpha)}W_{\beta\gamma\delta}$ equals
+$a_{\alpha i}\cdot \star(a_{\beta j}\wedge a_{\gamma k}\wedge a_{\delta\ell})$, which is
+$\det[a_{\alpha i};a_{\beta j};a_{\gamma k};a_{\delta\ell}]$ by \eqref{eq:hodge}, i.e.\ $Q^{(\alpha\beta\gamma\delta)}_{ijkl}$.
+Stacking yields \eqref{eq:blockM1Q}. Scaling yields \eqref{eq:blockM1Z}.
+\end{proof}
+
+\begin{corollary}\label{cor:rankBoundQ}
+For any cameras $A^{(1)},\dots,A^{(n)}$, $\rank(M_1(\mathcal Q))\le 4$.
+By symmetry, $\rank(M_r(\mathcal Q))\le 4$ for $r=1,2,3,4$.
+\end{corollary}
+\begin{proof}
+Equation \eqref{eq:blockM1Q} gives the factorization
+\[
+M_1(\mathcal Q)
+=
+\underbrace{\begin{bmatrix}A^{(1)}\\ \vdots\\ A^{(n)}\end{bmatrix}}_{3n\times 4}
+\cdot
+\underbrace{\big[\,W_{\beta\gamma\delta}\,\big]_{(\beta,\gamma,\delta)\in[n]^3}}_{4\times 27n^3},
+\]
+hence $\rank(M_1(\mathcal Q))\le 4$. The other modes follow by permuting the four indices in \eqref{eq:defQ}.
+\end{proof}
+
+\section{Genericity: kernel vectors and ranks of \texorpdfstring{$W_{\beta\gamma\delta}$}{W}}\label{sec:generic}
+
+\subsection{Zariski-genericity}
+
+\begin{definition}
+A property holds for \emph{Zariski-generic} $(A^{(1)},\dots,A^{(n)})\in (\R^{3\times 4})^n$ if it holds on the complement of a proper Zariski-closed subset of the affine space $(\R^{3\times 4})^n\cong \R^{12n}$.
+\end{definition}
+
+\subsection{Kernel vectors}
+
+Define
+\begin{equation}\label{eq:zalpha}
+z_\alpha := \star(a_{\alpha 1}\wedge a_{\alpha 2}\wedge a_{\alpha 3})\in\R^4.
+\end{equation}
+Then $A^{(\alpha)}z_\alpha=0$ by \eqref{eq:hodge}. If $\rank(A^{(\alpha)})=3$ then $\ker(A^{(\alpha)})=\spanop\{z_\alpha\}$.
+
+\begin{lemma}\label{lem:genericKernels}
+There exists a nonempty Zariski-open subset $U_n^{\mathrm{ker}}\subset (\R^{3\times 4})^n$ such that for all $(A^{(1)},\dots,A^{(n)})\in U_n^{\mathrm{ker}}$:
+\begin{enumerate}
+\item $\rank(A^{(\alpha)})=3$ and $\ker(A^{(\alpha)})=\spanop\{z_\alpha\}$ for all $\alpha$;
+\item for $\alpha\neq \alpha'$, the kernel lines $\spanop\{z_\alpha\}$ and $\spanop\{z_{\alpha'}\}$ are distinct;
+\item for any three distinct indices $\alpha_1,\alpha_2,\alpha_3$, the vectors $z_{\alpha_1},z_{\alpha_2},z_{\alpha_3}$ are linearly independent.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Each item defines a Zariski-open condition (nonvanishing of appropriate minors).
+Nonemptiness is witnessed by the moment-curve family: choose distinct $t_1,\dots,t_n\in\R$ and set
+\[
+A(t):=
+\begin{bmatrix}
+-t & 1 & 0 & 0\\
+-t^2 & 0 & 1 & 0\\
+-t^3 & 0 & 0 & 1
+\end{bmatrix}.
+\]
+Then $\rank(A(t))=3$ and $\ker(A(t))=\spanop\{(1,t,t^2,t^3)^T\}$, and any three such vectors are independent for distinct parameters (Vandermonde).
+\end{proof}
+
+\subsection{Ranks of $W_{\beta\gamma\delta}$}
+
+\begin{lemma}\label{lem:rankW}
+Fix $(\beta,\gamma,\delta)\in[n]^3$.
+\begin{enumerate}
+\item If $\beta=\gamma=\delta=m$, then $\rank(W_{mmm})=1$ and $\colsp(W_{mmm})=\spanop\{z_m\}$.
+\item If $(\beta,\gamma,\delta)$ are not all equal, then the condition $\rank(W_{\beta\gamma\delta})=4$ is Zariski-open and nonempty (hence holds for Zariski-generic cameras).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) If $\beta=\gamma=\delta=m$, then each column of $W_{mmm}$ is either $0$ (when two of $j,k,\ell$ coincide) or
+$\pm \star(a_{m1}\wedge a_{m2}\wedge a_{m3})=\pm z_m$ (when $(j,k,\ell)$ is a permutation of $(1,2,3)$).
+Thus $\colsp(W_{mmm})=\spanop\{z_m\}$ and $\rank(W_{mmm})=1$ provided $\rank(A^{(m)})=3$.
+
+\medskip\noindent
+(2) The condition $\rank(W_{\beta\gamma\delta})=4$ is the nonvanishing of some $4\times 4$ minor of the $4\times 27$ matrix
+$W_{\beta\gamma\delta}$, hence is Zariski-open. To show it is nonempty, it suffices to exhibit one assignment of the relevant
+matrices for which $\rank(W_{\beta\gamma\delta})=4$. There are two essential patterns up to permuting $\beta,\gamma,\delta$.
+
+\smallskip\noindent
+\emph{Distinct cameras.} Take three matrices
+\[
+A^{(\beta)}=
+\begin{bmatrix} e_1^T\\ e_2^T\\ e_3^T\end{bmatrix},\quad
+A^{(\gamma)}=
+\begin{bmatrix} e_1^T\\ e_2^T\\ e_4^T\end{bmatrix},\quad
+A^{(\delta)}=
+\begin{bmatrix} e_1^T\\ e_3^T\\ e_4^T\end{bmatrix},
+\]
+where $e_1,\dots,e_4$ is the standard basis of $\R^4$.
+Then among the columns of $W_{\beta\gamma\delta}$ appear the four vectors
+\[
+\star(e_1\wedge e_2\wedge e_3)=-e_4,\qquad
+\star(e_1\wedge e_2\wedge e_4)=e_3,\qquad
+\star(e_1\wedge e_4\wedge e_3)=e_2,\qquad
+\star(e_3\wedge e_2\wedge e_4)=-e_1,
+\]
+which form a basis of $\R^4$. (For example, using \eqref{eq:hodge},
+$\det[e_4;e_1;e_2;e_3]=-1$, hence $e_4\cdot \star(e_1\wedge e_2\wedge e_3)=-1$, so $\star(e_1\wedge e_2\wedge e_3)=-e_4$;
+the remaining identities are checked similarly.) Therefore $\rank(W_{\beta\gamma\delta})=4$ in this instance.
+
+\smallskip\noindent
+\emph{Two equal indices.} Consider $(\beta,\gamma,\delta)=(m,m,m')$ with $m\ne m'$.
+Take
+\[
+A^{(m)}=
+\begin{bmatrix} e_1^T\\ e_2^T\\ e_3^T\end{bmatrix},\quad
+A^{(m')}=
+\begin{bmatrix} e_3^T\\ e_4^T\\ e_1^T\end{bmatrix}.
+\]
+Then among the columns of $W_{mm m'}$ appear
+\[
+\star(e_1\wedge e_2\wedge e_3)=-e_4,\qquad
+\star(e_1\wedge e_2\wedge e_4)=e_3,\qquad
+\star(e_1\wedge e_3\wedge e_4)=-e_2,\qquad
+\star(e_2\wedge e_3\wedge e_4)=e_1,
+\]
+again a basis of $\R^4$, so $\rank(W_{mm m'})=4$ in this instance.
+
+\smallskip
+In either pattern we have produced a point at which $\rank(W_{\beta\gamma\delta})=4$, so the rank-$4$ locus is nonempty.
+Hence, by Zariski-openness, $\rank(W_{\beta\gamma\delta})=4$ holds for Zariski-generic cameras whenever $(\beta,\gamma,\delta)$
+are not all equal.
+\end{proof}
+
+\subsection{A single generic open set}
+
+For each triple $(\beta,\gamma,\delta)$ not all equal, let $U^{\mathrm W}_{\beta\gamma\delta}$ be the Zariski-open set on which $\rank(W_{\beta\gamma\delta})=4$.
+Define
+\[
+U_n^{\mathrm W}:=\bigcap_{\substack{(\beta,\gamma,\delta)\in[n]^3\\ \text{not all equal}}}U^{\mathrm W}_{\beta\gamma\delta},
+\qquad
+U_n:=U_n^{\mathrm{ker}}\cap U_n^{\mathrm W}.
+\]
+As $(\R^{3\times 4})^n$ is irreducible (its coordinate ring is a domain), any finite intersection of nonempty Zariski-open subsets is nonempty.
+Thus $U_n$ is nonempty, Zariski-open, and dense.
+
+From now on we assume $(A^{(1)},\dots,A^{(n)})\in U_n$.
+
+\section{Main theorem and proof}\label{sec:main}
+
+\begin{theorem}\label{thm:main}
+Fix $n\ge 5$ and let $A^{(1)},\dots,A^{(n)}\in \R^{3\times 4}$ be Zariski-generic.
+Let $\lambda$ satisfy \eqref{eq:lambdaSupport} and let $\mathcal Z=\lambda\odotop \mathcal Q$ be the stacked scaled tensor.
+Let $\mathbf F_n$ be as in \S\ref{sec:F}. Then:
+\begin{enumerate}
+\item $\mathbf F_n$ does not depend on the cameras.
+\item Every coordinate of $\mathbf F_n$ has degree $5$, independent of $n$.
+\item One has $\mathbf F_n(\mathcal Z)=0$ if and only if there exist $u,v,w,x\in(\R^\ast)^n$ such that
+\[
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta
+\qquad\text{for all }(\alpha,\beta,\gamma,\delta)\neq(m,m,m,m).
+\]
+\end{enumerate}
+\end{theorem}
+
+\subsection{The ``if'' direction}
+
+\begin{proof}[Proof of Theorem \ref{thm:main}, ``if'' direction]
+Items (1) and (2) follow from Proposition \ref{prop:F12}.
+
+Assume $\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta$ for all off-diagonal quadruples, with $u,v,w,x\in(\R^\ast)^n$.
+Let $\mathcal Z=\lambda\odotop \mathcal Q$.
+In the mode-$1$ flattening, the $(\alpha;\beta,\gamma,\delta)$ block of $M_1(\mathcal Z)$ equals
+$u_\alpha (v_\beta w_\gamma x_\delta)$ times the corresponding block of $M_1(\mathcal Q)$, by \eqref{eq:blockM1Z}.
+Thus $M_1(\mathcal Z)=D_1\,M_1(\mathcal Q)\,E_1$ for suitable invertible diagonal matrices $D_1,E_1$, hence
+$\rank(M_1(\mathcal Z))=\rank(M_1(\mathcal Q))\le 4$ by Corollary \ref{cor:rankBoundQ}.
+Therefore all $5\times 5$ minors of $M_1(\mathcal Z)$ vanish.
+
+The same argument applies to $M_2,M_3,M_4$ (each flattening block-scales by products of $u,v,w,x$ along its row and column blocks), so all coordinates of $\mathbf F_n(\mathcal Z)$ vanish.
+\end{proof}
+
+\subsection{Mode-wise rank constraints force separability}
+
+The remaining direction uses the special structure \eqref{eq:blockM1Z} and genericity.
+
+\begin{proposition}\label{prop:mode1Separation}
+Assume $(A^{(1)},\dots,A^{(n)})\in U_n$ and $\lambda$ satisfies \eqref{eq:lambdaSupport}.
+If $\rank(M_1(\mathcal Z))\le 4$, then there exist $u\in(\R^\ast)^n$ and $s\in(\R^\ast)^{n\times n\times n}$ such that
+\begin{equation}\label{eq:mode1Sep}
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha\,s_{\beta\gamma\delta}
+\qquad\text{for all off-diagonal }(\alpha,\beta,\gamma,\delta).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Assume $\rank(M_1(\mathcal Z))\le 4$. Then there exist matrices
+$C\in\R^{3n\times 4}$ and $V\in\R^{4\times 27n^3}$ such that $M_1(\mathcal Z)=CV$.
+Partition $C$ into blocks $C_\alpha\in\R^{3\times 4}$ and $V$ into blocks $V_{\beta\gamma\delta}\in\R^{4\times 27}$.
+Comparing with \eqref{eq:blockM1Z}, for all $\alpha,\beta,\gamma,\delta$,
+\begin{equation}\label{eq:blockEq}
+C_\alpha V_{\beta\gamma\delta}
+=\lambda_{\alpha\beta\gamma\delta}\,A^{(\alpha)}W_{\beta\gamma\delta}.
+\end{equation}
+
+Choose a reference triple $(\beta_0,\gamma_0,\delta_0)$ with three distinct indices (possible since $n\ge 5$).
+Then $\rank(W_{\beta_0\gamma_0\delta_0})=4$ by Lemma \ref{lem:rankW}, so there is a right inverse
+$W_{\beta_0\gamma_0\delta_0}^+\in\R^{27\times 4}$ with $W_{\beta_0\gamma_0\delta_0}W_{\beta_0\gamma_0\delta_0}^+=I_4$.
+Let
+\[
+M:=V_{\beta_0\gamma_0\delta_0}W_{\beta_0\gamma_0\delta_0}^+\in\R^{4\times 4}.
+\]
+Multiplying \eqref{eq:blockEq} on the right by $W_{\beta_0\gamma_0\delta_0}^+$ yields
+\begin{equation}\label{eq:CalphaM}
+C_\alpha M=\lambda_{\alpha\beta_0\gamma_0\delta_0}\,A^{(\alpha)}.
+\end{equation}
+Since $(\beta_0,\gamma_0,\delta_0)$ are distinct, $(\alpha,\beta_0,\gamma_0,\delta_0)$ is never diagonal, hence
+$\lambda_{\alpha\beta_0\gamma_0\delta_0}\neq 0$ for all $\alpha$ by \eqref{eq:lambdaSupport}.
+
+\smallskip\noindent
+\emph{Claim:} $M$ is invertible.
+If $0\neq y\in\ker(M)$, then \eqref{eq:CalphaM} gives
+$0=C_\alpha My=\lambda_{\alpha\beta_0\gamma_0\delta_0}A^{(\alpha)}y$, hence $A^{(\alpha)}y=0$ for all $\alpha$.
+Thus $y\in\bigcap_\alpha \ker(A^{(\alpha)})$.
+But for cameras in $U_n$, the kernel lines are $\ker(A^{(\alpha)})=\spanop\{z_\alpha\}$ and are pairwise distinct
+(Lemma \ref{lem:genericKernels}); the intersection of two distinct lines is $\{0\}$, so the intersection over all $\alpha$ is $\{0\}$.
+Contradiction. Hence $M\in \mathrm{GL}_4(\R)$.
+
+Solving \eqref{eq:CalphaM} gives
+\begin{equation}\label{eq:Csolve}
+C_\alpha=\lambda_{\alpha\beta_0\gamma_0\delta_0}\,A^{(\alpha)}M^{-1}.
+\end{equation}
+Substitute \eqref{eq:Csolve} into \eqref{eq:blockEq}, divide by $\lambda_{\alpha\beta_0\gamma_0\delta_0}$, and set
+\[
+c_{\alpha;\beta\gamma\delta}:=\frac{\lambda_{\alpha\beta\gamma\delta}}{\lambda_{\alpha\beta_0\gamma_0\delta_0}}
+\qquad\big((\alpha,\beta,\gamma,\delta)\ \text{off-diagonal}\big),
+\]
+to obtain
+\begin{equation}\label{eq:AalphaConstraint}
+A^{(\alpha)}\Big(M^{-1}V_{\beta\gamma\delta}-c_{\alpha;\beta\gamma\delta}\,W_{\beta\gamma\delta}\Big)=0.
+\end{equation}
+Since $\ker(A^{(\alpha)})=\spanop\{z_\alpha\}$ is one-dimensional, each column of the bracketed $4\times 27$ matrix lies in $\spanop\{z_\alpha\}$.
+Hence there exists a row vector $r_{\alpha;\beta\gamma\delta}^\top\in\R^{1\times 27}$ such that
+\begin{equation}\label{eq:rank1Correction}
+M^{-1}V_{\beta\gamma\delta}-c_{\alpha;\beta\gamma\delta}\,W_{\beta\gamma\delta}
+=z_\alpha r_{\alpha;\beta\gamma\delta}^\top.
+\end{equation}
+Fix $(\beta,\gamma,\delta)$ and subtract \eqref{eq:rank1Correction} for two distinct cameras $\alpha_1\ne\alpha_2$:
+\begin{equation}\label{eq:diffEq}
+(c_{\alpha_1;\beta\gamma\delta}-c_{\alpha_2;\beta\gamma\delta})W_{\beta\gamma\delta}
+=z_{\alpha_2}r_{\alpha_2;\beta\gamma\delta}^\top - z_{\alpha_1}r_{\alpha_1;\beta\gamma\delta}^\top.
+\end{equation}
+The right-hand side has column space contained in $\spanop\{z_{\alpha_1},z_{\alpha_2}\}$.
+
+If $(\beta,\gamma,\delta)$ are not all equal, then $\rank(W_{\beta\gamma\delta})=4$ by Lemma \ref{lem:rankW}. If the scalar on the left were nonzero,
+the left-hand side would have rank $4$, contradicting the rank $\le 2$ of the right-hand side. Hence
+$c_{\alpha;\beta\gamma\delta}$ is independent of $\alpha$.
+
+If $(\beta,\gamma,\delta)=(m,m,m)$, then $\colsp(W_{mmm})=\spanop\{z_m\}$ by Lemma \ref{lem:rankW}.
+Choose $\alpha_1,\alpha_2\in[n]\setminus\{m\}$ distinct (possible since $n\ge 5$). By Lemma \ref{lem:genericKernels}(3),
+$z_m,z_{\alpha_1},z_{\alpha_2}$ are linearly independent, so
+$\spanop\{z_m\}\cap \spanop\{z_{\alpha_1},z_{\alpha_2}\}=\{0\}$.
+In \eqref{eq:diffEq}, the left-hand side has column space in $\spanop\{z_m\}$ and the right-hand side has column space in $\spanop\{z_{\alpha_1},z_{\alpha_2}\}$,
+so both sides must be zero, and thus $c_{\alpha_1;mmm}=c_{\alpha_2;mmm}$.
+Therefore $c_{\alpha;mmm}$ is independent of $\alpha\ne m$, which is exactly the range where $(\alpha,m,m,m)$ is off-diagonal.
+
+We conclude: for each triple $(\beta,\gamma,\delta)$ there exists $s_{\beta\gamma\delta}\in\R^\ast$ such that
+$c_{\alpha;\beta\gamma\delta}=s_{\beta\gamma\delta}$ for all $\alpha$ with $(\alpha,\beta,\gamma,\delta)$ off-diagonal.
+Setting $u_\alpha:=\lambda_{\alpha\beta_0\gamma_0\delta_0}$ gives \eqref{eq:mode1Sep}.
+\end{proof}
+
+\begin{proposition}\label{prop:mode2mode3Separation}
+Assume $(A^{(1)},\dots,A^{(n)})\in U_n$ and $\lambda$ satisfies \eqref{eq:lambdaSupport}.
+\begin{enumerate}
+\item If $\rank(M_2(\mathcal Z))\le 4$, then there exist $v\in(\R^\ast)^n$ and $t\in(\R^\ast)^{n\times n\times n}$ such that
+$\lambda_{\alpha\beta\gamma\delta}=v_\beta\,t_{\alpha\gamma\delta}$ for all off-diagonal $(\alpha,\beta,\gamma,\delta)$.
+\item If $\rank(M_3(\mathcal Z))\le 4$, then there exist $w\in(\R^\ast)^n$ and $p\in(\R^\ast)^{n\times n\times n}$ such that
+$\lambda_{\alpha\beta\gamma\delta}=w_\gamma\,p_{\alpha\beta\delta}$ for all off-diagonal $(\alpha,\beta,\gamma,\delta)$.
+\item If $\rank(M_4(\mathcal Z))\le 4$, then there exist $x\in(\R^\ast)^n$ and $q\in(\R^\ast)^{n\times n\times n}$ such that
+$\lambda_{\alpha\beta\gamma\delta}=x_\delta\,q_{\alpha\beta\gamma}$ for all off-diagonal $(\alpha,\beta,\gamma,\delta)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+The argument is the same as Proposition \ref{prop:mode1Separation} after permuting the roles of the four indices in \eqref{eq:defQ}.
+Concretely, for mode $2$, one uses the identity
+\[
+\det[a_{\alpha i};a_{\beta j};a_{\gamma k};a_{\delta\ell}]
+= -\,a_{\beta j}\cdot \star(a_{\alpha i}\wedge a_{\gamma k}\wedge a_{\delta\ell}),
+\]
+obtained by swapping the first two rows, and similarly for modes $3$ and $4$ (with the appropriate sign).
+These signs only multiply entire block-columns by $\pm 1$ and therefore do not affect the rank arguments. The generic rank statements required
+for the corresponding block matrices reduce to Lemma \ref{lem:rankW}.
+\end{proof}
+
+\begin{lemma}\label{lem:combine12}
+Assume \eqref{eq:lambdaSupport}. Suppose for all off-diagonal quadruples
+\[
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha s_{\beta\gamma\delta}
+\quad\text{and}\quad
+\lambda_{\alpha\beta\gamma\delta}=v_\beta t_{\alpha\gamma\delta},
+\]
+with $u,v\in(\R^\ast)^n$. Then there exists $r\in(\R^\ast)^{n\times n}$ such that
+\[
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta r_{\gamma\delta}
+\quad\text{for all off-diagonal }(\alpha,\beta,\gamma,\delta).
+\]
+\end{lemma}
+
+\begin{proof}
+Fix $(\gamma,\delta)\in[n]^2$. Choose $\alpha_0\in[n]\setminus\{\gamma,\delta\}$ (possible since $n\ge 5$).
+Then for every $\beta$ the quadruple $(\alpha_0,\beta,\gamma,\delta)$ is off-diagonal, so
+\[
+u_{\alpha_0}s_{\beta\gamma\delta}=\lambda_{\alpha_0\beta\gamma\delta}=v_\beta t_{\alpha_0\gamma\delta}.
+\]
+Define $r_{\gamma\delta}:=t_{\alpha_0\gamma\delta}/u_{\alpha_0}\in\R^\ast$ to obtain $s_{\beta\gamma\delta}=v_\beta r_{\gamma\delta}$ for all $\beta$.
+Hence $\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta r_{\gamma\delta}$ on the off-diagonal.
+\end{proof}
+
+\begin{lemma}\label{lem:combine123}
+Assume \eqref{eq:lambdaSupport}. Suppose for all off-diagonal quadruples
+\[
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta r_{\gamma\delta}
+\quad\text{and}\quad
+\lambda_{\alpha\beta\gamma\delta}=w_\gamma p_{\alpha\beta\delta},
+\]
+with $u,v,w\in(\R^\ast)^n$. Then there exists $x\in(\R^\ast)^n$ such that
+\[
+\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta
+\quad\text{for all off-diagonal }(\alpha,\beta,\gamma,\delta).
+\]
+\end{lemma}
+
+\begin{proof}
+Choose $\alpha_0\neq \beta_0$ (possible since $n\ge 5$). Then for all $(\gamma,\delta)$ the quadruple $(\alpha_0,\beta_0,\gamma,\delta)$ is off-diagonal, so
+\[
+u_{\alpha_0}v_{\beta_0}r_{\gamma\delta}=\lambda_{\alpha_0\beta_0\gamma\delta}=w_\gamma p_{\alpha_0\beta_0\delta}.
+\]
+Define
+\[
+x_\delta:=\frac{p_{\alpha_0\beta_0\delta}}{u_{\alpha_0}v_{\beta_0}}\in\R^\ast.
+\]
+Then $r_{\gamma\delta}=w_\gamma x_\delta$ for all $\gamma,\delta$, and substituting into $\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta r_{\gamma\delta}$
+gives the desired factorization.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{thm:main}, ``only if'' direction]
+Assume $\mathbf F_n(\mathcal Z)=0$. By Lemma \ref{lem:rankDet}, all $5\times 5$ minors of each flattening vanish, hence
+$\rank(M_r(\mathcal Z))\le 4$ for $r=1,2,3,4$.
+
+Apply Proposition \ref{prop:mode1Separation} to obtain $\lambda_{\alpha\beta\gamma\delta}=u_\alpha s_{\beta\gamma\delta}$ on the off-diagonal.
+Apply Proposition \ref{prop:mode2mode3Separation}(1) to obtain $\lambda_{\alpha\beta\gamma\delta}=v_\beta t_{\alpha\gamma\delta}$ on the off-diagonal.
+Then Lemma \ref{lem:combine12} yields $\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta r_{\gamma\delta}$ on the off-diagonal.
+Apply Proposition \ref{prop:mode2mode3Separation}(2) to obtain $\lambda_{\alpha\beta\gamma\delta}=w_\gamma p_{\alpha\beta\delta}$ on the off-diagonal.
+Then Lemma \ref{lem:combine123} yields $\lambda_{\alpha\beta\gamma\delta}=u_\alpha v_\beta w_\gamma x_\delta$ on the off-diagonal.
+
+Finally, $u,v,w,x$ lie in $(\R^\ast)^n$ because each is defined via off-diagonal entries of $\lambda$, which are nonzero by \eqref{eq:lambdaSupport}.
+\end{proof}
+
+\section{Remarks}\label{sec:remarks}
+
+\begin{remark}[Diagonal entries of $\lambda$]
+Since $Q^{(mmmm)}\equiv 0$, the diagonal values $\lambda_{mmmm}$ do not affect $\mathcal Z$.
+Theorem \ref{thm:main} therefore asserts and proves factorization only on the off-diagonal, which is exactly the identifiable part.
+\end{remark}
+
+\begin{remark}[On the hypothesis $n\ge 5$]
+The argument in fact requires only:
+(i) existence of three distinct indices to form a reference triple; and
+(ii) for each $m$, existence of two indices distinct from $m$ to handle the $(m,m,m)$ triple in Proposition \ref{prop:mode1Separation};
+together with the generic condition that any three kernel vectors $z_\alpha$ are independent.
+Thus, after minor bookkeeping, the proof works for $n\ge 3$. We retain $n\ge 5$ to match the problem statement.
+\end{remark}
+
+\begin{remark}[Degree]
+The degree $5$ is dictated by the ambient dimension $4$: the relevant flattenings have rank $\le 4$ precisely when all $5\times 5$ minors vanish.
+\end{remark}
+
+\end{document}

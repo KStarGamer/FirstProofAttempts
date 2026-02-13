@@ -1,0 +1,597 @@
+\documentclass[reqno]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage[a4paper,margin=1in]{geometry}
+
+% ---------- macros ----------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Sp}{\mathrm{Sp}}
+\newcommand{\Span}{\mathrm{span}}
+\newcommand{\graph}{\mathrm{graph}}
+\newcommand{\id}{\mathrm{id}}
+
+% ---------- theorem environments ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- title data ----------
+\title[Hamiltonian smoothing of four-valent polyhedral Lagrangians]
+{Hamiltonian smoothing of four-valent polyhedral Lagrangian surfaces in $(\R^4,\omega_{\mathrm{st}})$}
+
+\date{\today}
+
+\subjclass[2020]{53D12, 57Q35, 57R52}
+\keywords{polyhedral Lagrangian surface, smoothing, Hamiltonian isotopy, Liouville class, Weinstein neighborhood, symplectic holonomy}
+
+\begin{document}
+
+\begin{abstract}
+Let $K\subset(\R^4,\omega_{\mathrm{st}})$ be a finite $2$--dimensional polyhedral complex which is a topological surface and whose $2$--faces lie in affine Lagrangian planes.
+Assume that exactly four faces meet at every vertex.
+We prove that $K$ admits a Lagrangian smoothing in the sense of the problem statement: there exists a Hamiltonian isotopy $K_t$ of smooth embedded Lagrangian surfaces for $t\in(0,1]$ extending to a topological isotopy on $[0,1]$ with $K_0=K$.
+
+The proof has two ingredients. First, four-valence forces a rigid local symplectic splitting of every \emph{generic} vertex cone into a product of planar corners; \emph{fold} vertices (collinear opposite rays) are edge-type and are treated by the edge model. Second, edgewise gluing requires accommodating a nontrivial diagonal symplectic squeeze (holonomy) between transverse coordinate choices at edge endpoints; we construct an interpolating Lagrangian cylinder whose varying squeeze is compensated by a longitudinal conjugate-momentum shift. The resulting family is a Lagrangian isotopy, and we turn it into a Hamiltonian isotopy by an $O(t^2)$ Liouville/flux correction realized as a graph of a small closed $1$-form inside a quantitative Weinstein neighborhood. The correcting form is built from restrictions of fixed ambient closed $1$-forms, avoiding metric blow-up.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+%=====================================================================
+\section{Introduction}
+
+Write $(q_1,q_2,p_1,p_2)$ for the standard linear coordinates on $\R^4$ and set
+\[
+\omega_{\mathrm{st}} := dq_1\wedge dp_1 + dq_2\wedge dp_2,\qquad
+\lambda_{\mathrm{st}} := p_1\,dq_1 + p_2\,dq_2,\qquad d\lambda_{\mathrm{st}}=\omega_{\mathrm{st}}.
+\]
+
+\begin{definition}[Polyhedral Lagrangian surface]\label{def:polyLag}
+A \emph{polyhedral surface} $K\subset \R^4$ is a finite $2$--dimensional polyhedral complex embedded in $\R^4$ such that every $2$--cell (face) is a compact convex polygon contained in an affine $2$--plane and such that $K$ is a topological submanifold of $\R^4$ (every point has a neighborhood in $K$ homeomorphic to an open disc).
+
+We call $K$ \emph{polyhedral Lagrangian} if the affine span of each face is an affine Lagrangian plane in $(\R^4,\omega_{\mathrm{st}})$.
+\end{definition}
+
+\begin{definition}[Four-valent vertices]\label{def:4valent}
+A vertex $v$ of $K$ is \emph{four-valent} if exactly four faces meet at $v$ (equivalently, the link of $v$ in $K$ is a $4$--cycle).
+\end{definition}
+
+\begin{definition}[Lagrangian smoothing]\label{def:smoothing}
+Let $K$ be polyhedral Lagrangian. A \emph{Lagrangian smoothing} of $K$ is a family $\{K_t\}_{t\in(0,1]}$ of smooth embedded Lagrangian surfaces in $\R^4$ such that:
+\begin{enumerate}[label=(\roman*)]
+\item $\{K_t\}_{t\in(0,1]}$ is a \emph{Hamiltonian isotopy}: there exists a smooth compactly supported time-dependent Hamiltonian $H_t:\R^4\to\R$ whose flow $\Phi_t$ satisfies $K_t=\Phi_t(K_{t_0})$ for all $t,t_0\in(0,1]$;
+\item $\{K_t\}$ extends to a \emph{topological isotopy} on $[0,1]$ with $K_0=K$.
+\end{enumerate}
+\end{definition}
+
+\begin{theorem}\label{thm:main}
+Let $K\subset(\R^4,\omega_{\mathrm{st}})$ be a polyhedral Lagrangian surface such that every vertex is four-valent. Then $K$ admits a Lagrangian smoothing in the sense of Definition~\ref{def:smoothing}.
+\end{theorem}
+
+%=====================================================================
+\section{Four-valent vertex cones: planar, generic, and fold}\label{sec:vertex}
+
+Fix a vertex $v$ of $K$. Since $K$ is a topological surface and $v$ is four-valent, there are four edge rays leaving $v$.
+Translate so $v=0$ and let $r_1,r_2,r_3,r_4\in\R^4$ be nonzero vectors along the four edges, ordered cyclically so that the four incident face cones lie in the planes
+\[
+\Lambda_{12}:=\Span(r_1,r_2),\quad
+\Lambda_{23}:=\Span(r_2,r_3),\quad
+\Lambda_{34}:=\Span(r_3,r_4),\quad
+\Lambda_{41}:=\Span(r_4,r_1).
+\]
+Each $\Lambda_{ij}$ is Lagrangian, hence
+\begin{equation}\label{eq:cyclic}
+\omega_{\mathrm{st}}(r_1,r_2)=\omega_{\mathrm{st}}(r_2,r_3)=\omega_{\mathrm{st}}(r_3,r_4)=\omega_{\mathrm{st}}(r_4,r_1)=0.
+\end{equation}
+
+\begin{proposition}[Vertex trichotomy]\label{prop:trichotomy}
+Assume \eqref{eq:cyclic}. Exactly one of the following holds.
+\begin{enumerate}[label=(\alph*)]
+\item \textbf{Planar case.} One has $\omega_{\mathrm{st}}(r_1,r_3)=\omega_{\mathrm{st}}(r_2,r_4)=0$. Then $r_1,r_2,r_3,r_4$ lie in a single Lagrangian plane. In particular, the tangent cone is locally planar.
+\item \textbf{Generic case.} After cyclic relabeling, $\omega_{\mathrm{st}}(r_1,r_3)\neq 0$ and $r_2,r_4$ are linearly independent. Then
+\[
+V_1:=\Span(r_1,r_3)\ \text{is a symplectic $2$--plane},\qquad
+V_2:=V_1^{\omega_{\mathrm{st}}}=\Span(r_2,r_4),
+\]
+so $\R^4=V_1\oplus V_2$ is a symplectic orthogonal direct sum, and the vertex cone factors as a product of planar corners:
+\[
+C_0K = C_1\times C_2\subset V_1\times V_2,
+\]
+where $C_1=\R_{\ge 0}r_1\cup\R_{\ge 0}r_3\subset V_1$ and $C_2=\R_{\ge 0}r_2\cup\R_{\ge 0}r_4\subset V_2$.
+\item \textbf{Fold case.} After cyclic relabeling, $\omega_{\mathrm{st}}(r_1,r_3)\neq 0$ but $r_2$ and $r_4$ are collinear. Then $V_1:=\Span(r_1,r_3)$ is symplectic and $V_2:=V_1^{\omega_{\mathrm{st}}}$ is symplectic, but the cone uses only a line $\ell\subset V_2$ spanned by $r_2$:
+\[
+C_0K = C_1\times \ell,
+\]
+with $C_1=\R_{\ge 0}r_1\cup\R_{\ge 0}r_3\subset V_1$ and $\ell=\R r_2=\R r_4\subset V_2$. Geometrically, $0$ is edge-type: a corner crossed with a line.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+If $\omega_{\mathrm{st}}(r_1,r_3)=\omega_{\mathrm{st}}(r_2,r_4)=0$, then together with \eqref{eq:cyclic} we have $\omega_{\mathrm{st}}(r_i,r_j)=0$ for all pairs $(i,j)$, so $W:=\Span(r_1,r_2,r_3,r_4)$ is isotropic. In a symplectic $4$--space, $\dim W\le 2$, hence the rays lie in a $2$--plane. Since each $\Lambda_{ij}$ is Lagrangian, this plane is Lagrangian. This is (a).
+
+Otherwise at least one of $\omega_{\mathrm{st}}(r_1,r_3)$ or $\omega_{\mathrm{st}}(r_2,r_4)$ is nonzero. After cyclic relabeling assume $\omega_{\mathrm{st}}(r_1,r_3)\neq 0$. Then $V_1:=\Span(r_1,r_3)$ is symplectic. From \eqref{eq:cyclic},
+\[
+\omega_{\mathrm{st}}(r_2,r_1)=\omega_{\mathrm{st}}(r_2,r_3)=0 \Rightarrow r_2\in V_1^{\omega_{\mathrm{st}}},
+\qquad
+\omega_{\mathrm{st}}(r_4,r_1)=\omega_{\mathrm{st}}(r_4,r_3)=0 \Rightarrow r_4\in V_1^{\omega_{\mathrm{st}}}.
+\]
+Set $V_2:=V_1^{\omega_{\mathrm{st}}}$ (a symplectic plane). If $r_2,r_4$ are independent then $V_2=\Span(r_2,r_4)$ and the cone is $C_1\times C_2$, giving (b). If $r_2,r_4$ are collinear then they span a line $\ell\subset V_2$ and the cone is $C_1\times\ell$, giving (c).
+\end{proof}
+
+\begin{remark}\label{rem:fold-edge}
+Fold vertices are not essential $4$--dimensional vertex singularities; they are points on an edge-type singular locus. In the smoothing construction we treat fold vertices by the edge model (no vertex patch).
+\end{remark}
+
+%=====================================================================
+\section{A planar corner smoothing curve}\label{sec:curve}
+
+A key feature used later is a planar rounding curve whose coordinate product vanishes identically outside the rounding region.
+
+\begin{lemma}[A corner rounding with compactly supported product]\label{lem:cornercurve}
+Let $\sigma:\R\to[0,1]$ be smooth with $\sigma(s)=0$ for $s\le 0$, $\sigma(s)=1$ for $s\ge 1$, and $\sigma$ flat at $0$ (all derivatives vanish at $0$).
+Fix $T=\log 2$.
+For $\rho>0$ define $\gamma_\rho:\R\to\R^2$ by
+\[
+x_\rho(t):=\rho e^{t}\,\sigma(t+T),\qquad
+y_\rho(t):=\rho e^{-t}\,\sigma(T-t),\qquad
+\gamma_\rho(t):=(x_\rho(t),y_\rho(t)).
+\]
+Then $\Gamma_\rho:=\gamma_\rho(\R)$ is a smooth properly embedded curve such that:
+\begin{enumerate}[label=(\alph*)]
+\item $\Gamma_\rho$ agrees \emph{exactly} with the union of coordinate rays
+\[
+\{(x,0):x\ge 2\rho\}\ \cup\ \{(0,y):y\ge 2\rho\}
+\]
+outside the Euclidean ball $B_{2\rho}(0)$;
+\item the coordinate product $x_\rho(t)\,y_\rho(t)$ is compactly supported in $t\in[-T,T]$; equivalently,
+\[
+x_\rho(t)y_\rho(t)=0\quad\text{for }|t|\ge T;
+\]
+\item $\Gamma_\rho$ depends smoothly on $\rho$ and converges (Hausdorff on compacts) to the union of coordinate rays as $\rho\to 0$.
+\end{enumerate}
+Moreover, $\Gamma_\rho$ is symmetric under swapping the coordinates $(x,y)\mapsto(y,x)$.
+\end{lemma}
+
+\begin{proof}
+For $t\ge T$ we have $T-t\le 0$, hence $\sigma(T-t)=0$ and $y_\rho(t)=0$, while $t+T\ge 2T>1$ so $\sigma(t+T)=1$ and $x_\rho(t)=\rho e^t\ge\rho e^T=2\rho$. Thus $\gamma_\rho([T,\infty))=\{(x,0):x\ge 2\rho\}$. Similarly, for $t\le -T$ we have $t+T\le 0$, hence $x_\rho(t)=0$ and $y_\rho(t)=\rho e^{-t}\ge 2\rho$, so $\gamma_\rho((-\infty,-T])=\{(0,y):y\ge 2\rho\}$. This proves (a). Statement (b) follows because for $|t|\ge T$ one of $\sigma(t+T)$ or $\sigma(T-t)$ is identically $0$.
+
+Smoothness at $t=\pm T$ follows from flatness of $\sigma$ at $0$, which forces all derivatives of the cut-off coordinate to vanish at the transition and hence yields a smooth gluing to the axis rays. Proper embeddedness and smooth dependence on $\rho$ are immediate. Symmetry follows from $\gamma_\rho(-t)=(y_\rho(t),x_\rho(t))$.
+\end{proof}
+
+%=====================================================================
+\section{Local Lagrangian smoothing patches and edge holonomy}\label{sec:local}
+
+\subsection{Generic vertex patches (product structure)}
+Let $v$ be a generic vertex. By Proposition~\ref{prop:trichotomy}(b), $\R^4$ splits symplectically as $V_1\oplus V_2$ and the vertex cone is $C_1\times C_2$ with $C_i\subset V_i$ a planar corner.
+
+Choose linear symplectic identifications $V_i\cong(\R^2,dq\wedge dp)$ sending $C_i$ to the standard positive coordinate corner. Define the \emph{vertex smoothing patch}
+\[
+P_{v,\rho} \ :=\ \Gamma_\rho\times \Gamma_\rho \ \subset\ V_1\oplus V_2\cong\R^4.
+\]
+
+\begin{lemma}\label{lem:vertexpatch}
+$P_{v,\rho}$ is a smooth embedded Lagrangian surface. Moreover, $P_{v,\rho}$ agrees exactly with the cone $C_0K$ outside the product neighborhood $(B_{2\rho}\subset V_1)\times(B_{2\rho}\subset V_2)$.
+In particular, along any incident edge-ray direction it equals a constant-squeeze cylinder (a ray times $\Gamma_\rho$) beyond distance $2\rho$ from the vertex.
+\end{lemma}
+
+\begin{proof}
+The tangent space of $\Gamma_\rho\times\Gamma_\rho$ splits as a direct sum of two $1$--dimensional spaces, so $\omega_{\mathrm{st}}=\omega_{V_1}\oplus\omega_{V_2}$ vanishes on it. Agreement with the cone follows from Lemma~\ref{lem:cornercurve}(a) in each factor. The final sentence is the same observation applied to one factor at a time.
+\end{proof}
+
+\subsection{Edge normal form and diagonal squeezes}
+
+Let $e$ be an edge whose interior points lie in the $1$--skeleton of $K$.
+Exactly two faces meet along $e$; let their affine spans be Lagrangian planes $\Lambda^+,\Lambda^-$ intersecting along the line $\ell$ containing $e$.
+We call $e$ \emph{singular} if $\Lambda^+\neq \Lambda^-$ (equivalently, $K$ is not smooth along the interior of $e$).
+
+\begin{lemma}[Symplectic normal form along a singular edge]\label{lem:edgenf}
+Let $e$ be a singular edge with line $\ell$ and adjacent Lagrangian planes $\Lambda^\pm$.
+There exists an affine symplectic coordinate chart
+\[
+\Phi_e:(\R^4,\omega_{\mathrm{st}})\to(\R^4,\omega_{\mathrm{st}}),\qquad
+(q_1,q_2,p_1,p_2)\ \text{coordinates},
+\]
+sending $\ell$ to the $q_1$--axis $\{q_2=p_1=p_2=0\}$ and sending the two face planes to
+\[
+\Phi_e(\Lambda^+)=\{p_1=p_2=0\},\qquad
+\Phi_e(\Lambda^-)=\{p_1=q_2=0\}.
+\]
+In these coordinates, the transverse symplectic plane is $W_e:=\{q_1=p_1=0\}\cong(\R^2,dq_2\wedge dp_2)$, and the two transverse face rays are the positive $q_2$-axis and the positive $p_2$-axis.
+\end{lemma}
+
+\begin{proof}
+Choose a nonzero $e_1\in\ell$. Choose $e_2\in\Lambda^+$ with $\Lambda^+=\Span(e_1,e_2)$. Choose $f_2\in\Lambda^-$ with $\Lambda^-=\Span(e_1,f_2)$ and scale so that $\omega_{\mathrm{st}}(e_2,f_2)=1$. Complete $(e_1,e_2,f_2)$ to a symplectic basis $(e_1,f_1,e_2,f_2)$ and send it to the standard basis; add a translation.
+\end{proof}
+
+At each endpoint of a singular edge $e$, any local coordinate identification of $W_e$ that sends the two transverse face rays to the \emph{positive} coordinate rays differs from the edge chart identification by a diagonal symplectic squeeze.
+
+\begin{lemma}[Quadrant-preserving symplectic maps are diagonal squeezes]\label{lem:squeeze}
+Let $A\in\Sp(2,\R)\cong \mathrm{SL}(2,\R)$ preserve the set
+\[
+(\R_{\ge 0}e_1)\ \cup\ (\R_{\ge 0}e_2)\subset\R^2,
+\]
+where $e_1=(1,0)$ and $e_2=(0,1)$.
+Then
+\[
+A=\begin{pmatrix}\lambda & 0\\ 0& \lambda^{-1}\end{pmatrix}
+\quad\text{for some }\lambda>0.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $A$ is invertible, it permutes the two rays $\R_{\ge 0}e_1$ and $\R_{\ge 0}e_2$. If $A$ swapped them, then $A(e_1)=a e_2$ and $A(e_2)=b e_1$ with $a,b>0$, hence $\det A=-ab<0$, contradicting $\det A=1$. Therefore $A$ preserves each ray: $A(e_1)=\lambda e_1$ and $A(e_2)=\mu e_2$ with $\lambda,\mu>0$. Since $\det A=\lambda\mu=1$, we have $\mu=\lambda^{-1}$.
+\end{proof}
+
+\subsection{The interpolating Lagrangian edge patch (holonomy compensation)}
+
+Let $e$ be a singular edge and fix an edge chart $\Phi_e$ as in Lemma~\ref{lem:edgenf}. Let the $q_1$--coordinate range of the edge segment be $[0,L_e]$.
+
+Fix $\rho>0$ and parametrize $\Gamma_\rho\subset\R^2_{(q_2,p_2)}$ by $u\mapsto(x(u),y(u))$ so that $(x(u),y(u))\in\Gamma_\rho$.
+By Lemma~\ref{lem:cornercurve}(b), the product $x(u)y(u)$ has compact support in $u$.
+
+At each endpoint of $e$, the transverse identification induced by the local model sends $\Gamma_\rho$ to a diagonally squeezed curve $(q_2,p_2)=(\lambda x,\lambda^{-1}y)$ for some $\lambda>0$ (Lemma~\ref{lem:squeeze}). Let $\lambda_-=\lambda_e(0)$ and $\lambda_+=\lambda_e(L_e)$ denote the endpoint squeeze factors.
+
+Choose a smooth function $\lambda_e:[0,L_e]\to(0,\infty)$ such that:
+\begin{enumerate}[label=(\alph*)]
+\item $\lambda_e(s)=\lambda_-$ for $s$ near $0$ and $\lambda_e(s)=\lambda_+$ for $s$ near $L_e$ (hence $\lambda_e'(s)=0$ near endpoints);
+\item $\lambda_e$ is bounded above and below by positive constants depending only on the finite polyhedron $K$.
+\end{enumerate}
+
+\begin{definition}[Interpolating edge patch]\label{def:edgepatch}
+Define a map $F_{e,\rho}:[0,L_e]\times\R\to\R^4_{(q_1,q_2,p_1,p_2)}$ by
+\begin{align*}
+q_1(s,u) &:= s,\\
+q_2(s,u) &:= \lambda_e(s)\,x(u),\\
+p_2(s,u) &:= \lambda_e(s)^{-1}\,y(u),\\
+p_1(s,u) &:= -\frac{\lambda_e'(s)}{\lambda_e(s)}\,x(u)\,y(u).
+\end{align*}
+Let $P_{e,\rho}:=\Phi_e^{-1}\bigl(F_{e,\rho}([0,L_e]\times\R)\bigr)\subset\R^4$.
+\end{definition}
+
+\begin{lemma}[Lagrangian property and exact matching]\label{lem:edgeLag}
+$P_{e,\rho}$ is a smooth embedded Lagrangian surface. Moreover:
+\begin{enumerate}[label=(\alph*)]
+\item $p_1(s,u)\equiv 0$ for $|u|$ sufficiently large, hence $P_{e,\rho}$ agrees \emph{exactly} with the original polyhedral faces away from a transverse neighborhood of radius $O(\rho)$;
+\item since $\lambda_e'\equiv 0$ near $s=0$ and $s=L_e$, we have $p_1\equiv 0$ near the endpoints and the transverse profiles there are exactly the endpoint-squeezed curves $(q_2,p_2)=(\lambda_\pm x(u),\lambda_\pm^{-1}y(u))$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Smoothness and embeddedness are immediate since $q_1=s$ separates $s$--levels and all functions are smooth; properness in $u$ follows from properness of $\Gamma_\rho$.
+
+To check Lagrangian, compute in the edge chart:
+\[
+\omega_{\mathrm{st}}=dq_1\wedge dp_1+dq_2\wedge dp_2.
+\]
+We have $dq_1=ds$, and
+\[
+dp_1 = -\left(\frac{\lambda_e'}{\lambda_e}\right)'\,x y\,ds
+-\frac{\lambda_e'}{\lambda_e}\,(x'y+y'x)\,du,
+\]
+where primes on $x,y$ denote derivatives in $u$. Hence
+\[
+dq_1\wedge dp_1 = -\frac{\lambda_e'}{\lambda_e}\,(x'y+y'x)\,ds\wedge du
+= -\frac{\lambda_e'}{\lambda_e}\,\frac{d}{du}(xy)\,ds\wedge du.
+\]
+Next,
+\[
+dq_2 = \lambda_e' x\,ds + \lambda_e x'\,du,\qquad
+dp_2 = -\lambda_e^{-2}\lambda_e' y\,ds + \lambda_e^{-1}y'\,du,
+\]
+so
+\begin{align*}
+dq_2\wedge dp_2
+&=(\lambda_e' x\,ds + \lambda_e x'\,du)\wedge(-\lambda_e^{-2}\lambda_e' y\,ds + \lambda_e^{-1}y'\,du)\\
+&=\bigl(\lambda_e'\lambda_e^{-1}x y' + \lambda_e'\lambda_e^{-1}x' y\bigr)\,ds\wedge du\\
+&=\frac{\lambda_e'}{\lambda_e}\,\frac{d}{du}(xy)\,ds\wedge du.
+\end{align*}
+Therefore $dq_1\wedge dp_1+dq_2\wedge dp_2=0$, so $F_{e,\rho}^*\omega_{\mathrm{st}}=0$ and $P_{e,\rho}$ is Lagrangian.
+
+For (a), Lemma~\ref{lem:cornercurve}(b) gives $xy=0$ for $|u|$ large, hence $p_1=0$ there and $(q_2,p_2)$ lies on one of the coordinate rays; this is precisely the unmodified face model. Part (b) is immediate from $\lambda_e'\equiv 0$ near endpoints.
+\end{proof}
+
+\begin{remark}\label{rem:holonomy}
+The diagonal squeeze factors $\lambda_\pm$ need not be $1$ and can have nontrivial holonomy along cycles in the $1$--skeleton. The correction term
+$p_1=-(\lambda_e'/\lambda_e)\,xy$ compensates the transverse symplectic error created by varying the squeeze; compact support of $xy$ ensures exact matching to faces and endpoint models.
+\end{remark}
+
+%=====================================================================
+\section{Global Lagrangian smoothing}\label{sec:global}
+
+Let $\mathcal V_{\mathrm{gen}}$ be the set of generic vertices (Proposition~\ref{prop:trichotomy}(b)) and let $\mathcal E_{\mathrm{sing}}$ be the set of singular edges (those whose adjacent face planes are distinct).
+
+\subsection{Choice of control scale}
+Because $K$ is a finite embedded polyhedral complex, there is a positive separation between disjoint closed cells. Fix $\delta>0$ sufficiently small so that:
+\begin{enumerate}[label=(\alph*)]
+\item closed balls $\overline{B}_{10\delta}(v)$ around distinct vertices are disjoint;
+\item tubular neighborhoods of radius $10\delta$ around disjoint singular edges are disjoint, and any overlaps occur only in balls around shared endpoints;
+\item $\delta$ is smaller than half the minimum distance between disjoint closed cells of the complex (so local modifications at scale $\le 10\delta$ cannot create new intersections);
+\item $\delta$ is sufficiently small relative to the fixed geometric constants of the local models so that the Hamiltonian correction of Section~\ref{sec:ham} fits inside the Weinstein neighborhoods for all $t\in(0,1]$ (see Definition~\ref{def:Kt}).
+\end{enumerate}
+Define the smoothing scale
+\[
+\rho(t):=\delta t,\qquad t\in(0,1].
+\]
+
+\subsection{Definition of the Lagrangian smoothed surfaces $L_t$}
+
+We define $L_t$ by modifying $K$ inside disjoint control neighborhoods around $\mathcal V_{\mathrm{gen}}\cup \mathcal E_{\mathrm{sing}}$.
+
+\medskip\noindent
+\textbf{(i) Generic vertices.}
+For each $v\in\mathcal V_{\mathrm{gen}}$, choose a symplectic affine chart $\Phi_v$ identifying a neighborhood of $v$ with a neighborhood of $0$ in the product splitting $V_1\oplus V_2$ of Proposition~\ref{prop:trichotomy}(b), and set
+\[
+L_t\cap B_{5\rho(t)}(v)\ :=\ \Phi_v^{-1}\bigl(P_{v,\rho(t)}\bigr)\cap B_{5\rho(t)}(v),
+\]
+where $P_{v,\rho}$ is the vertex patch from Lemma~\ref{lem:vertexpatch}.
+
+\medskip\noindent
+\textbf{(ii) Singular edges.}
+Let $e\in\mathcal E_{\mathrm{sing}}$ have endpoints $v_-,v_+$. Define the truncated edge segment
+\begin{equation}\label{eq:truncate}
+e_t := e\setminus \bigcup_{v \in \{v_-, v_+\}\cap \mathcal V_{\mathrm{gen}}} B_{3\rho(t)}(v).
+\end{equation}
+(Thus we remove neighborhoods only around generic endpoints.)
+Choose an edge chart $\Phi_e$ as in Lemma~\ref{lem:edgenf} on a neighborhood of $e$ and define $L_t$ inside the tube $N_{5\rho(t)}(e_t)$ by the interpolating edge patch $P_{e,\rho(t)}$ from Definition~\ref{def:edgepatch}, where $\lambda_e$ is chosen so that:
+\begin{enumerate}[label=(\alph*)]
+\item if an endpoint $v\in\mathcal V_{\mathrm{gen}}$ is truncated, then on the overlap with $B_{5\rho(t)}(v)$ the patch matches the constant-squeeze cylinder determined by the vertex patch (Lemma~\ref{lem:vertexpatch});
+\item if an endpoint is fold, the local geometry is edge-type (Proposition~\ref{prop:trichotomy}(c)), and the adjacent singular edges are collinear; we choose the edge charts consistently near such a fold point so that the corresponding edge patches glue smoothly there (this is possible because the two incident face planes on either side of the singular line agree).
+\end{enumerate}
+
+\medskip\noindent
+\textbf{(iii) Away from the singular locus.}
+Set $L_t=K$ outside the union of the above vertex balls and edge tubes.
+
+\begin{proposition}\label{prop:Lt}
+For each $t\in(0,1]$, $L_t$ is a smooth embedded Lagrangian surface. The family $t\mapsto L_t$ is smooth for $t\in(0,1]$ and extends to a topological isotopy on $[0,1]$ with $L_0=K$.
+\end{proposition}
+
+\begin{proof}
+Each local patch is smooth and Lagrangian (Lemmas~\ref{lem:vertexpatch} and \ref{lem:edgeLag}). On overlaps between vertex neighborhoods and edge tubes, the vertex patch has stabilized to a constant-squeeze cylinder with $p_1=0$ beyond radius $2\rho(t)$, while the edge patch has $\lambda_e'\equiv 0$ near endpoints and uses the same squeezed transverse profile; hence the definitions agree by subset equality and glue smoothly.
+At fold points, the local model is edge-type, and consistent choice of edge charts ensures the edge patches meet smoothly.
+
+Embeddedness follows from the choice of $\delta$: all modifications remain in disjoint control neighborhoods and cannot create new intersections. Smooth dependence on $t$ follows from smooth dependence of $\Gamma_{\rho(t)}$ and $\lambda_e$ on $\rho(t)$ and from the finiteness of the construction. As $t\to 0$, the modified regions shrink to the singular locus and $L_t$ converges to $K$ in Hausdorff distance; collapsing the rounded pieces gives a continuous isotopy of embeddings, hence the topological extension with $L_0=K$.
+\end{proof}
+
+%=====================================================================
+\section{Hamiltonian normalization}\label{sec:ham}
+
+\subsection{Liouville class and Hamiltonian criterion}
+
+For a smooth embedded Lagrangian surface $L\subset(\R^4,\omega_{\mathrm{st}})$ define its \emph{Liouville class}
+\[
+\mathfrak{a}(L):=[\lambda_{\mathrm{st}}|_L]\in H^1(L;\R).
+\]
+
+\begin{lemma}[Flux criterion in an exact symplectic manifold]\label{lem:flux}
+Let $\iota_t:\Sigma\to(\R^4,\omega_{\mathrm{st}})$ be a smooth family of embeddings for $t\in(0,1]$ such that $L_t:=\iota_t(\Sigma)$ is Lagrangian for all $t$. Set
+\[
+a_t := [\iota_t^*\lambda_{\mathrm{st}}]\in H^1(\Sigma;\R).
+\]
+Then the isotopy $L_t$ is induced by a compactly supported Hamiltonian isotopy of $\R^4$ if and only if $a_t$ is constant in $t$.
+\end{lemma}
+
+\begin{proof}
+Differentiate:
+\[
+\frac{d}{dt}\,\iota_t^*\lambda_{\mathrm{st}}
+= \iota_t^*(\mathcal{L}_{\partial_t\iota_t}\lambda_{\mathrm{st}})
+= d(\cdots)+\iota_t^*(\iota_{\partial_t\iota_t}\omega_{\mathrm{st}}).
+\]
+Thus $\frac{d}{dt}a_t=[\,\iota_t^*(\iota_{\partial_t\iota_t}\omega_{\mathrm{st}})\,]$.
+If $a_t$ is constant, the class vanishes, hence the closed form
+$\iota_t^*(\iota_{\partial_t\iota_t}\omega_{\mathrm{st}})$ is exact and can be extended to a compactly supported Hamiltonian producing the isotopy (using a Weinstein neighborhood and a cutoff). Conversely, Hamiltonian isotopy preserves $[\lambda_{\mathrm{st}}|_{L_t}]$.
+\end{proof}
+
+\subsection{Quadratic variation of periods}
+
+Let $L_t$ be as in Proposition~\ref{prop:Lt}. Fix smooth embeddings $\iota_t:\Sigma\to\R^4$ with image $L_t$ for $t>0$, varying smoothly in $t$ (possible since $L_t$ is a smooth isotopy for $t>0$).
+
+\begin{lemma}[Cauchy estimate for periods]\label{lem:cauchy}
+There exists $C>0$ such that for all $0<s<t\le 1$ and every smooth loop $\gamma\subset\Sigma$ transverse to the preimage of the singular locus of $K$, one has
+\[
+\left|\int_{\gamma}\iota_t^*\lambda_{\mathrm{st}}-\int_{\gamma}\iota_s^*\lambda_{\mathrm{st}}\right|
+\ \le\ C\,(\rho(t)^2-\rho(s)^2).
+\]
+In particular, the classes $a_t:=[\iota_t^*\lambda_{\mathrm{st}}]\in H^1(\Sigma;\R)$ converge as $t\to 0$ to a limit $a_0$, with $a_0-a_t=O(\rho(t)^2)$.
+\end{lemma}
+
+\begin{proof}
+Consider the annulus $A=[s,t]\times S^1$ mapped by $F(\tau,u)=\iota_\tau(\gamma(u))$. By Stokes,
+\[
+\int_{\gamma}\iota_t^*\lambda_{\mathrm{st}}-\int_{\gamma}\iota_s^*\lambda_{\mathrm{st}}
+=\int_A F^*\omega_{\mathrm{st}}.
+\]
+Thus the difference is bounded by $\|\omega_{\mathrm{st}}\|$ times the Euclidean area swept by $F$.
+
+By construction, $\iota_\tau$ is stationary outside the union of control neighborhoods around the singular locus, of transverse radius $O(\rho(\tau))$. Transversality of $\gamma$ implies it meets these neighborhoods in finitely many arcs, each of length $O(\rho(\tau))$, uniformly in $\tau$. The deformation speed $|\partial_\tau\iota_\tau|$ is $O(\rho'(\tau))=O(\delta)$ since the local models scale linearly with $\rho$. Hence the swept area is $O(\rho(\tau)\rho'(\tau))\,d\tau$, and summing over finitely many neighborhoods yields
+\[
+\mathrm{Area}(F(A))\le C_1\int_s^t \rho(\tau)\rho'(\tau)\,d\tau
+= C_2(\rho(t)^2-\rho(s)^2),
+\]
+proving the estimate. Convergence of $a_t$ follows by evaluating on a homology basis represented by such transverse loops (general position).
+\end{proof}
+
+\subsection{Ambient cohomology basis and a uniformly small correcting form}
+
+Let $U\subset\R^4$ be a sufficiently small open neighborhood of $K$ which deformation retracts onto $K$ (a regular neighborhood in the PL sense). Then $H^1(U;\R)\cong H^1(K;\R)$.
+
+\begin{lemma}[Ambient closed forms dual to loops]\label{lem:ambient}
+There exist smooth closed $1$--forms $\beta_1,\dots,\beta_b\in\Omega^1(U)$ whose classes form a basis of $H^1(U;\R)$ and loops $\gamma_1,\dots,\gamma_b\subset K$ representing a basis of $H_1(K;\Z)/\mathrm{tors}$ such that
+\[
+\int_{\gamma_j}\beta_i=\delta_{ij}.
+\]
+\end{lemma}
+
+\begin{proof}
+Choose any basis of $H^1(U;\R)$ and represent it by smooth closed forms by de Rham. Choose loops $\gamma_j$ representing a basis of $H_1(K;\Z)/\mathrm{tors}$. The de Rham pairing gives a perfect duality between $H^1(U;\R)$ and $H_1(U;\R)$; replace the chosen forms by the dual basis to achieve the Kronecker normalization.
+\end{proof}
+
+For $t>0$ small we have $L_t\subset U$ and the topological isotopy transports each loop $\gamma_j\subset K$ to a loop $\gamma_j(t)\subset L_t$ which is isotopic to $\gamma_j$ \emph{inside $U$}.
+Define real numbers
+\[
+A_j(t):=\int_{\gamma_j(t)}\lambda_{\mathrm{st}},\qquad
+A_j(0):=\lim_{t\to 0}A_j(t),
+\]
+where the limit exists by Lemma~\ref{lem:cauchy}. Set $c_j(t):=A_j(0)-A_j(t)$.
+
+\begin{lemma}[Closed-form correction with ambient $C^0$ control]\label{lem:alpha}
+Define
+\[
+\alpha_t := \left.\sum_{j=1}^b c_j(t)\,\beta_j\right|_{L_t}\in\Omega^1(L_t).
+\]
+Then $\alpha_t$ is closed, $[\lambda_{\mathrm{st}}|_{L_t}]+[\alpha_t]$ is independent of $t$, and there is a constant $C_\alpha$ (independent of $\delta$) such that
+\[
+\|\alpha_t\|_{C^0(L_t)} \le C_\alpha\,\rho(t)^2,
+\]
+where the norm is computed using the ambient Euclidean metric on $\R^4$.
+\end{lemma}
+
+\begin{proof}
+Closedness follows from $d\beta_j=0$.
+
+Since $\gamma_j(t)$ is isotopic to $\gamma_j$ inside $U$ and $\beta_i$ is closed on $U$, Stokes' theorem implies the period is \emph{constant}:
+\[
+\int_{\gamma_j(t)}\beta_i=\int_{\gamma_j}\beta_i=\delta_{ij}\qquad\text{for all }t\in(0,1].
+\]
+Therefore, for each $j$,
+\[
+\int_{\gamma_j(t)}\alpha_t=\sum_{i=1}^b c_i(t)\int_{\gamma_j(t)}\beta_i=c_j(t)=A_j(0)-A_j(t).
+\]
+Equivalently, the class $[\alpha_t]\in H^1(L_t;\R)$ is exactly the class difference between the limiting Liouville periods and the current ones, so $[\lambda_{\mathrm{st}}|_{L_t}]+[\alpha_t]$ has constant periods on the transported basis loops and hence is independent of $t$.
+
+By Lemma~\ref{lem:cauchy}, $|c_j(t)|=|A_j(0)-A_j(t)|=O(\rho(t)^2)$ with a constant independent of $\delta$ (it depends only on the scale-$1$ local models and finitely many charts). Since $\beta_j$ are fixed smooth forms on the relatively compact set $U$, $\|\beta_j\|_{C^0(U)}<\infty$.
+Thus
+\[
+\|\alpha_t\|_{C^0(L_t)}\le \sum_{j=1}^b |c_j(t)|\,\|\beta_j\|_{C^0(U)} \le C_\alpha\,\rho(t)^2.
+\]
+\end{proof}
+
+\subsection{Quantitative Weinstein neighborhood and global definition of $K_t$}
+
+We require a Weinstein neighborhood large enough to contain the graph of $\alpha_t$ for all $t\in(0,1]$.
+
+\begin{lemma}[Weinstein radius $\gtrsim \rho(t)$, uniformly in $t$]\label{lem:weinstein}
+There exists a constant $c_{\mathrm{W}}>0$ (independent of $\delta$) such that for every $t\in(0,1]$ the Lagrangian surface $L_t$ admits:
+\begin{enumerate}[label=(\alph*)]
+\item an embedded Euclidean tubular neighborhood of radius at least $c_{\mathrm{W}}\rho(t)$;
+\item a Weinstein neighborhood symplectomorphism
+\[
+\Psi_t:\bigl(D^*_{c_{\mathrm{W}}\rho(t)}L_t,\,d\theta\bigr)\ \longrightarrow\ \bigl(\R^4,\omega_{\mathrm{st}}\bigr)
+\]
+defined on the cotangent disk bundle of radius $c_{\mathrm{W}}\rho(t)$ (with the Euclidean dual norm), mapping the zero section to $L_t$.
+Moreover, $\Psi_t$ can be chosen smoothly in $t$ on $(0,1]$ in the sense that the induced map on the total space
+\[
+\bigl\{(t,x,\xi): t\in(0,1],\,x\in L_t,\,|\xi|<c_{\mathrm{W}}\rho(t)\bigr\}\to \R^4
+\]
+is smooth.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+On each face region $L_t$ is planar, hence has zero second fundamental form. Inside each smoothing neighborhood, $L_t$ is obtained by inserting one of finitely many smooth template patches whose geometry is fixed up to scaling by $\rho(t)$ in transverse directions; therefore the norm of the second fundamental form is bounded by $C/\rho(t)$ for a constant $C$ depending only on the scale-$1$ templates. Consequently, the principal curvatures are bounded by $C/\rho(t)$.
+
+For a smooth embedded submanifold of Euclidean space with principal curvatures bounded by $\kappa$, the normal exponential map is non-singular on normal disks of radius $<1/\kappa$; hence a tubular neighborhood exists of radius $\ge c_1/\kappa$. Applying this gives a tubular radius $\ge c_2\rho(t)$. The choice of $\delta$ in Section~\ref{sec:global} ensures that $c_2\rho(t)\le c_2\delta$ is smaller than the separation scale between disjoint cell neighborhoods, so the tube is globally embedded. This proves (a) with $c_{\mathrm{W}}\le c_2$.
+
+Given such a tubular neighborhood, the standard proof of the Weinstein neighborhood theorem identifies $T^*L_t$ with the symplectic normal bundle using $\omega_{\mathrm{st}}$, composes with the tubular embedding into $\R^4$, and then applies Moser's method on a sufficiently small disk bundle to correct the pulled-back symplectic form to $d\theta$. Since all bounds and domains are uniform after scaling by $\rho(t)$ and only finitely many local templates are used, this yields a symplectomorphism defined at least on a disk bundle of radius $c_{\mathrm{W}}\rho(t)$, with $c_{\mathrm{W}}$ independent of $\delta$. The parameter dependence is smooth on $(0,1]$ by the parameter-dependent Moser argument.
+\end{proof}
+
+\begin{lemma}[Liouville class shift on graphs]\label{lem:shift}
+Let $L\subset(\R^4,\omega_{\mathrm{st}}=d\lambda_{\mathrm{st}})$ be a smooth embedded Lagrangian and let $\Psi:(V,d\theta)\to(\R^4,\omega_{\mathrm{st}})$ be a Weinstein neighborhood symplectomorphism, with $\Psi$ restricting to the inclusion of the zero section.
+Then for any sufficiently small closed $1$--form $\alpha$ on $L$ with $\graph(\alpha)\subset V$, the Lagrangian
+$L_\alpha:=\Psi(\graph(\alpha))$ satisfies
+\[
+[\lambda_{\mathrm{st}}|_{L_\alpha}] = [\lambda_{\mathrm{st}}|_{L}] + [\alpha]\in H^1(L;\R).
+\]
+\end{lemma}
+
+\begin{proof}
+On $T^*L$ the canonical $1$--form $\theta$ restricts to $\alpha$ on $\graph(\alpha)$. The closed form
+$\Psi^*\lambda_{\mathrm{st}}-(\theta+\pi^*(\lambda_{\mathrm{st}}|_L))$
+vanishes on the zero section and is exact on $V$ (since $V$ deformation retracts to the zero section). Restricting to $\graph(\alpha)$ gives the stated cohomology identity.
+\end{proof}
+
+\begin{definition}[Hamiltonian-normalized smoothing family]\label{def:Kt}
+Let $C_\alpha$ be as in Lemma~\ref{lem:alpha} and $c_{\mathrm{W}}$ as in Lemma~\ref{lem:weinstein}. These constants depend only on the fixed scale-$1$ local models and the fixed ambient forms $\beta_j$, and are independent of $\delta$.
+By the choice of $\delta$ in Section~\ref{sec:global}(d), we may assume
+\begin{equation}\label{eq:delta-small}
+C_\alpha\,\delta < \tfrac{1}{2}c_{\mathrm{W}}.
+\end{equation}
+Then for all $t\in(0,1]$,
+\[
+\|\alpha_t\|_{C^0(L_t)} \le C_\alpha \rho(t)^2 = C_\alpha\delta^2 t^2
+\le C_\alpha\delta\,\rho(t) < \tfrac{1}{2}c_{\mathrm{W}}\rho(t),
+\]
+so $\graph(\alpha_t)\subset D^*_{c_{\mathrm{W}}\rho(t)}L_t$.
+
+Define
+\[
+K_t := \Psi_t(\graph(\alpha_t))\subset \R^4,\qquad t\in(0,1],
+\]
+with $\Psi_t$ from Lemma~\ref{lem:weinstein}.
+\end{definition}
+
+\begin{proposition}[Constant Liouville class]\label{prop:constant}
+The family $K_t$ has constant Liouville class:
+\[
+[\lambda_{\mathrm{st}}|_{K_t}] \ \text{is independent of}\ t\in(0,1].
+\]
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:shift},
+\[
+[\lambda_{\mathrm{st}}|_{K_t}] = [\lambda_{\mathrm{st}}|_{L_t}] + [\alpha_t].
+\]
+By Lemma~\ref{lem:alpha}, the right-hand side is independent of $t$.
+\end{proof}
+
+\begin{theorem}[Completion of Theorem~\ref{thm:main}]\label{thm:complete}
+The family $\{K_t\}_{t\in(0,1]}$ of Definition~\ref{def:Kt} is a Hamiltonian isotopy of smooth embedded Lagrangian surfaces. Moreover, it extends to a topological isotopy on $[0,1]$ with $K_0=K$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:weinstein} and smooth dependence of $\alpha_t$, the family $K_t$ is a smooth Lagrangian isotopy on $(0,1]$. Proposition~\ref{prop:constant} shows its Liouville class is constant, hence Lemma~\ref{lem:flux} implies the isotopy is Hamiltonian.
+
+As $t\to 0$, $L_t\to K$ by Proposition~\ref{prop:Lt}, and $\|\alpha_t\|_{C^0}=O(\rho(t)^2)\to 0$, so $K_t$ remains within $o(\rho(t))$ of $L_t$ and also converges to $K$; thus the topological isotopy extends with $K_0=K$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Combine Proposition~\ref{prop:Lt} and Theorem~\ref{thm:complete}.
+\end{proof}
+
+%=====================================================================
+\begin{thebibliography}{99}
+
+\bibitem{McDuffSalamon}
+D.~McDuff and D.~Salamon,
+\emph{Introduction to Symplectic Topology}, 3rd ed.,
+Oxford Graduate Texts in Mathematics, 2017.
+
+\bibitem{Polterovich}
+L.~Polterovich,
+\emph{The Geometry of the Group of Symplectic Diffeomorphisms},
+Lectures in Mathematics ETH Z\"urich, Birkh\"auser, 2001.
+
+\bibitem{RourkeSanderson}
+C.~Rourke and B.~Sanderson,
+\emph{Introduction to Piecewise-Linear Topology},
+Ergebnisse der Mathematik und ihrer Grenzgebiete, Springer, 1972.
+
+\bibitem{Weinstein}
+A.~Weinstein,
+\emph{Symplectic manifolds and their Lagrangian submanifolds},
+Adv.\ Math.\ \textbf{6} (1971), 329--346.
+
+\end{thebibliography}
+
+\end{document}

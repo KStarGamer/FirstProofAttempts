@@ -1,0 +1,522 @@
+\documentclass[11pt]{amsart}
+
+% --- page layout ---
+\usepackage[a4paper,margin=1in]{geometry}
+
+% --- AMS + typography ---
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\allowdisplaybreaks
+
+% --- theorem environments ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- macros ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\id}{\mathrm{id}}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\tr}{tr}
+
+\title[Uniform lattices with torsion and $\Q$-acyclic universal covers]{Uniform lattices with torsion and closed manifolds with $\Q$-acyclic universal covers:\\
+the odd-torsion obstruction and the index at infinity}
+\date{\today}
+
+\subjclass[2020]{57N65, 55N35, 55M20, 22E40, 57R67}
+\keywords{uniform lattice, torsion, rationally acyclic universal cover, compact supports, \v{C}ech cohomology, one-point compactification, Lefschetz number}
+
+\begin{document}
+
+\begin{abstract}
+We clarify the status of the problem of realizing torsionful uniform lattices as fundamental
+groups of closed manifolds with $\Q$-acyclic universal cover.
+Compactly supported Lefschetz numbers do not vanish for fixed-point-free proper maps on noncompact
+manifolds: the translation $x\mapsto x+1$ on $\R$ has $L_c=-1$.
+This reflects an ``index at infinity,'' made precise via \v{C}ech cohomology of the one-point
+compactification and a comparison theorem for manifolds.
+For uniform lattices, a deep theorem of Fowler rules out the case of odd prime torsion; the purely
+$2$-primary case remains open.
+We also record Fowler's constructions showing that torsion (including $2$-torsion) can occur in
+fundamental groups of closed manifolds with $\Q$-acyclic universal covers, so torsion-freeness is
+not a general topological consequence of $\Q$-acyclicity of the universal cover.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+Let $G$ be a real semisimple Lie group and $\Gamma<G$ a \emph{uniform lattice}, i.e.\ $\Gamma$ is
+discrete and $G/\Gamma$ is compact. If $\Gamma$ has torsion, then $G/\Gamma$ is an orbifold rather
+than a manifold. This motivates the following question.
+
+\medskip\noindent
+\textbf{Problem.}
+\emph{Suppose that $\Gamma$ is a uniform lattice in a real semisimple Lie group, and that $\Gamma$
+contains an element of order $2$. Is it possible for $\Gamma$ to be the fundamental group of a
+closed manifold $M$ whose universal cover $\widetilde M$ is $\Q$-acyclic?}
+\medskip
+
+A common strategy is to compute $H_c^\ast(\widetilde M;\Q)$ by Poincar\'e duality with compact
+supports and then attempt to apply a Lefschetz-type fixed point theorem to finite-order deck
+transformations. Two facts govern the outcome:
+\begin{itemize}[leftmargin=2.2em]
+\item compactly supported Lefschetz numbers of proper maps detect a contribution from infinity, so
+fixed-point-free proper maps can have $L_c\neq 0$;
+\item nevertheless, for uniform lattices with \emph{odd} torsion there is a genuine obstruction,
+proved by Fowler, using controlled surgery and $\rho$-invariants.
+\end{itemize}
+
+The goal of this note is to present a self-contained account of these points and to state the best
+current resolution of the lattice problem.
+
+\subsection*{Notation}
+All manifolds are compact connected topological manifolds without boundary unless explicitly stated
+otherwise. Cohomology is singular cohomology with $\Q$-coefficients unless denoted by $\check H^\ast$
+(\v{C}ech cohomology). For a locally compact Hausdorff space $X$, $H_c^\ast(X;\Q)$ denotes compactly
+supported cohomology.
+
+\section{Compactly supported cohomology of a $\Q$-acyclic universal cover}
+
+\subsection{Compactly supported cohomology and proper maps}
+
+\begin{definition}[Compactly supported cohomology]
+Let $X$ be locally compact Hausdorff. Define
+\[
+H_c^i(X;\Q)\;:=\;\varinjlim_{K\subseteq X\ \mathrm{compact}} H^i(X,X\setminus K;\Q).
+\]
+\end{definition}
+
+\begin{lemma}[Proper maps act on $H_c^\ast$]\label{lem:properfunctor}
+If $f:X\to Y$ is proper between locally compact Hausdorff spaces, then pullback on relative
+cohomology induces natural maps
+\[
+f^\ast:H_c^i(Y;\Q)\to H_c^i(X;\Q)
+\qquad\text{for all }i\ge 0.
+\]
+\end{lemma}
+
+\begin{proof}
+For each compact $K\subseteq Y$, properness implies $f^{-1}(K)$ is compact. Thus $f$ is a map of
+pairs $(X, X\setminus f^{-1}(K))\to (Y, Y\setminus K)$, inducing pullbacks
+$H^i(Y,Y\setminus K)\to H^i(X,X\setminus f^{-1}(K))$ compatible with the direct system in $K$.
+Passing to the direct limit gives $f^\ast$ on $H_c^i$.
+\end{proof}
+
+\subsection{Orientability and Poincar\'e duality}
+
+\begin{lemma}\label{lem:orientable}
+If $X$ is a connected simply connected topological manifold, then $X$ is orientable.
+\end{lemma}
+
+\begin{proof}
+The orientation local system is classified by the sign homomorphism
+$\pi_1(X)\to\{\pm 1\}$ recording whether loops preserve or reverse local orientation.
+If $\pi_1(X)=0$, this homomorphism is trivial, so the local system is constant and $X$ is orientable.
+\end{proof}
+
+\begin{theorem}[Poincar\'e duality with compact supports]\label{thm:PD}
+Let $X$ be an oriented $n$-manifold without boundary. Then cap product with the Borel--Moore
+fundamental class induces natural isomorphisms
+\[
+H_c^i(X;\Q)\cong H_{n-i}(X;\Q)\qquad\text{for all }i\ge 0.
+\]
+\end{theorem}
+
+\begin{proof}[Reference]
+See \cite[Thm.\ 3.35]{HatcherAT}.
+\end{proof}
+
+\subsection{The computation}
+
+\begin{definition}[$\Q$-acyclic]
+A space $X$ is \emph{$\Q$-acyclic} if $\widetilde H_i(X;\Q)=0$ for all $i\ge 0$.
+\end{definition}
+
+\begin{theorem}[Compactly supported cohomology of a $\Q$-acyclic universal cover]\label{thm:Hc}
+Let $M^n$ be a closed connected $n$-manifold and let $X=\widetilde M$ be its universal cover.
+If $X$ is $\Q$-acyclic, then
+\[
+H_c^i(X;\Q)\;\cong\;
+\begin{cases}
+\Q, & i=n,\\
+0, & i\neq n,
+\end{cases}
+\qquad\text{and hence}\qquad
+\chi_c(X;\Q)=(-1)^n.
+\]
+\end{theorem}
+
+\begin{proof}
+The universal cover $X$ is a connected simply connected $n$-manifold, hence orientable by
+Lemma~\ref{lem:orientable}. By Theorem~\ref{thm:PD},
+\[
+H_c^i(X;\Q)\cong H_{n-i}(X;\Q).
+\]
+Since $X$ is $\Q$-acyclic, $H_j(X;\Q)=0$ for $j>0$ and $H_0(X;\Q)\cong \Q$.
+Therefore $H_c^i(X;\Q)=0$ for $i<n$, while $H_c^n(X;\Q)\cong H_0(X;\Q)\cong \Q$.
+For $i>n$, $H_{n-i}(X;\Q)=0$ in negative degree, so $H_c^i(X;\Q)=0$.
+The Euler characteristic follows from the definition of $\chi_c$.
+\end{proof}
+
+\section{Proper maps and a fixed-point-free counterexample}
+
+\subsection{Compactly supported Lefschetz number}
+
+Assume $H_c^i(X;\Q)$ is finite-dimensional for all $i$ and vanishes for $i\gg 0$.
+For a proper self-map $f:X\to X$, define the compactly supported Lefschetz number
+\[
+L_c(f;X):=\sum_{i\ge 0}(-1)^i\,\tr\!\left(f^\ast:H_c^i(X;\Q)\to H_c^i(X;\Q)\right)\in\Q.
+\]
+
+\subsection{Proper homotopy invariance}
+
+\begin{definition}
+A homotopy $H:X\times[0,1]\to Y$ between maps $f_0,f_1:X\to Y$ is \emph{proper} if $H$ is proper.
+\end{definition}
+
+\begin{lemma}[Proper homotopy invariance]\label{lem:proper-homotopy}
+Let $f_0,f_1:X\to Y$ be proper maps between locally compact Hausdorff spaces.
+If $f_0$ and $f_1$ are properly homotopic, then
+$f_0^\ast=f_1^\ast:H_c^i(Y;\Q)\to H_c^i(X;\Q)$ for all $i$.
+\end{lemma}
+
+\begin{proof}
+Fix a compact $K\subseteq Y$ and a proper homotopy $H:X\times[0,1]\to Y$ between $f_0$ and $f_1$.
+Then $H^{-1}(K)$ is compact in $X\times[0,1]$, so its projection
+$L:=\mathrm{pr}_X(H^{-1}(K))\subseteq X$ is compact.
+If $x\notin L$, then $(x,t)\notin H^{-1}(K)$ for all $t$, hence $H(x,t)\notin K$ for all $t$.
+Thus $H$ restricts to a homotopy of pairs
+\[
+H:(X,X\setminus L)\times[0,1]\to (Y,Y\setminus K)
+\]
+between $f_0$ and $f_1$ as maps of pairs $(X,X\setminus L)\to (Y,Y\setminus K)$.
+Homotopy invariance of relative cohomology implies equality of the induced maps
+$H^i(Y,Y\setminus K)\to H^i(X,X\setminus L)$.
+Passing to the direct limit over compact $K$ yields $f_0^\ast=f_1^\ast$ on $H_c^i$.
+\end{proof}
+
+\subsection{The translation on $\R$}
+
+\begin{theorem}[Fixed-point-free proper map with $L_c\neq 0$]\label{thm:translation}
+Let $f:\R\to\R$ be the translation $f(x)=x+1$. Then $f$ is a fixed-point-free homeomorphism (hence
+proper) and
+\[
+L_c(f;\R)=-1\neq 0.
+\]
+\end{theorem}
+
+\begin{proof}
+The map $f$ is a homeomorphism, hence proper, and $\Fix(f)=\varnothing$.
+
+Compute $H_c^\ast(\R;\Q)$. Since $\R$ is an oriented $1$-manifold, Theorem~\ref{thm:PD} gives
+$H_c^1(\R;\Q)\cong H_0(\R;\Q)\cong \Q$ and $H_c^i(\R;\Q)=0$ for $i\neq 1$. Hence
+$L_c(f;\R)=-\tr(f^\ast|H_c^1(\R;\Q))$.
+
+Define a homotopy $H:\R\times[0,1]\to \R$ by $H(x,t)=x+t$, from $\id$ to $f$. If $K\subseteq\R$ is
+compact, say $K\subseteq[-M,M]$, then $H^{-1}(K)\subseteq[-M-1,M]\times[0,1]$, which is compact.
+Thus $H$ is a proper homotopy, so by Lemma~\ref{lem:proper-homotopy} we have $f^\ast=\id^\ast$ on
+$H_c^1(\R;\Q)$. Therefore $\tr(f^\ast)=1$ and $L_c(f;\R)=-1$.
+\end{proof}
+
+\section{\v{C}ech cohomology at infinity and the ``index at infinity''}\label{sec:cech}
+
+Theorem~\ref{thm:translation} reflects a general phenomenon: for proper maps on noncompact spaces,
+compactly supported traces can record a contribution from infinity. To formalize this for universal
+covers with potentially wild end structure, it is convenient to use \v{C}ech cohomology on the
+one-point compactification.
+
+\subsection{One-point compactification and proper extensions}
+
+Let $X$ be noncompact locally compact Hausdorff and let $X^+=X\sqcup\{\infty\}$ be the one-point
+compactification. A neighborhood basis of $\infty$ is given by
+$U_K:=(X\setminus K)\cup\{\infty\}$ as $K$ ranges over compact subsets of $X$.
+
+\begin{lemma}\label{lem:extend}
+If $f:X\to X$ is proper, then $f$ extends uniquely to a continuous map $f^+:X^+\to X^+$ with
+$f^+(\infty)=\infty$.
+\end{lemma}
+
+\begin{proof}
+Define $f^+|_X=f$ and $f^+(\infty)=\infty$. Continuity on $X$ is clear.
+If $U_K$ is a neighborhood of $\infty$ in $X^+$, then properness implies $f^{-1}(K)$ is compact,
+hence $U_{f^{-1}(K)}$ is a neighborhood of $\infty$ and $f^+(U_{f^{-1}(K)})\subseteq U_K$.
+Thus $f^+$ is continuous at $\infty$.
+\end{proof}
+
+\subsection{\v{C}ech compact supports}
+
+For a compact Hausdorff space $Y$, write $\check H^\ast(Y;\Q)$ for \v{C}ech cohomology and
+$\widetilde{\check H}^\ast(Y;\Q)$ for reduced \v{C}ech cohomology. Relative \v{C}ech cohomology
+satisfies tautness/continuity for closed subsets of compact Hausdorff spaces; see
+\cite[\S6.6--\S6.8]{SpanierAT}.
+
+\begin{definition}[Compactly supported \v{C}ech cohomology]\label{def:cechcompact}
+For locally compact Hausdorff $X$, define
+\[
+\check H_c^i(X;\Q):=\widetilde{\check H}^i(X^+;\Q)\cong \check H^i(X^+,\{\infty\};\Q).
+\]
+If $f:X\to X$ is proper, define the reduced \v{C}ech Lefschetz number of $f^+$ by
+\[
+\widetilde{\check L}(f^+;X^+):=\sum_{i\ge 0}(-1)^i\,
+\tr\!\left((f^+)^\ast:\widetilde{\check H}^i(X^+;\Q)\to \widetilde{\check H}^i(X^+;\Q)\right),
+\]
+whenever these traces are defined.
+\end{definition}
+
+\subsection{Comparison for manifolds}
+
+On manifolds (more generally, locally contractible paracompact spaces), singular and \v{C}ech
+cohomology agree; see \cite[\S6.9]{SpanierAT} or \cite[Ch.\ III]{BredonSheaf}. We use this to
+compare singular compact supports with \v{C}ech compact supports.
+
+\begin{proposition}[Singular vs.\ \v{C}ech compact supports on manifolds]\label{prop:comparison}
+Let $X$ be a topological manifold. Then the natural comparison maps yield canonical isomorphisms
+\[
+H_c^i(X;\Q)\cong \check H_c^i(X;\Q)\qquad\text{for all }i,
+\]
+natural for proper maps. Consequently, for any proper $f:X\to X$,
+\[
+L_c(f;X)=\widetilde{\check L}(f^+;X^+)
+\]
+whenever the traces defining either side are finite.
+\end{proposition}
+
+\begin{proof}
+For each compact $K\subseteq X$, both $X$ and $X\setminus K$ are locally contractible and
+paracompact. The comparison theorem gives natural isomorphisms
+$H^i(X,X\setminus K;\Q)\cong \check H^i(X,X\setminus K;\Q)$ for all $i$.
+Passing to direct limits over compact $K$ yields a natural isomorphism
+\[
+H_c^i(X;\Q)\cong \varinjlim_K \check H^i(X,X\setminus K;\Q).
+\]
+On the other hand, by Definition~\ref{def:cechcompact} and tautness of \v{C}ech cohomology at the
+closed subset $\{\infty\}\subseteq X^+$, one has
+\[
+\check H_c^i(X;\Q)\cong \check H^i(X^+,\{\infty\};\Q)\cong \varinjlim_{K}\check H^i(X^+,U_K;\Q).
+\]
+Excision identifies $\check H^i(X^+,U_K;\Q)\cong \check H^i(X,X\setminus K;\Q)$, hence
+$\check H_c^i(X;\Q)\cong \varinjlim_K \check H^i(X,X\setminus K;\Q)$.
+Combining yields $H_c^i(X;\Q)\cong \check H_c^i(X;\Q)$.
+Naturality for proper maps follows from naturality of the comparison map and Lemma~\ref{lem:extend}.
+Equality of Lefschetz traces follows by taking traces through these canonical isomorphisms.
+\end{proof}
+
+\begin{remark}[Why \v{C}ech matters at $\infty$]\label{rem:singular-bad}
+The point $\infty$ in $X^+$ need not be locally contractible (for instance, $X$ may have wildly
+embedded ends). Singular cohomology need not satisfy the continuity needed to identify
+$H_c^\ast(X)$ with $H^\ast(X^+,\{\infty\})$ in such generality. \v{C}ech (or Alexander--Spanier)
+cohomology is specifically designed to satisfy tautness for closed subsets of compact Hausdorff
+spaces; Proposition~\ref{prop:comparison} then recovers the usual singular compactly supported theory
+for manifolds.
+\end{remark}
+
+\section{Finite free actions and the correct Euler characteristic formula}\label{sec:euler}
+
+A second natural idea is to try to rule out torsion using ``multiplicativity'' of $\chi_c$ under
+finite covers. In the $\Q$-acyclic setting the correct statement is an averaging formula, not
+multiplicativity.
+
+\subsection{Transfer and invariants}
+
+\begin{lemma}[Transfer and invariants for $H_c^\ast$]\label{lem:invariants}
+Let $p:X\to Y$ be a finite regular covering of locally compact Hausdorff spaces with finite deck group
+$G$ and $|G|<\infty$. Over $\Q$, pullback induces an isomorphism
+\[
+p^\ast:H_c^i(Y;\Q)\xrightarrow{\ \cong\ } H_c^i(X;\Q)^G
+\qquad\text{for all }i,
+\]
+onto the $G$-invariant subspace.
+\end{lemma}
+
+\begin{proof}
+For each compact $K\subseteq Y$, the restriction $p:(X,X\setminus p^{-1}(K))\to (Y,Y\setminus K)$ is
+a finite regular covering of pairs. The classical cochain-level transfer for finite coverings
+produces maps
+\[
+\mathrm{tr}_K:H^i(X,X\setminus p^{-1}(K);\Q)\to H^i(Y,Y\setminus K;\Q)
+\]
+such that $\mathrm{tr}_K\circ p^\ast = |G|\cdot \id$ and $p^\ast\circ \mathrm{tr}_K=\sum_{g\in G}g^\ast$.
+These maps are compatible as $K$ increases, hence pass to direct limits and define
+$\mathrm{tr}:H_c^i(X;\Q)\to H_c^i(Y;\Q)$ satisfying the same identities.
+
+Over $\Q$, $|G|$ is invertible. Thus $p^\ast$ is injective since $\mathrm{tr}\circ p^\ast=|G|\id$.
+Moreover, if $v\in H_c^i(X;\Q)^G$, then
+\[
+p^\ast\!\left(\frac{1}{|G|}\,\mathrm{tr}(v)\right)
+=\frac{1}{|G|}\sum_{g\in G} g^\ast v
+=\frac{1}{|G|}\sum_{g\in G} v
+=v,
+\]
+so $v$ lies in the image of $p^\ast$. Hence $p^\ast$ identifies $H_c^i(Y;\Q)$ with the invariants.
+\end{proof}
+
+\subsection{Averaging formula}
+
+\begin{proposition}[Averaging formula]\label{prop:average}
+Let $X$ be a manifold such that $H_c^i(X;\Q)$ is finite-dimensional for all $i$ and vanishes for $i\gg 0$.
+Let a finite group $G$ act freely on $X$ by homeomorphisms, and set $Y:=X/G$.
+Then
+\[
+\chi_c(Y;\Q)=\frac{1}{|G|}\sum_{g\in G} L_c(g;X).
+\]
+\end{proposition}
+
+\begin{proof}
+Let $V^i:=H_c^i(X;\Q)$ and define the averaging operator
+$P^i:=\frac{1}{|G|}\sum_{g\in G}g^\ast\in\mathrm{End}(V^i)$.
+Then $P^i$ is the projection onto $(V^i)^G$, hence $\tr(P^i)=\dim_\Q (V^i)^G$.
+
+Since the action is free and $G$ is finite, $p:X\to Y$ is a finite regular covering with deck group $G$.
+By Lemma~\ref{lem:invariants}, $H_c^i(Y;\Q)\cong (V^i)^G$. Therefore
+\begin{align*}
+\chi_c(Y;\Q)
+&=\sum_i (-1)^i\,\dim_\Q H_c^i(Y;\Q)
+ =\sum_i (-1)^i\,\dim_\Q (V^i)^G \\
+&=\sum_i (-1)^i\,\tr(P^i)
+ =\frac{1}{|G|}\sum_{g\in G}\sum_i (-1)^i\,\tr\!\left(g^\ast\mid V^i\right) \\
+&=\frac{1}{|G|}\sum_{g\in G} L_c(g;X).
+\end{align*}
+\end{proof}
+
+\begin{corollary}[No divisibility obstruction in the $\Q$-acyclic case]\label{cor:chi-values}
+Let $X$ be a $\Q$-acyclic $n$-manifold and let $G$ be a finite group acting freely on $X$ by
+homeomorphisms. Then there is a character $\lambda:G\to\{\pm1\}$ such that
+\begin{align*}
+\chi_c(X/G;\Q)
+&=\frac{(-1)^n}{|G|}\sum_{g\in G}\lambda(g), \\
+\chi_c(X/G;\Q)&\in \{(-1)^n,0\}.
+\end{align*}
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:Hc}, $H_c^n(X;\Q)\cong \Q$ and $H_c^i(X;\Q)=0$ for $i\neq n$.
+Hence each $g\in G$ acts on $H_c^n(X;\Q)$ by multiplication by $\lambda(g)\in\Q^\times$.
+Since $g$ has finite order, $\lambda(g)$ is a root of unity in $\Q$, so $\lambda(g)\in\{\pm1\}$.
+Thus $L_c(g;X)=(-1)^n\lambda(g)$ and Proposition~\ref{prop:average} gives the first displayed formula.
+If $\lambda$ is trivial, the sum is $|G|$; if nontrivial, it is $0$.
+\end{proof}
+
+\section{Uniform lattices: the odd-torsion obstruction and the open $2$-primary case}\label{sec:lattices}
+
+\subsection{Fowler's odd-torsion obstruction}
+
+\begin{definition}[$\Q$-homology manifold]
+A locally compact space $X$ is a \emph{$\Q$-homology $n$-manifold} if for every $x\in X$,
+\[
+H_i(X,X\setminus\{x\};\Q)\cong
+\begin{cases}
+\Q,& i=n,\\
+0,& i\neq n.
+\end{cases}
+\]
+If, moreover, $X$ is an absolute neighborhood retract (ANR), we call it an \emph{ANR $\Q$-homology manifold}.
+\end{definition}
+
+Every closed topological manifold is an ANR $\Q$-homology manifold.
+
+\begin{theorem}[Fowler]\label{thm:fowler-odd}
+Let $\Gamma$ be a uniform lattice in a real semisimple Lie group.
+If $\Gamma$ contains an element of order $p$ for some odd prime $p$, then there exists no closed
+ANR $\Q$-homology manifold $X$ (in particular, no closed manifold) with $\pi_1(X)\cong \Gamma$ and
+$\Q$-acyclic universal cover.
+\end{theorem}
+
+\begin{proof}[Reference]
+This is Fowler's Theorem~5.1.1 in \cite[\S5.1]{FowlerThesis}. See also \cite[\S7]{WeinbergerVTB} for
+context and \cite{BanaglOWR} for a workshop report account.
+\end{proof}
+
+\subsection{Torsion does occur in manifold groups with $\Q$-acyclic universal cover}
+
+\begin{theorem}[Fowler]\label{thm:fowler-torsion}
+For each integer $n\ge 2$ there exists a closed manifold $M$ whose universal cover $\widetilde M$
+is $\Q$-acyclic and such that $\pi_1(M)$ contains an element of order $n$.
+In particular, there exist examples with $2$-torsion.
+\end{theorem}
+
+\begin{proof}[Reference]
+This is Proposition~4.5.1 and Corollary~4.5.2 of \cite[\S4.5]{FowlerThesis}. (A retraction onto a
+group containing $\Z/n$ forces $n$-torsion in $\pi_1(M)$.)
+\end{proof}
+
+\subsection{Resolution of the Problem}
+
+\begin{corollary}[Best current answer]\label{cor:answer}
+Let $\Gamma$ be a uniform lattice in a real semisimple Lie group and assume $\Gamma$ contains an
+element of order $2$.
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em]
+\item If $\Gamma$ contains an element of order $p$ for some odd prime $p$, then $\Gamma$ is \emph{not}
+isomorphic to the fundamental group of any closed manifold whose universal cover is $\Q$-acyclic.
+\item If all torsion in $\Gamma$ is $2$-primary, the existence problem is open in general.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(a) Apply Theorem~\ref{thm:fowler-odd}.
+(b) This is the remaining case isolated in \cite[\S5.1]{FowlerThesis} and discussed in
+\cite[\S7]{WeinbergerVTB}.
+\end{proof}
+
+\begin{remark}
+Theorems~\ref{thm:translation} and \ref{prop:comparison} explain why a naive Lefschetz/Euler
+characteristic approach cannot settle the open case: a finite-order deck transformation is a proper,
+fixed-point-free homeomorphism of a noncompact manifold, and $L_c$ may be supported entirely at
+infinity.
+\end{remark}
+
+\begin{thebibliography}{99}
+
+\bibitem{BanaglOWR}
+M.~Banagl, U.~Bunke, and S.~Weinberger,
+\emph{Stratified Spaces: Joining Analysis, Topology and Geometry},
+Oberwolfach Reports \textbf{8} (2011), no.~4, 3217--3286.
+DOI: 10.4171/OWR/2011/56.
+
+\bibitem{BredonSheaf}
+G.~E.~Bredon,
+\emph{Sheaf Theory}, 2nd ed.,
+Graduate Texts in Mathematics \textbf{170}, Springer, 1997.
+
+\bibitem{FowlerThesis}
+J.~A.~Fowler,
+\emph{Poincar\'e Duality Groups and Homology Manifolds},
+Ph.D.\ thesis, University of Chicago, 2009.
+
+\bibitem{FowlerIJM}
+J.~A.~Fowler,
+\emph{Finiteness properties for some rational Poincar\'e duality groups},
+Illinois J.\ Math.\ \textbf{56} (2012), no.~2, 281--299.
+
+\bibitem{HatcherAT}
+A.~Hatcher,
+\emph{Algebraic Topology},
+Cambridge University Press, 2002.
+
+\bibitem{SpanierAT}
+E.~H.~Spanier,
+\emph{Algebraic Topology},
+McGraw--Hill, 1966.
+
+\bibitem{WeinbergerVTB}
+S.~Weinberger,
+\emph{Variations on a Theme of Borel: An Essay on the Role of the Fundamental Group in Rigidity},
+Cambridge Tracts in Mathematics \textbf{213}, Cambridge University Press, 2022.
+
+\end{thebibliography}
+
+\end{document}

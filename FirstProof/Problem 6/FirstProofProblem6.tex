@@ -1,0 +1,545 @@
+\documentclass[reqno]{amsart}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\PiH}{\Pi_{\cH}}
+\newcommand{\preceqq}{\preceq}
+\newcommand{\succeqq}{\succeq}
+
+\title[Schur complements and obstructions for large $\varepsilon$-light sets]{Schur complements and obstructions for large $\varepsilon$-light vertex sets in graphs}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Let $G=(V,E)$ be a finite undirected graph (possibly disconnected) with Laplacian $L$.
+For $S\subseteq V$, let $G_S=(V,E(S,S))$ be the graph on the same vertex set but with only edges
+whose endpoints both lie in $S$, and let $L_S$ be its Laplacian (equivalently, the Laplacian of the
+induced subgraph $G[S]$, padded with isolated vertices in $V\setminus S$).
+Fix $\varepsilon\in(0,1)$. We call $S$ \emph{$\varepsilon$-light} if $\varepsilon L - L_S\succeqq 0$.
+
+We study the question of whether there exists a universal constant $c>0$ such that every graph
+contains an $\varepsilon$-light set of size at least $c\,\varepsilon\,|V|$ for every $\varepsilon\in(0,1)$.
+We provide (i) careful kernel/projection bookkeeping for disconnected graphs and equivalent normalized
+formulations; (ii) sharp extremal examples showing any such $c$ must satisfy $c\le \tfrac12$ and a complete
+characterization for complete graphs; (iii) explicit counterexamples showing that natural ``edgewise
+effective resistance'' and ``vertex-star linearization'' strategies do not certify $\varepsilon$-lightness; and
+(iv) an exact variational and Schur complement (Kron reduction) characterization that isolates the
+true obstruction: internal energy in $G[S]$ must be dominated by the effective coupling of $S$ to $V\setminus S$.
+Finally, we document why current interlacing-polynomial methods \cite{MSS} do not directly apply to vertex-induced
+edge selection, by exhibiting a $K_3$ example where the expected characteristic polynomial has nonreal roots.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+Let $G=(V,E)$ be a finite, undirected, unweighted graph with $n:=|V|$.
+Its (combinatorial) Laplacian is the symmetric matrix $L\in\R^{V\times V}$ defined by
+\[
+L_{uu}=\deg(u),\qquad
+L_{uv}=\begin{cases}
+-1, & \{u,v\}\in E,\\
+0, & \text{otherwise.}
+\end{cases}
+\]
+Equivalently,
+\[
+x^\top L x = \sum_{\{u,v\}\in E}(x_u-x_v)^2\qquad (x\in\R^V).
+\]
+For a subset $S\subseteq V$, define $G_S=(V,E(S,S))$, the graph obtained by keeping only those edges
+with both endpoints in $S$. Let $L_S$ be its Laplacian. Note that $L_S$ is the Laplacian of the induced subgraph
+$G[S]$, padded with isolated vertices outside $S$.
+
+\begin{definition}[$\varepsilon$-light set]\label{def:light}
+Fix $\varepsilon\in(0,1)$. A set $S\subseteq V$ is \emph{$\varepsilon$-light} if
+\[
+\varepsilon L - L_S \succeqq 0.
+\]
+\end{definition}
+
+The motivating question is as follows.
+
+\begin{conjecture}[Linear-size $\varepsilon$-light subsets]\label{conj:main}
+There exists a universal constant $c>0$ such that for every finite graph $G=(V,E)$ and every $\varepsilon\in(0,1)$,
+there exists an $\varepsilon$-light subset $S\subseteq V$ satisfying
+\[
+|S|\ \ge\ c\,\varepsilon\,|V|.
+\]
+\end{conjecture}
+
+At the time of writing we do not know whether Conjecture~\ref{conj:main} is true. The purpose of this note is
+to (a) formalize the correct operator-theoretic viewpoint (via Schur complements/Kron reduction) and
+(b) rigorously record why several seemingly natural approaches fail.
+
+\subsection{A sharp universal upper bound}
+
+\begin{proposition}[Any universal constant must satisfy $c\le\tfrac12$]\label{prop:upper}
+If Conjecture~\ref{conj:main} holds for a universal constant $c$, then necessarily $c\le \tfrac12$.
+\end{proposition}
+
+\begin{proof}
+Let $G$ be a perfect matching on $n$ vertices, where $n$ is even. Then $L$ is block diagonal with $n/2$ identical
+$2\times 2$ blocks $\begin{psmallmatrix}1&-1\\-1&1\end{psmallmatrix}$.
+Fix $\varepsilon\in(0,1)$ and let $S\subseteq V$. If $S$ contains both endpoints of some matched edge $e=\{u,v\}$,
+then, with $x:=\mathbf{e}_u-\mathbf{e}_v$, we have $x^\top L_S x = x^\top L x>0$ (indeed both equal $4$), so
+$L_S\preceqq \varepsilon L$ fails unless $\varepsilon\ge 1$. Therefore, for $\varepsilon\in(0,1)$, every $\varepsilon$-light set
+must contain at most one endpoint from each matched edge, hence $|S|\le n/2$.
+The requirement $c\,\varepsilon\,n \le n/2$ for all $\varepsilon\in(0,1)$ forces $c\le 1/2$.
+\end{proof}
+
+\subsection{Complete graphs}
+
+Complete graphs show that $\varepsilon$-lightness can force $|S|$ to be \emph{at most} on the order of $\varepsilon n$.
+
+\begin{proposition}[Complete graphs]\label{prop:Kn}
+Let $G=K_n$ and $\varepsilon\in(0,1)$.
+\begin{enumerate}[label=(\roman*)]
+\item If $|S|\ge 2$, then $S$ is $\varepsilon$-light if and only if $|S|\le \varepsilon n$.
+\item If $|S|\in\{0,1\}$, then $L_S=0$ and hence $S$ is $\varepsilon$-light for every $\varepsilon>0$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+If $|S|\in\{0,1\}$ then there are no edges with both endpoints in $S$, so $L_S=0$.
+
+Assume $|S|\ge 2$. The Laplacian of $K_n$ is $L=nI-\one\one^\top$. The padded induced Laplacian $L_S$ equals the Laplacian
+of $K_{|S|}$ on coordinates in $S$ and is $0$ on $V\setminus S$. Consider the subspace
+\[
+W:=\{x\in\R^V:\ \mathrm{supp}(x)\subseteq S,\ \one^\top x=0\}.
+\]
+On $W$, one has $Lx = n x$ and $L_S x = |S| x$.
+Therefore the maximal generalized eigenvalue of the pencil $(L_S,L)$ equals $|S|/n$, and
+$L_S\preceqq \varepsilon L$ holds if and only if $|S|/n\le \varepsilon$.
+\end{proof}
+
+\section{Preliminaries}
+
+\subsection{Edge Laplacians and padding}
+
+Fix an arbitrary orientation of edges. For $e=(u,v)$ write $b_e:=\mathbf{e}_u-\mathbf{e}_v\in\R^V$.
+Then the Laplacian decomposes as
+\[
+L=\sum_{e\in E} b_e b_e^\top.
+\]
+If $F\subseteq E$ is any edge set, we write $L_F:=\sum_{e\in F} b_e b_e^\top$; this is the Laplacian of the graph $(V,F)$.
+In particular, for $S\subseteq V$,
+\[
+L_S = L_{E(S,S)} = \sum_{e\in E(S,S)} b_e b_e^\top,
+\]
+and thus $L_S\preceqq L$ for every $S$.
+
+\subsection{Kernel, harmonic subspace, and pseudoinverses}
+
+Let $\ker(L)$ denote the kernel of $L$. It is standard that $\ker(L)$ is the subspace of vectors constant on each connected component of $G$.
+Let $\cH:=\ker(L)^\perp$ and let $\PiH$ be the orthogonal projection onto $\cH$.
+
+We use $L^+$ for the Moore--Penrose pseudoinverse, and $L^{1/2}$, $L^{+1/2}$ for the unique PSD square roots of $L$ and $L^+$.
+We will use the identities
+\[
+LL^+ = L^+L = \PiH,\qquad
+L^{1/2}L^{+1/2}=L^{+1/2}L^{1/2}=\PiH,
+\]
+and the fact that if $A\succeqq 0$ satisfies $\ker(L)\subseteq \ker(A)$, then $\PiH A \PiH = A$.
+
+\section{Equivalent formulations and kernel bookkeeping}\label{sec:equiv}
+
+A technical pitfall in disconnected graphs is that substituting $x=L^{1/2}y$ yields $L^{+1/2}x=\PiH y$, not $y$.
+This section records the correct equivalences.
+
+\begin{lemma}[Equivalent normalizations]\label{lem:equiv}
+Let $G=(V,E)$ have Laplacian $L$, let $S\subseteq V$, and let $L_S$ be the Laplacian of $G_S=(V,E(S,S))$.
+Let $\cH=\ker(L)^\perp$ and $\PiH$ be the orthogonal projection onto $\cH$.
+The following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+\item $L_S \preceqq \varepsilon L$.
+\item $L^{+1/2}L_S L^{+1/2} \preceqq \varepsilon \PiH$.
+\item For all $x\in \cH$, $x^\top L_S x \le \varepsilon\, x^\top L x$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+$(\text{a})\Rightarrow(\text{b})$ follows by conjugating with $L^{+1/2}$ and using $L^{+1/2}LL^{+1/2}=\PiH$.
+$(\text{b})\Rightarrow(\text{c})$ is immediate since $\PiH x=x$ for $x\in\cH$.
+
+$(\text{c})\Rightarrow(\text{a})$: let $y\in\R^V$ be arbitrary and decompose $y=y_\cH+y_0$ where $y_\cH:=\PiH y\in\cH$ and
+$y_0:=y-\PiH y\in\ker(L)$. Then $y^\top L y=y_\cH^\top L y_\cH$ and, crucially, $L_S y_0=0$.
+Indeed, $y_0\in\ker(L)$ means $y_0$ is constant on each connected component of $G$; every component of $G_S$ is contained
+in a component of $G$ (since $G_S$ is a subgraph with the same vertex set), hence $y_0$ is constant on each component of $G_S$ and thus $y_0\in\ker(L_S)$.
+Therefore
+\[
+y^\top(\varepsilon L-L_S)y
+= y_\cH^\top(\varepsilon L-L_S)y_\cH
+\ge 0
+\]
+by hypothesis (c), proving (a).
+\end{proof}
+
+\section{Two classical ``naive'' strategies and explicit counterexamples}
+
+This section records two pitfalls that arise in attempts to prove Conjecture~\ref{conj:main}.
+
+\subsection{Edgewise effective resistance does not control $\varepsilon$-lightness}
+
+A tempting heuristic is that if every internal edge $e\in E(S,S)$ has small effective resistance in $G$,
+then $L_S$ should be dominated by $\varepsilon L$. The following explicit computation shows this is false.
+
+\begin{example}[Bounded effective resistances but not $\varepsilon$-light]\label{ex:effres-fail}
+Let $G$ have vertex set $\{1,2,3,4,5,6\}$. The induced subgraph on $\{1,2,3,4\}$ is a clique $K_4$.
+Vertices $5$ and $6$ are adjacent to each of $1,2,3,4$, and there is no edge between $5$ and $6$.
+Let $S:=\{1,2,3,4\}$.
+
+Then every internal edge $e\in E(S,S)$ satisfies $R_{\mathrm{eff}}^G(e)=\tfrac13$, yet $S$ is not $\varepsilon$-light for $\varepsilon=\tfrac12$:
+\[
+\lambda_{\max}\big(L^{-1/2}L_S L^{-1/2}\big)\ \ge\ \frac23\ >\ \frac12.
+\]
+\end{example}
+
+\begin{proof}
+Consider the internal edge $e=\{1,2\}$ and vector $b:=\mathbf{e}_1-\mathbf{e}_2$.
+Vertices $1$ and $2$ have degree $5$ in $G$, and a direct calculation gives $Lb=6b$.
+Hence $R_{\mathrm{eff}}^G(e)=b^\top L^+ b = \frac{1}{6}\|b\|^2 = \frac{1}{3}$.
+
+In the induced subgraph $G[S]=K_4$, vertices $1$ and $2$ have degree $3$, and similarly $L_S b = 4b$.
+Therefore
+\[
+\frac{b^\top L_S b}{b^\top L b}=\frac{4\|b\|^2}{6\|b\|^2}=\frac23,
+\]
+so $L_S\preceqq \varepsilon L$ fails for any $\varepsilon<2/3$, in particular for $\varepsilon=1/2$.
+\end{proof}
+
+\subsection{Vertex-star ``linearization'' overcharges boundary edges}
+
+Another common strategy is to upper bound $L_S$ by a sum of star Laplacians $\sum_{u\in S} L_u$.
+This necessarily introduces boundary leakage: edges crossing $(S,V\setminus S)$ appear linearly even though they do not appear in $L_S$.
+
+For each $u\in V$ let $L_u$ denote the Laplacian of the star graph consisting of all edges incident to $u$.
+Let $\partial S$ denote the edge boundary, and let $L_{\partial S}$ denote the Laplacian of the cut graph $(V,\partial S)$.
+The exact identity
+\begin{equation}\label{eq:star-identity}
+\sum_{u\in S} L_u \;=\; 2L_S \;+\; L_{\partial S}
+\end{equation}
+implies
+\[
+L_S = \frac12\sum_{u\in S}L_u - \frac12 L_{\partial S}\ \preceqq\ \frac12\sum_{u\in S}L_u,
+\]
+but the inequality $L_S\preceqq \frac12\sum_{u\in S}L_u$ can be far from tight.
+
+\begin{example}[Boundary leakage in $K_{m,m}$]\label{ex:star-leak}
+Let $G=K_{m,m}$ with bipartition $V=A\sqcup B$.
+Take $S=A$. Then $L_S=0$ (hence $S$ is $\varepsilon$-light for every $\varepsilon>0$), but
+\[
+\frac12\sum_{u\in S}L_u = \frac12 L,
+\]
+so any certification of the form $\frac12\sum_{u\in S}L_u \preceqq \varepsilon L$ would force $\varepsilon\ge 1/2$
+despite the fact that $L_S=0$.
+\end{example}
+
+\begin{proof}
+Since $A$ is an independent set, $E(S,S)=\emptyset$ and $L_S=0$.
+
+Every edge of $K_{m,m}$ has exactly one endpoint in $A$, so $\sum_{u\in A}L_u$ counts each edge Laplacian $b_e b_e^\top$
+exactly once. Hence $\sum_{u\in A}L_u = \sum_{e\in E} b_e b_e^\top = L$, giving the claim.
+\end{proof}
+
+\section{A normalized obstruction and a clean conjugation}
+
+Define the normalized operator
+\[
+M(S):=L^{+1/2}L_S L^{+1/2}.
+\]
+By Lemma~\ref{lem:equiv}, $S$ is $\varepsilon$-light if and only if
+\[
+M(S)\preceqq \varepsilon \PiH.
+\]
+The mapping $S\mapsto M(S)$ is quadratic in vertex indicators and is the source of the major difficulty.
+
+\subsection{A projection subtlety for disconnected graphs}
+
+\begin{proposition}[Projection bookkeeping for boundary operators]\label{prop:proj-bookkeeping}
+Let $S\subseteq V$ and let $L_{\partial S}$ denote the Laplacian of the cut graph $(V,\partial S)$.
+Let $y\in\R^V$ be arbitrary and set $x:=L^{1/2}y\in\cH$. Then $L^{+1/2}x=\PiH y$ and
+\[
+x^\top L^{+1/2}L_{\partial S}L^{+1/2}x = (\PiH y)^\top L_{\partial S}(\PiH y).
+\]
+Moreover, if $y_0:=y-\PiH y\in\ker(L)$ then $y_0\in\ker(L_S)\cap\ker(L_{\partial S})$ and hence
+\[
+L_S(\PiH y)=L_S y,\qquad L_{\partial S}(\PiH y)=L_{\partial S}y.
+\]
+\end{proposition}
+
+\begin{proof}
+The identity $L^{+1/2}L^{1/2}=\PiH$ gives $L^{+1/2}x=L^{+1/2}L^{1/2}y=\PiH y$.
+Then
+\[
+x^\top L^{+1/2}L_{\partial S}L^{+1/2}x
+= (L^{+1/2}x)^\top L_{\partial S} (L^{+1/2}x)
+= (\PiH y)^\top L_{\partial S}(\PiH y).
+\]
+If $y_0\in\ker(L)$ then $y_0$ is constant on each connected component of $G$ and hence is constant on each
+connected component of $G_S$ and of the cut graph $(V,\partial S)$ (both are subgraphs on $V$). Therefore $y_0\in\ker(L_S)\cap\ker(L_{\partial S})$,
+so $L_S y_0=L_{\partial S}y_0=0$ and the final identities follow.
+\end{proof}
+
+\subsection{Star-linearization equivalence}
+
+Define $A_u:=L^{+1/2}L_uL^{+1/2}$.
+
+\begin{proposition}[Star-linearization conjugation]\label{prop:star-equivalence}
+If $\sum_{u\in S} A_u \preceqq 2\varepsilon\,\PiH$, then
+\[
+\frac12\sum_{u\in S}L_u \preceqq \varepsilon\,L.
+\]
+\end{proposition}
+
+\begin{proof}
+Conjugate $\sum_{u\in S}A_u\preceqq 2\varepsilon\PiH$ by $L^{1/2}$:
+\[
+L^{1/2}\Big(\sum_{u\in S}L^{+1/2}L_uL^{+1/2}\Big)L^{1/2}
+\preceqq 2\varepsilon\,L^{1/2}\PiH L^{1/2}.
+\]
+Using $L^{1/2}L^{+1/2}=\PiH$ and $L^{1/2}\PiH L^{1/2}=L$, the left-hand side becomes $\sum_{u\in S}\PiH L_u \PiH$.
+Since $\ker(L)\subseteq \ker(L_u)$ for every $u$ (vectors constant on components of $G$ are constant on the star at $u$),
+we have $\PiH L_u \PiH = L_u$. Thus $\sum_{u\in S}L_u \preceqq 2\varepsilon L$, i.e., $\frac12\sum_{u\in S}L_u\preceqq \varepsilon L$.
+\end{proof}
+
+\section{Schur complements and the correct variational dual}\label{sec:schur}
+
+The identity \eqref{eq:star-identity} shows that any attempt to replace $L_S$ by a vertex-linear sum $\sum_{u\in S}L_u$ must
+necessarily interact with boundary edges. The correct operator that eliminates the complement is a Schur complement (Kron reduction)
+\cite{DorflerBullo}.
+
+\subsection{Block notation and a key decomposition}
+
+Fix $S\subseteq V$ and let $T:=V\setminus S$. Write the Laplacian in block form
+\[
+L=\begin{pmatrix}
+L_{SS} & L_{ST}\\
+L_{TS} & L_{TT}
+\end{pmatrix}.
+\]
+Let $L_{G[S]}$ denote the \emph{unpadded} Laplacian of the induced subgraph $G[S]$ (an $|S|\times |S|$ matrix).
+Then
+\begin{equation}\label{eq:LSS-decomp}
+L_{SS} = L_{G[S]} + D_{\partial S},
+\end{equation}
+where $D_{\partial S}$ is the diagonal matrix of boundary degrees on $S$ (i.e.\ $(D_{\partial S})_{uu}=|\{v\in T:\{u,v\}\in E\}|$).
+
+\subsection{Variational characterization of the Schur complement}
+
+\begin{lemma}[Schur complement via energy minimization]\label{lem:var-schur}
+Let $L\succeqq 0$ be a graph Laplacian, partitioned into blocks as above. Fix $x_S\in\R^S$ and consider
+\begin{equation}\label{eq:dirichlet}
+\min_{x_T\in\R^T}\ \begin{pmatrix}x_S\\x_T\end{pmatrix}^\top
+\begin{pmatrix}
+L_{SS} & L_{ST}\\
+L_{TS} & L_{TT}
+\end{pmatrix}
+\begin{pmatrix}x_S\\x_T\end{pmatrix}.
+\end{equation}
+Then the minimum is attained, equals
+\[
+x_S^\top\Big(L_{SS}-L_{ST}L_{TT}^+L_{TS}\Big)x_S,
+\]
+and a canonical minimizer is $x_T^\star=-L_{TT}^+L_{TS}x_S$.
+\end{lemma}
+
+\begin{proof}
+Expand the objective:
+\[
+Q(x_T)=x_S^\top L_{SS}x_S + 2x_T^\top L_{TS}x_S + x_T^\top L_{TT}x_T.
+\]
+We first show $\im(L_{TS})\subseteq \im(L_{TT})$, which guarantees solvability of $L_{TT}x_T=-L_{TS}x_S$.
+Let $z\in\ker(L_{TT})$. For any $t\in\R$ consider $v=(x_S^\top,tz^\top)^\top$. Since $L\succeqq 0$,
+\[
+0\le v^\top L v = x_S^\top L_{SS}x_S + 2t\,z^\top L_{TS}x_S + t^2 z^\top L_{TT}z
+= x_S^\top L_{SS}x_S + 2t\,z^\top L_{TS}x_S
+\]
+for all $t\in\R$. Hence the linear term vanishes: $z^\top L_{TS}x_S=0$ for all $x_S$, so $z^\top L_{TS}=0$.
+Thus $\ker(L_{TT})\subseteq \ker(L_{ST})$, and taking orthogonal complements yields $\im(L_{TS})\subseteq \im(L_{TT})$.
+
+Therefore $L_{TT}x_T=-L_{TS}x_S$ is solvable. Any such solution is a stationary point of $Q$, and since $L_{TT}\succeqq 0$
+the function $Q$ is convex in $x_T$, so any stationary point is a minimizer. The pseudoinverse choice
+$x_T^\star=-L_{TT}^+L_{TS}x_S$ is a solution because $L_{TT}L_{TT}^+$ is the orthogonal projection onto $\im(L_{TT})\supseteq\im(L_{TS})$.
+Substituting $x_T^\star$ into $Q$ yields the asserted minimum value.
+\end{proof}
+
+\subsection{Kron reduction and $\varepsilon$-lightness}
+
+\begin{definition}[Kron reduction]\label{def:kron}
+The \emph{Kron-reduced Laplacian} (Schur complement) of $L$ onto $S$ is
+\[
+L_{\mathrm{Kron}}(S)\ :=\ L_{SS}-L_{ST}L_{TT}^+L_{TS}.
+\]
+\end{definition}
+
+\begin{theorem}[$\varepsilon$-lightness via Kron reduction]\label{thm:kron}
+Let $G=(V,E)$ have Laplacian $L$. Let $S\subseteq V$ with complement $T$ and induced Laplacian $L_{G[S]}$.
+Then $S$ is $\varepsilon$-light if and only if
+\begin{equation}\label{eq:kron-eps}
+L_{G[S]} \preceqq \varepsilon\,L_{\mathrm{Kron}}(S).
+\end{equation}
+Equivalently, using \eqref{eq:LSS-decomp},
+\begin{equation}\label{eq:kron-rearranged}
+(1-\varepsilon)\,L_{G[S]}
+\preceqq
+\varepsilon\Big(D_{\partial S}-L_{ST}L_{TT}^+L_{TS}\Big).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:equiv}(c), $S$ is $\varepsilon$-light if and only if for all $x\in\R^V$,
+\[
+x^\top L_S x \le \varepsilon\,x^\top L x.
+\]
+Since $L_S$ only contains edges with both endpoints in $S$, we have $x^\top L_S x = x_S^\top L_{G[S]}x_S$.
+Fix $x_S$ and minimize the right-hand side over $x_T$ using Lemma~\ref{lem:var-schur}. We obtain
+\[
+x_S^\top L_{G[S]}x_S \le \varepsilon\cdot \min_{x_T} \begin{pmatrix}x_S\\x_T\end{pmatrix}^\top
+L\begin{pmatrix}x_S\\x_T\end{pmatrix}
+= \varepsilon\,x_S^\top L_{\mathrm{Kron}}(S)x_S
+\]
+for all $x_S\in\R^S$, which is exactly \eqref{eq:kron-eps}.
+Rearranging using $L_{\mathrm{Kron}}(S)=L_{SS}-L_{ST}L_{TT}^+L_{TS}$ and \eqref{eq:LSS-decomp} yields \eqref{eq:kron-rearranged}.
+\end{proof}
+
+\begin{remark}[Interpretation]
+Equation \eqref{eq:kron-rearranged} isolates the true analytic content of $\varepsilon$-lightness:
+internal Laplacian energy in $G[S]$ must be dominated by the \emph{effective coupling of $S$ to its complement}
+captured by $D_{\partial S}-L_{ST}L_{TT}^+L_{TS}$, rather than by naive linear surrogates that overcount boundary edges.
+\end{remark}
+
+\section{Obstructions to current polynomial/interlacing approaches}\label{sec:obstructions}
+
+A natural hope is to partition $V$ into $r$ parts and show that some part $S_i$ satisfies
+$L_{G[S_i]}\preceqq O(1/r)\,L$, then take $r\approx 1/\varepsilon$ and pick the largest part.
+This resembles matrix paving and suggests using interlacing-polynomial methods \cite{MSS}.
+However, two independent obstacles arise:
+(i) arithmetic leakage in rounding $r$ from $\varepsilon$; and (ii) the induced-subgraph Laplacian depends quadratically
+on vertex indicators, violating the independence required for the mixed characteristic polynomial method.
+
+\subsection{A rounding leak in dyadic reductions}
+
+\begin{lemma}[A ceiling-function leak]\label{lem:dyadic}
+Assume hypothetically that for every integer $r\ge 2$ and every graph $H$ on $n$ vertices, there exists $S\subseteq V(H)$ with
+\[
+|S|\ge \frac{n}{r}
+\qquad\text{and}\qquad
+L_{H[S]} \preceqq \frac{2}{r}L_H.
+\]
+Then Conjecture~\ref{conj:main} would hold with the universal constant $c=\tfrac13$.
+Moreover, this dyadic rounding mechanism alone cannot yield $c=\tfrac12$.
+\end{lemma}
+
+\begin{proof}
+Fix $\varepsilon\in(0,1)$ and set $r:=\lceil 2/\varepsilon\rceil$. Then $2/r\le \varepsilon$, so the assumed $S$ is $\varepsilon$-light.
+Its size satisfies $|S|\ge n/r$. Since $r<\frac{2}{\varepsilon}+1=\frac{2+\varepsilon}{\varepsilon}$, we have
+\[
+\frac{1}{r}>\frac{\varepsilon}{2+\varepsilon}\ \ge\ \frac{\varepsilon}{3}.
+\]
+Thus $|S|\ge (\varepsilon/3)n$, i.e.\ $c=1/3$.
+As $\varepsilon\to 1$, the bound $\varepsilon/(2+\varepsilon)\to 1/3$, showing that this mechanism cannot recover $c=1/2$.
+\end{proof}
+
+\subsection{Quadratic dependence breaks interlacing families}
+
+In the MSS framework \cite{MSS}, one controls the spectrum of a random sum of independent rank-one PSD matrices
+by analyzing a mixed characteristic polynomial and exploiting real-rootedness and interlacing.
+For vertex-induced subgraphs, edge indicators are \emph{quadratic} in vertex indicators and highly dependent.
+
+We record an explicit $K_3$ computation showing that even the \emph{expected} characteristic polynomial can have complex roots.
+
+\begin{example}[Complex roots in an expected induced-subgraph characteristic polynomial]\label{ex:K3-complex}
+Let $G=K_3$ and assign each vertex independently to one of $r=2$ parts.
+Let $S$ be the first part and define $M(S):=L^{+1/2}L_S L^{+1/2}$ acting on the harmonic subspace $\cH=\ker(L)^\perp$
+(which has dimension $2$ here).
+Then
+\[
+\mathbb{E}\big[\det(xI_{\cH}-M(S))\big]
+\;=\;
+x^2-\frac12 x+\frac18,
+\]
+whose roots are $\frac14\pm i\frac14$ and hence are nonreal.
+\end{example}
+
+\begin{proof}
+For $K_3$, the nonzero Laplacian eigenvalues equal $3$, so on $\cH$ one has $L^{+1/2}=\frac{1}{\sqrt{3}}I_{\cH}$.
+
+There are three cases for the random set $S$:
+\begin{itemize}
+\item If $|S|\le 1$, then $L_S=0$ and hence $M(S)=0$ on $\cH$, so $\det(xI_{\cH}-M(S))=x^2$.
+\item If $|S|=2$, then $G[S]$ is a single edge. The unpadded edge Laplacian has nonzero eigenvalue $2$ on its
+(one-dimensional) orthogonal complement of constants; after padding and restricting to $\cH$, the resulting operator
+has eigenvalues $\{2/3,0\}$ on $\cH$. Thus $\det(xI_{\cH}-M(S))=x(x-2/3)=x^2-\frac23 x$.
+\item If $|S|=3$, then $L_S=L$ and $M(S)=L^{+1/2}LL^{+1/2}=\PiH$, which is $I_{\cH}$ on $\cH$.
+Thus $\det(xI_{\cH}-M(S))=(x-1)^2=x^2-2x+1$.
+\end{itemize}
+Under independent $2$-coloring, $\mathbb{P}(|S|=3)=1/8$, $\mathbb{P}(|S|=2)=3/8$, and $\mathbb{P}(|S|\le 1)=4/8$.
+Therefore
+\[
+\mathbb{E}[\det(xI_{\cH}-M(S))]
+=
+\frac18(x^2-2x+1)+\frac38\Big(x^2-\frac23 x\Big)+\frac48 x^2
+=
+x^2-\frac12 x+\frac18.
+\]
+Its discriminant is $(-1/2)^2-4\cdot(1/8)=1/4-1/2=-1/4<0$, so the roots are nonreal.
+\end{proof}
+
+\begin{remark}[Consequences for interlacing]
+If a family of real-rooted polynomials has a common interlacing, then every convex combination is real-rooted.
+Therefore Example~\ref{ex:K3-complex} certifies that the characteristic polynomials arising from vertex-induced
+parts in this simplest instance do not admit the interlacing structure required by the MSS method.
+This does not preclude other polynomial techniques, but it rules out a direct import of \cite{MSS}.
+\end{remark}
+
+\section{Discussion and open directions}
+
+The Schur complement characterization in Theorem~\ref{thm:kron} suggests that Conjecture~\ref{conj:main} is fundamentally
+a statement about finding a large terminal set $S$ for which the internal Laplacian is dominated by the Kron-reduced Laplacian
+of the full graph onto $S$. Any successful proof must simultaneously:
+\begin{itemize}
+\item control the quadratic dependence of internal edges on vertex selection, and
+\item exploit the effective boundary operator $D_{\partial S}-L_{ST}L_{TT}^+L_{TS}$ rather than a lossy linear surrogate.
+\end{itemize}
+We hope the framework and counterexamples here serve as a clean starting point.
+
+\begin{thebibliography}{99}
+
+\bibitem{DorflerBullo}
+F.~D\"orfler and F.~Bullo,
+\emph{Kron reduction of graphs with applications to electrical networks},
+IEEE Trans.\ Circuits Syst.\ I \textbf{60} (2013), no.~1, 150--163.
+(Preprint: \href{https://arxiv.org/abs/1102.2950}{arXiv:1102.2950}.)
+
+\bibitem{MSS}
+A.~W.~Marcus, D.~A.~Spielman, and N.~Srivastava,
+\emph{Interlacing families II: Mixed characteristic polynomials and the Kadison--Singer problem},
+Ann.\ of Math.\ (2) \textbf{182} (2015), no.~1, 327--350.
+
+\end{thebibliography}
+
+\end{document}

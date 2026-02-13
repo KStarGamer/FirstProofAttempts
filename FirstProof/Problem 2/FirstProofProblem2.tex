@@ -1,0 +1,460 @@
+\documentclass[11pt]{amsart}
+
+% ------------------- page layout (expanded margins) -------------------
+\usepackage[a4paper,margin=1in]{geometry}
+
+% ------------------- packages -------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+% ------------------- theorem environments -------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ------------------- macros -------------------
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Ind}{\mathrm{Ind}}
+\newcommand{\cInd}{\mathrm{c\text{-}Ind}}
+\newcommand{\diag}{\mathrm{diag}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\vol}{\mathrm{vol}}
+
+\newcommand{\oo}{\mathfrak{o}}
+\newcommand{\pp}{\mathfrak{p}}
+\newcommand{\qq}{\mathfrak{q}}
+\newcommand{\W}{\mathcal{W}}
+
+\newcommand{\G}[1]{\GL_{#1}(F)}
+\newcommand{\N}[1]{N_{#1}}
+\newcommand{\K}[1]{K_{#1}}
+
+% ------------------- title data -------------------
+\title[Conductor-bounded Whittaker test vectors for shifted Rankin--Selberg integrals]
+{Conductor-bounded Whittaker test vectors\\
+for shifted local Rankin--Selberg integrals on $\GL_{n+1}\times \GL_n$}
+\date{\today}
+
+\subjclass[2020]{11F70, 22E50}
+\keywords{Whittaker models, Kirillov models, newforms, conductors, Rankin--Selberg integrals, test vectors}
+
+\begin{document}
+
+\begin{abstract}
+Let $F$ be a non-archimedean local field, fix an additive character $\psi$ of conductor $\oo$,
+and let $\Pi$ be a generic irreducible admissible representation of $\GL_{n+1}(F)$.
+For each integer $m\ge 0$ we construct a Whittaker function $W_m\in \W(\Pi,\psi^{-1})$
+depending only on $(\Pi,\psi,m)$ with the following uniform property:
+for every generic irreducible admissible representation $\pi$ of $\GL_n(F)$ with conductor exponent
+$a(\pi)\le m$, for the normalized Whittaker newform $V\in\W(\pi,\psi)$, and for any generator
+$Q$ of the inverse conductor ideal $\qq(\pi)^{-1}$, the shifted local Rankin--Selberg integral
+\[
+  \int_{\N{n}\backslash \GL_n(F)} W_m(\diag(g,1)\,u_Q)\,V(g)\,\abs{\det g}^{\,s-\frac12}\,dg,
+  \qquad u_Q:=I_{n+1}+Q E_{n,n+1},
+\]
+is absolutely convergent for all $s\in\mathbb{C}$ and evaluates to the explicit nonzero constant
+$\psi^{-1}(Q)\cdot \vol(\N{n}(\oo)\backslash K_1(\pp^m))$.
+In particular, for each fixed $\pi$ one obtains a nonvanishing pair $(W,V)$ by taking $m=a(\pi)$.
+We also record a topological obstruction showing that the ``exact mirabolic'' subgroup in $\GL_n(\oo)$
+has empty interior (for all $n\ge 1$), so it cannot support nonzero locally constant functions.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction: the shifted integral and the quantifiers}
+
+Let $F$ be a non-archimedean local field with ring of integers $\oo$, maximal ideal $\pp$, and
+residue cardinality $q$. Fix a nontrivial additive character $\psi:F\to\mathbb{C}^\times$
+of conductor $\oo$ (i.e.\ $\psi$ is trivial on $\oo$ and nontrivial on $\pp^{-1}$).
+For $r\ge 1$, let $\N{r}\subset \GL_r(F)$ be the standard upper-triangular unipotent subgroup and
+let $\psi_r:\N{r}\to\mathbb{C}^\times$ be the standard generic character
+$\psi_r(u)=\psi(\sum_{i=1}^{r-1}u_{i,i+1})$.
+
+Let $\Pi$ be a generic irreducible admissible representation of $\GL_{n+1}(F)$, realized in its
+$\psi_{n+1}^{-1}$-Whittaker model $\W(\Pi,\psi_{n+1}^{-1})$.
+Let $\pi$ be a generic irreducible admissible representation of $\GL_n(F)$, realized in its
+$\psi_n$-Whittaker model $\W(\pi,\psi_n)$.
+Let $\qq(\pi)=\pp^{a(\pi)}$ be its conductor ideal (so $a(\pi)\ge 0$ is the conductor exponent),
+and choose $Q\in F^\times$ with $Q\oo=\qq(\pi)^{-1}=\pp^{-a(\pi)}$.
+
+Define
+\[
+u_Q:=I_{n+1}+Q E_{n,n+1}\in \GL_{n+1}(F), \qquad
+\iota:\GL_n(F)\hookrightarrow \GL_{n+1}(F),\ \iota(g)=\diag(g,1).
+\]
+For $W\in\W(\Pi,\psi_{n+1}^{-1})$ and $V\in\W(\pi,\psi_n)$, consider the shifted local
+Rankin--Selberg integral
+\begin{equation}\label{eq:shifted-RS}
+Z(W,V,s;Q):=\int_{\N{n}\backslash \GL_n(F)} W(\iota(g)u_Q)\,V(g)\,\abs{\det g}^{\,s-\frac12}\,dg.
+\end{equation}
+
+\smallskip
+The natural existence question can be read in (at least) two ways:
+
+\medskip
+\noindent\textbf{(Pairwise problem).}
+For fixed $(\Pi,\pi)$, must there exist $W\in\W(\Pi,\psi_{n+1}^{-1})$ and $V\in\W(\pi,\psi_n)$
+such that $Z(W,V,s;Q)$ is finite and nonzero for all $s\in\mathbb{C}$?
+
+\medskip
+\noindent\textbf{(Universal-$W$ problem).}
+For fixed $\Pi$, must there exist a single $W\in\W(\Pi,\psi_{n+1}^{-1})$ such that
+\emph{for every} generic $\pi$ there exists $V\in\W(\pi,\psi_n)$ with $Z(W,V,s;Q)$ finite and nonzero
+for all $s\in\mathbb{C}$?
+
+\medskip
+The \emph{universal-$W$ problem} is substantially stronger (it places a uniformity constraint on $W$
+across all conductor exponents). The present note establishes a precise, strong
+\emph{conductor-bounded} uniformity statement. This resolves the pairwise problem immediately
+(by choosing the bound $m=a(\pi)$), and it clarifies exactly where conductor dependence enters.
+
+\begin{theorem}[Main theorem: conductor-bounded uniform test vectors]\label{thm:main}
+Fix $n\ge 1$ and a generic irreducible admissible representation $\Pi$ of $\GL_{n+1}(F)$.
+For each integer $m\ge 0$ there exists a Whittaker function $W_m\in\W(\Pi,\psi_{n+1}^{-1})$
+with the following property:
+
+For every generic irreducible admissible representation $\pi$ of $\GL_n(F)$ with conductor exponent
+$a(\pi)\le m$, let $V\in\W(\pi,\psi_n)$ be the normalized Whittaker newform and let
+$Q\in F^\times$ satisfy $Q\oo=\pp^{-a(\pi)}$.
+Then the shifted integral \eqref{eq:shifted-RS} is absolutely convergent for every $s\in\mathbb{C}$ and equals
+\[
+Z(W_m,V,s;Q)=\psi^{-1}(Q)\cdot \vol\!\bigl(\N{n}(\oo)\backslash K_1(\pp^m)\bigr),
+\]
+a nonzero constant independent of $s$.
+\end{theorem}
+
+\begin{corollary}[Resolution of the pairwise existence problem]\label{cor:pairwise}
+For every pair $(\Pi,\pi)$ as above, taking $m=a(\pi)$ and $W=W_m$ from Theorem~\ref{thm:main},
+and taking $V$ to be the normalized Whittaker newform of $\pi$, the integral $Z(W,V,s;Q)$ is finite and nonzero
+for all $s\in\mathbb{C}$.
+\end{corollary}
+
+The construction of $W_m$ uses only standard features of the Kirillov model
+(restriction of Whittaker functions to the mirabolic subgroup) and an elementary ``phase collapse''
+computation forced by the inequality $m\ge a(\pi)$.
+
+\section{Notation}
+
+Fix Haar measures once and for all; the numerical value of the volume terms depends on these choices,
+but positivity and nonvanishing do not.
+
+Let $\K{n}=\GL_n(\oo)$. For $m\ge 0$ define the usual congruence subgroup
+\begin{equation}\label{eq:K1}
+K_1(\pp^m):=\left\{k\in \K{n}:\ e_n k\equiv e_n \pmod{\pp^m}\right\},\qquad e_n=(0,\dots,0,1)\in F^n.
+\end{equation}
+Equivalently, $k\in K_1(\pp^m)$ if and only if $k_{n,j}\in \pp^m$ for $1\le j<n$ and $k_{n,n}\in 1+\pp^m$.
+Each $K_1(\pp^m)$ is open and compact in $\GL_n(F)$.
+
+\section{A smoothness obstruction: the exact mirabolic has empty interior}
+
+This section is not used in the proof of Theorem~\ref{thm:main}, but it explains why one cannot hope to build
+a compactly supported test function by insisting the last row be \emph{exactly} $e_n$.
+
+\begin{definition}
+Let $n\ge 1$. The \emph{exact mirabolic} subgroup of $\K{n}=\GL_n(\oo)$ is
+\[
+K_n^{\mathrm{mir}}:=\{k\in \K{n}:\ e_n k = e_n\}.
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:mir-empty-interior}
+For every $n\ge 1$, the subgroup $K_n^{\mathrm{mir}}$ is closed and has empty interior in $\K{n}$.
+For $n\ge 2$ one moreover has
+\[
+K_n^{\mathrm{mir}}=\bigcap_{m\ge 1}K_1(\pp^m).
+\]
+\end{lemma}
+
+\begin{proof}
+For $n\ge 2$, the condition $e_nk=e_n$ is equivalent to the congruences
+$e_nk\equiv e_n\pmod{\pp^m}$ for all $m\ge 1$, because $\bigcap_{m\ge 1}\pp^m=\{0\}$ in $\oo$.
+This gives $K_n^{\mathrm{mir}}=\bigcap_{m\ge 1}K_1(\pp^m)$, hence $K_n^{\mathrm{mir}}$ is closed.
+
+Each $K_1(\pp^m)$ is open. For $n\ge 2$ the inclusions are strict, so the intersection cannot contain any open neighborhood
+(of the identity, hence of any point). Thus it has empty interior.
+
+For $n=1$, one has $\K{1}=\oo^\times$ and $K_1^{\mathrm{mir}}=\{1\}$, which is closed but not open in the non-discrete compact group
+$\oo^\times$. Hence it also has empty interior.
+\end{proof}
+
+\begin{proposition}\label{prop:no-locally-constant-support}
+Let $G$ be a totally disconnected locally compact group and let $H\subseteq G$ be a closed subset with empty interior.
+Then every locally constant function $f:G\to\mathbb{C}$ supported on $H$ is identically zero.
+\end{proposition}
+
+\begin{proof}
+If $f(x)\neq 0$ at some $x$, then local constancy gives an open neighborhood $U$ of $x$ on which $f$ is constant and nonzero,
+hence $U\subseteq \mathrm{supp}(f)\subseteq H$, contradicting that $H$ has empty interior.
+\end{proof}
+
+\section{The shift $u_Q$ and the Whittaker character computation}
+
+\begin{lemma}[Shift factor]\label{lem:shift-factor}
+Let $W\in \W(\Pi,\psi_{n+1}^{-1})$. For all $g\in\GL_n(F)$ and all $Q\in F$,
+\[
+W(\diag(g,1)\,u_Q)=\psi^{-1}(Q\,g_{n,n})\,W(\diag(g,1)).
+\]
+\end{lemma}
+
+\begin{proof}
+Set $\iota(g)=\diag(g,1)$.
+Write
+\[
+\iota(g)\,u_Q=\bigl(\iota(g)\,u_Q\,\iota(g)^{-1}\bigr)\,\iota(g).
+\]
+Since $u_Q=I_{n+1}+Q E_{n,n+1}$, a direct computation gives
+\[
+\iota(g)\,E_{n,n+1}\,\iota(g)^{-1}=\sum_{i=1}^n g_{i,n}\,E_{i,n+1},
+\]
+hence
+\[
+x:=\iota(g)\,u_Q\,\iota(g)^{-1}
+=I_{n+1}+Q\sum_{i=1}^n g_{i,n}E_{i,n+1}\in \N{n+1}.
+\]
+The generic character $\psi_{n+1}$ depends only on the superdiagonal entries $(i,i+1)$.
+Among the matrix units $E_{i,n+1}$, only $E_{n,n+1}$ lies on the superdiagonal; thus
+\[
+\psi_{n+1}(x)=\psi(Q\,g_{n,n}).
+\]
+Using Whittaker equivariance $W(ux)=\psi_{n+1}^{-1}(u)\,W(x)$ for $u\in \N{n+1}$ yields
+\[
+W(\iota(g)u_Q)=W(x\,\iota(g))=\psi_{n+1}^{-1}(x)\,W(\iota(g))=\psi^{-1}(Q\,g_{n,n})\,W(\iota(g)),
+\]
+as claimed.
+\end{proof}
+
+\section{Kirillov models and extension of compactly supported data}
+
+Let $P_{n+1}\subset \GL_{n+1}(F)$ be the \emph{mirabolic} subgroup (matrices whose last row equals $e_{n+1}$).
+Every element of $P_{n+1}$ has a unique block decomposition
+\[
+p=\begin{pmatrix} g & x \\ 0 & 1\end{pmatrix},\qquad g\in \GL_n(F),\ x\in F^n.
+\]
+
+\begin{definition}
+Let $H\subseteq G$ be closed and $\chi$ a character of $H$.
+We write $\cInd_H^G(\chi)$ for the space of locally constant functions $f:G\to\mathbb{C}$
+such that $f(hg)=\chi(h)f(g)$ for $h\in H$, and whose support is compact modulo $H$.
+\end{definition}
+
+The following identification is a standard and elementary observation.
+
+\begin{lemma}\label{lem:cind-identification}
+Restriction to the Levi embedding $\iota:\GL_n(F)\hookrightarrow P_{n+1}$ induces an isomorphism
+\[
+\cInd_{\N{n+1}}^{P_{n+1}}(\psi_{n+1}^{-1})\ \xrightarrow{\ \sim\ }\ \cInd_{\N{n}}^{\GL_n(F)}(\psi_n^{-1}),
+\qquad F\longmapsto \bigl(g\mapsto F(\diag(g,1))\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Given $f\in \cInd_{\N{n}}^{\GL_n(F)}(\psi_n^{-1})$, define $F:P_{n+1}\to\mathbb{C}$ by
+\[
+F\!\left(\begin{pmatrix} g & x \\ 0 & 1\end{pmatrix}\right):=\psi^{-1}(x_n)\,f(g),
+\]
+where $x_n$ is the last coordinate of the column vector $x$.
+One checks directly that $F$ is locally constant, compactly supported modulo $\N{n+1}$ if and only if
+$f$ is compactly supported modulo $\N{n}$, and that $F$ satisfies $F(up)=\psi_{n+1}^{-1}(u)F(p)$ for all $u\in\N{n+1}$.
+Moreover, $F(\diag(g,1))=f(g)$. This constructs an inverse to restriction, and the two maps are inverse isomorphisms.
+\end{proof}
+
+We now invoke the Kirillov model theorem for $p$-adic $\GL_{n+1}$ in the precise form needed here.
+
+\begin{theorem}[Gelfand--Kazhdan; Kirillov model contains compact induction]\label{thm:GK}
+Let $\Pi$ be a generic irreducible admissible representation of $\GL_{n+1}(F)$ and realize it in its Whittaker model
+$\W(\Pi,\psi_{n+1}^{-1})\subset \Ind_{\N{n+1}}^{\GL_{n+1}(F)}(\psi_{n+1}^{-1})$.
+Then the restriction map to the mirabolic subgroup,
+\[
+\mathrm{Res}_{P_{n+1}}:\W(\Pi,\psi_{n+1}^{-1})\longrightarrow \Ind_{\N{n+1}}^{P_{n+1}}(\psi_{n+1}^{-1}),
+\qquad W\mapsto W|_{P_{n+1}},
+\]
+has image containing the compact induction $\cInd_{\N{n+1}}^{P_{n+1}}(\psi_{n+1}^{-1})$.
+\end{theorem}
+
+\begin{proof}[Proof (reference)]
+This is a classical Kirillov model statement for $p$-adic $\GL_{n+1}$ due to Gelfand--Kazhdan \cite{GK75}.
+For a modern discussion of Kirillov models via Bernstein--Zelevinsky derivatives and restriction to mirabolic subgroups,
+see also \cite[\S 3]{KM18}. (We do not reprove the Kirillov model theorem here.)
+\end{proof}
+
+\begin{corollary}[Extension to the embedded Levi]\label{cor:extension-to-Levi}
+For every $f\in \cInd_{\N{n}}^{\GL_n(F)}(\psi_n^{-1})$ there exists $W\in \W(\Pi,\psi_{n+1}^{-1})$ such that
+\[
+W(\diag(g,1))=f(g)\qquad \text{for all }g\in \GL_n(F).
+\]
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:cind-identification}, $f$ corresponds to a function $F\in \cInd_{\N{n+1}}^{P_{n+1}}(\psi_{n+1}^{-1})$
+whose restriction to $\diag(\GL_n(F),1)$ is $f$. By Theorem~\ref{thm:GK} there exists
+$W\in\W(\Pi,\psi_{n+1}^{-1})$ with $W|_{P_{n+1}}=F$, hence $W(\diag(g,1))=f(g)$ for all $g$.
+\end{proof}
+
+\section{A conductor-bounded test function on $\GL_n$ and its lift to $\GL_{n+1}$}
+
+Fix $m\ge 0$. Define $f_m:\GL_n(F)\to\mathbb{C}$ by
+\begin{equation}\label{eq:def-fm}
+f_m(uk)=\psi_n^{-1}(u)\quad (u\in \N{n},\ k\in K_1(\pp^m)),\qquad
+f_m(g)=0\quad \text{if }g\notin \N{n}K_1(\pp^m).
+\end{equation}
+
+\begin{lemma}\label{lem:fm-well-defined}
+The function $f_m$ is well-defined and lies in $\cInd_{\N{n}}^{\GL_n(F)}(\psi_n^{-1})$.
+Moreover, $\N{n}\cap K_1(\pp^m)=\N{n}(\oo)$.
+\end{lemma}
+
+\begin{proof}
+If $uk=u'k'$ with $u,u'\in\N{n}$ and $k,k'\in K_1(\pp^m)$, then $k^{-1}k'=u^{-1}u'\in \N{n}\cap K_1(\pp^m)$.
+Since $K_1(\pp^m)\subseteq \GL_n(\oo)$, we have $\N{n}\cap K_1(\pp^m)\subseteq \N{n}(\oo)$.
+Conversely, any $u\in\N{n}(\oo)$ has last row $e_n$, hence lies in $K_1(\pp^m)$, so $\N{n}(\oo)\subseteq \N{n}\cap K_1(\pp^m)$.
+Thus $\N{n}\cap K_1(\pp^m)=\N{n}(\oo)$.
+
+Because $\psi$ has conductor $\oo$, it is trivial on $\oo$, hence $\psi_n$ is trivial on $\N{n}(\oo)$.
+Therefore $\psi_n^{-1}(u)=\psi_n^{-1}(u')$, and \eqref{eq:def-fm} is well-defined.
+
+The support of $f_m$ modulo $\N{n}$ is contained in $K_1(\pp^m)$, which is compact, and $f_m$ is locally constant
+(right $K_1(\pp^m)$-invariant). Hence $f_m\in \cInd_{\N{n}}^{\GL_n(F)}(\psi_n^{-1})$.
+\end{proof}
+
+\begin{proposition}\label{prop:Wm-exists}
+For each $m\ge 0$ there exists $W_m\in\W(\Pi,\psi_{n+1}^{-1})$ such that
+\[
+W_m(\diag(g,1))=f_m(g)\qquad (g\in \GL_n(F)).
+\]
+\end{proposition}
+
+\begin{proof}
+Apply Corollary~\ref{cor:extension-to-Levi} to $f=f_m$.
+\end{proof}
+
+\section{Whittaker newforms on $\GL_n$}
+
+Let $\pi$ be a generic irreducible admissible representation of $\GL_n(F)$ with conductor ideal $\qq(\pi)=\pp^{a(\pi)}$.
+
+\begin{proposition}[Whittaker newforms]\label{prop:newform}
+There exists $V\in\W(\pi,\psi_n)$ (unique up to scalars) that is right $K_1(\pp^{a(\pi)})$-invariant.
+Moreover, one may normalize it so that $V(1)=1$, and then $V(k)=1$ for all $k\in K_1(\pp^{a(\pi)})$.
+\end{proposition}
+
+\begin{proof}[Proof (reference)]
+The existence and uniqueness (up to scalars) of the $K_1(\pp^{a(\pi)})$-fixed newvector is standard local newform theory
+for $\GL_n$ \cite{JPSS81}. Translating the newvector to the Whittaker model and normalizing $V(1)=1$ requires that the
+corresponding Whittaker newform does not vanish at the identity, a nontrivial fact proved in explicit newform computations;
+see, e.g., \cite{Miyauchi14} and \cite{Matringe13}. For such a normalized $V$, right invariance implies $V(k)=V(1)=1$ on $K_1(\pp^{a(\pi)})$.
+\end{proof}
+
+\section{Phase collapse and evaluation of the shifted integral}
+
+\begin{lemma}\label{lem:psi-constant}
+Let $m\ge 0$ and let $a\ge 0$. Suppose $Q\in \pp^{-a}$.
+If $m\ge a$ and $k\in K_1(\pp^m)$, then
+\[
+\psi(Q\,k_{n,n})=\psi(Q).
+\]
+\end{lemma}
+
+\begin{proof}
+For $k\in K_1(\pp^m)$ we have $k_{n,n}\equiv 1\pmod{\pp^m}$, hence $k_{n,n}=1+t$ with $t\in \pp^m$.
+Then $Qk_{n,n}=Q+Qt$ with $Qt\in \pp^{m-a}\subseteq \oo$ because $m\ge a$.
+Since $\psi$ is trivial on $\oo$, we get $\psi(Q+Qt)=\psi(Q)$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Let $W_m$ be as in Proposition~\ref{prop:Wm-exists} and $V$ be the normalized Whittaker newform of $\pi$.
+By Lemma~\ref{lem:shift-factor} and the defining property of $W_m$,
+\[
+W_m(\diag(g,1)u_Q)=\psi^{-1}(Q g_{n,n})\,W_m(\diag(g,1))
+=\psi^{-1}(Q g_{n,n})\,f_m(g).
+\]
+Hence the integrand in \eqref{eq:shifted-RS} is supported on $\N{n}K_1(\pp^m)$.
+Since $K_1(\pp^m)$ is compact, the quotient $\N{n}\backslash \N{n}K_1(\pp^m)$ is compact; thus the integral is absolutely
+convergent for all $s\in\mathbb{C}$.
+
+On the support, write $g=uk$ with $u\in\N{n}$ and $k\in K_1(\pp^m)$.
+Because the last row of $u$ is $e_n$, one has $(uk)_{n,n}=k_{n,n}$.
+Moreover $\det(u)=1$ and $k\in \GL_n(\oo)$, hence $\abs{\det g}=\abs{\det k}=1$, so $\abs{\det g}^{s-\frac12}\equiv 1$.
+
+Using the definition of $f_m$ and the Whittaker transformation of $V$,
+\[
+f_m(uk)=\psi_n^{-1}(u),\qquad V(uk)=\psi_n(u)\,V(k),
+\]
+so $f_m(uk)\,V(uk)=V(k)$.
+Also Lemma~\ref{lem:psi-constant} (with $a=a(\pi)\le m$) gives $\psi(Qk_{n,n})=\psi(Q)$, hence
+$\psi^{-1}(Q(uk)_{n,n})=\psi^{-1}(Q)$.
+Therefore, on $\N{n}K_1(\pp^m)$ the integrand equals the constant $\psi^{-1}(Q)\,V(k)$.
+
+Since $\N{n}\cap K_1(\pp^m)=\N{n}(\oo)$ by Lemma~\ref{lem:fm-well-defined}, we have the standard identification
+\[
+\N{n}\backslash \N{n}K_1(\pp^m)\ \simeq\ (\N{n}\cap K_1(\pp^m))\backslash K_1(\pp^m)
+\ =\ \N{n}(\oo)\backslash K_1(\pp^m),
+\]
+and hence
+\[
+Z(W_m,V,s;Q)=\psi^{-1}(Q)\int_{\N{n}(\oo)\backslash K_1(\pp^m)} V(k)\,dk.
+\]
+Finally, since $a(\pi)\le m$, we have $K_1(\pp^m)\subseteq K_1(\pp^{a(\pi)})$, so $V$ is right $K_1(\pp^m)$-invariant and normalized by $V(1)=1$;
+thus $V(k)=1$ for all $k\in K_1(\pp^m)$. Therefore
+\[
+Z(W_m,V,s;Q)=\psi^{-1}(Q)\cdot \vol\!\bigl(\N{n}(\oo)\backslash K_1(\pp^m)\bigr),
+\]
+which is a nonzero constant (a nonzero complex unit times a strictly positive real volume).
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:pairwise}]
+Given $\pi$, take $m=a(\pi)$ and apply Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{remark}[On Haar measures]
+The constant $\vol(\N{n}(\oo)\backslash K_1(\pp^m))$ depends on Haar normalizations.
+However, it is always finite and strictly positive; hence the nonvanishing is independent of the choice of measures.
+\end{remark}
+
+\begin{remark}[On the universal-$W$ problem]
+Theorem~\ref{thm:main} produces a family $\{W_m\}_{m\ge 0}$ uniform for representations $\pi$ with $a(\pi)\le m$.
+It does \emph{not} assert the existence of a single $W$ working simultaneously for all conductors.
+The topological obstruction in \S 3 shows why naive attempts to force compact support by restricting to an ``exact mirabolic''
+subgroup cannot work in the smooth setting.
+\end{remark}
+
+% ------------------- bibliography -------------------
+\begin{thebibliography}{99}
+
+\bibitem{BZ77}
+I.\,N.~Bernstein and A.\,V.~Zelevinsky,
+\emph{Induced representations of reductive $p$-adic groups. I},
+Ann.\ Sci.\ \'Ec.\ Norm.\ Sup.\ (4) \textbf{10} (1977), 441--472.
+
+\bibitem{GK75}
+I.\,M.~Gelfand and D.\,A.~Kazhdan,
+\emph{Representations of the group $\GL(n,K)$ where $K$ is a local field},
+in: \emph{Lie Groups and Their Representations} (Proc.\ Summer School, Bolyai J\'anos Math.\ Soc., Budapest, 1971),
+Halsted Press, New York, 1975, pp.~95--118.
+
+\bibitem{JPSS81}
+H.~Jacquet, I.\,I.~Piatetski-Shapiro, and J.~Shalika,
+\emph{Conducteur des repr\'esentations du groupe lin\'eaire},
+Math.\ Ann.\ \textbf{256} (1981), 199--214.
+
+\bibitem{KM18}
+R.~Kurinczuk and N.~Matringe,
+\emph{Extension of Whittaker functions and test vectors},
+Research in Number Theory \textbf{4} (2018), Article~31.
+
+\bibitem{Matringe13}
+N.~Matringe,
+\emph{Essential Whittaker functions for $\GL(n)$},
+Documenta Math.\ \textbf{18} (2013), 1191--1214.
+
+\bibitem{Miyauchi14}
+M.~Miyauchi,
+\emph{Whittaker functions associated to newforms for $\GL(n)$ over $p$-adic fields},
+J.\ Math.\ Soc.\ Japan \textbf{66} (2014), no.~1, 17--24.
+
+\end{thebibliography}
+
+\end{document}

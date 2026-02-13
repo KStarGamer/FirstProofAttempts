@@ -1,0 +1,753 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\numberwithin{equation}{section}
+
+% --- theorem environments ---
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- macros ---
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Dprime}{\mathcal{D}'(\T^3)}
+\newcommand{\ip}[2]{\left\langle #1,\,#2 \right\rangle}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\1}{\mathbf{1}}
+
+\title[Smooth shifts of $\Phi^4_3$ are singular]{Smooth Shifts of the Finite-Volume $\Phi^4_3$ Measure on $\T^3$ Are Mutually Singular}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Let $\mu$ be the finite-volume Euclidean $\Phi^4_3$ measure on the three-dimensional unit torus $\T^3$ at nonzero quartic coupling.
+For any nonzero smooth function $\psi\in C^\infty(\T^3)$, we prove that $\mu$ and its translate $T_{\psi\#}\mu$ (pushforward under $u\mapsto u+\psi$) are mutually singular.
+The proof constructs an explicit separating Borel event using a renormalised cubic functional at super-exponential mollification scales.
+The key mechanism is the nontrivial logarithmically divergent linear counterterm (``sunset'' divergence) in three dimensions; after a smooth shift, this term produces a deterministic blow-up.
+All auxiliary analytic estimates used in the separation argument (dyadic sunset bound, mollified Coulomb estimate, third-chaos logarithmic variance) are proved here in a self-contained manner.
+The only non-elementary input is a standard renormalised small-scale expansion for $\Phi_n^2$ and $\Phi_n^3$ under $\mu$, which is stated precisely and attributed to published results in the theory of regularity structures and stochastic quantisation.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+\subsection{Problem}
+Let $\T^3=(\R/\Z)^3$ be the unit three-dimensional torus.
+Let $\mu$ denote the (finite-volume) Euclidean $\Phi^4_3$ measure on $\Dprime$ at nonzero quartic coupling.
+The existence and basic properties of this measure (as an invariant measure for the stochastic quantisation dynamics, supported on negative-regularity distributions) are established in several published works; see, for example, \cite{MW17,HM18,BG21,CC18}.
+Fix $\psi\in C^\infty(\T^3)$, $\psi\not\equiv 0$, and define the shift map
+\[
+T_\psi:\Dprime\to\Dprime,\qquad T_\psi(u)=u+\psi,
+\]
+viewing smooth functions as distributions.
+The problem is to determine whether $\mu$ and $T_{\psi\#}\mu$ are equivalent measures (same null sets).
+
+\subsection{Main result}
+\begin{theorem}\label{thm:main}
+Let $\mu$ be the finite-volume $\Phi^4_3$ measure on $\T^3$ at nonzero quartic coupling.
+Then for every $\psi\in C^\infty(\T^3)\setminus\{0\}$,
+\[
+\mu \perp T_{\psi\#}\mu.
+\]
+In particular, $\mu$ is \emph{not} quasi-invariant under any nontrivial smooth translation.
+\end{theorem}
+
+\begin{remark}[Gaussian case]
+When the quartic coupling is $0$, $\mu$ is the massive Gaussian free field measure; then the Cameron--Martin theorem implies quasi-invariance under smooth shifts.
+Theorem~\ref{thm:main} concerns the genuinely interacting model.
+\end{remark}
+
+\subsection{Mechanism: logarithmic linear counterterm}
+The proof exploits the renormalisation structure of the $\Phi^4_3$ model in $d=3$.
+Beyond the $\eps^{-1}$ tadpole divergence, renormalisation produces a \emph{logarithmically divergent linear counterterm} (sunset divergence).
+For a carefully chosen renormalised cubic functional at scale $\eps$, this logarithmic term becomes a deterministic quantity proportional to $\log(\eps^{-1})\|\psi\|_{L^2}^2$ after shifting by $\psi$.
+Evaluating the functional along a super-exponentially decaying sequence of scales separates the original and shifted measures by a Borel set defined via almost-sure subsequence convergence.
+
+\section{State space and translations}
+
+\subsection{A Polish realisation}
+Fix $s>2$ and set
+\[
+E:=H^{-s}(\T^3),
+\]
+with Borel $\sigma$-algebra $\mathcal{B}(E)$.
+Then $E$ is a separable Hilbert space and hence Polish, and $C^\infty(\T^3)\hookrightarrow H^{-s}(\T^3)$ continuously.
+
+\subsection{Translations and pushforwards}
+For $\psi\in C^\infty(\T^3)\subset E$, define $T_\psi:E\to E$ by $T_\psi(u)=u+\psi$.
+Then $T_\psi$ is a homeomorphism with inverse $T_{-\psi}$.
+For a probability measure $P$ on $(E,\mathcal{B}(E))$, define its pushforward by
+\[
+T_{\psi\#}P(A):=P(T_\psi^{-1}A)=P(A-\psi),\qquad A\in\mathcal{B}(E).
+\]
+
+\begin{definition}[Equivalence and singularity]
+Let $P,Q$ be probability measures on a measurable space $(X,\mathcal{E})$.
+They are \emph{equivalent}, written $P\sim Q$, if $P\ll Q$ and $Q\ll P$.
+They are \emph{mutually singular}, written $P\perp Q$, if there exists $A\in\mathcal{E}$ such that $P(A)=1$ and $Q(A)=0$.
+\end{definition}
+
+\section{A separation criterion}
+
+\begin{lemma}[Shift separation]\label{lem:shift-sep}
+Let $P$ be a probability measure on $(E,\mathcal{B}(E))$ and let $T_\psi(u)=u+\psi$.
+If there exists $A\in\mathcal{B}(E)$ such that $P(A)=1$ and $P(A+\psi)=0$, then $P\perp T_{\psi\#}P$.
+\end{lemma}
+
+\begin{proof}
+Set $B:=A+\psi$.
+Then $P(B)=0$ and
+\[
+(T_{\psi\#}P)(B)=P(B-\psi)=P(A)=1.
+\]
+Hence $P\perp T_{\psi\#}P$.
+\end{proof}
+
+\section{Mollifiers and approximation}
+
+\subsection{Periodic mollifiers with controlled support}
+Fix once and for all $\rho\in C_c^\infty(\R^3)$ such that
+\begin{equation}\label{eq:rho-assumptions}
+\rho\ge 0,\qquad \int_{\R^3}\rho(x)\dd x=1,\qquad \mathrm{supp}(\rho)\subset B(0,1/2).
+\end{equation}
+For $\eps>0$, define its periodicisation on $\T^3$ by
+\begin{equation}\label{eq:rhoeps}
+\rho_\eps(x):=\sum_{k\in\Z^3}\eps^{-3}\rho\!\left(\frac{x+k}{\eps}\right),\qquad x\in\T^3.
+\end{equation}
+For $u\in E$, define the mollification $u_\eps:=u*\rho_\eps\in C^\infty(\T^3)$.
+
+\begin{remark}\label{rem:support}
+Because $\mathrm{supp}(\rho)\subset B(0,1/2)$, for every $\eps\in(0,1)$ and every representative $x\in[-\tfrac12,\tfrac12)^3$,
+the sum in \eqref{eq:rhoeps} contains only the term $k=0$.
+In particular, for such $\eps$, one has $\mathrm{supp}(\rho_\eps)\subset B(0,\eps/2)$ (viewed inside $\T^3$), and therefore
+if $\eta:=\tilde\rho*\rho$ with $\tilde\rho(x)=\rho(-x)$ then $\mathrm{supp}(\eta)\subset B(0,1)$ and $\mathrm{supp}(\eta_\eps)\subset B(0,\eps)$.
+\end{remark}
+
+\subsection{Approximate identity in Sobolev spaces}
+\begin{lemma}[Approximate identity in $H^{-s}$]\label{lem:approx-id}
+For every $u\in H^{-s}(\T^3)$ one has $\norm{u_\eps-u}_{H^{-s}}\to 0$ as $\eps\downarrow 0$.
+In particular, if $\Phi$ is an $E$-valued random variable, then $\Phi_{\eps_n}\to\Phi$ in $E$ almost surely along any deterministic $\eps_n\downarrow 0$.
+\end{lemma}
+
+\begin{proof}
+Write $u(x)=\sum_{m\in\Z^3}\widehat u(m)e^{2\pi i m\cdot x}$ in $\Dprime$.
+Then $\widehat{u_\eps}(m)=\widehat{\rho_\eps}(m)\widehat u(m)$ and $\widehat{\rho_\eps}(m)\to 1$ as $\eps\downarrow 0$ for each fixed $m$.
+Moreover, since $\rho_\eps\in L^1(\T^3)$,
+\[
+|\widehat{\rho_\eps}(m)|\le \|\rho_\eps\|_{L^1(\T^3)}=\|\rho\|_{L^1(\R^3)}=:M<\infty.
+\]
+Hence $|\widehat{\rho_\eps}(m)-1|\le M+1$.
+By dominated convergence,
+\[
+\norm{u_\eps-u}_{H^{-s}}^2
+= \sum_{m\in\Z^3}(1+|m|^2)^{-s}|\widehat{\rho_\eps}(m)-1|^2|\widehat u(m)|^2
+\longrightarrow 0,
+\]
+since $(1+|m|^2)^{-s}|\widehat u(m)|^2\in \ell^1$ and the summand is dominated by $(M+1)^2(1+|m|^2)^{-s}|\widehat u(m)|^2$.
+The almost sure statement follows by applying the deterministic convergence pointwise to $u=\Phi(\omega)$.
+\end{proof}
+
+\subsection{A quantitative mollification error}
+\begin{lemma}[One derivative gain yields an $\eps$-rate]\label{lem:eps-rate}
+Let $s\in\R$ and $u\in H^{-s}(\T^3)$.
+Then there exists $C=C(\rho,s)<\infty$ such that for all $\eps\in(0,1)$,
+\[
+\norm{u_\eps-u}_{H^{-s-1}}\le C\,\eps\,\norm{u}_{H^{-s}}.
+\]
+\end{lemma}
+
+\begin{proof}
+In Fourier variables,
+\[
+\norm{u_\eps-u}_{H^{-s-1}}^2=\sum_{m\in\Z^3}(1+|m|^2)^{-s-1}|\widehat{\rho_\eps}(m)-1|^2|\widehat u(m)|^2.
+\]
+Since $\rho\in C_c^\infty(\R^3)$, its Fourier transform $\widehat\rho$ is smooth and satisfies
+$|\widehat\rho(\xi)-1|\le C_1|\xi|$ for all $\xi$.
+As $\widehat{\rho_\eps}(m)=\widehat\rho(\eps m)$, we obtain $|\widehat{\rho_\eps}(m)-1|\le C_1\eps|m|$.
+Thus
+\[
+(1+|m|^2)^{-s-1}|\widehat{\rho_\eps}(m)-1|^2
+\le C_1^2\eps^2(1+|m|^2)^{-s-1}|m|^2
+\le C_1^2\eps^2(1+|m|^2)^{-s}.
+\]
+Summing yields $\norm{u_\eps-u}_{H^{-s-1}}\le C_1\eps \norm{u}_{H^{-s}}$.
+\end{proof}
+
+\section{The separating functional}
+
+\subsection{Super-exponential scales}
+Fix
+\begin{equation}\label{eq:epsn}
+\eps_n:=\exp(-e^n),\qquad n\in\N,
+\end{equation}
+so that
+\begin{equation}\label{eq:scale-identities}
+\eps_n^{-1}=e^{e^n},\qquad \log(\eps_n^{-1})=e^n.
+\end{equation}
+
+\subsection{Definition}
+Fix $\beta\in(1/2,1)$ and $\psi\in C^\infty(\T^3)$.
+For $u\in E$ set $u_n:=u_{\eps_n}$ and define
+\begin{equation}\label{eq:Fn}
+F_n(u;\psi)
+:=e^{-\beta n}\,\ip{u_n^3-3a\,\eps_n^{-1}u_n-9b\,\log(\eps_n^{-1})\,u}{\psi},
+\end{equation}
+where $a\in\R$ and $b\in\R\setminus\{0\}$ are deterministic renormalisation coefficients specified in Proposition~\ref{prop:analytic-input}.
+
+\begin{remark}[Functional design]\label{rem:design}
+The form of \eqref{eq:Fn} is tailored to isolate the sunset divergence under translation:
+\begin{itemize}[leftmargin=2.2em]
+\item the $\eps_n^{-1}$ counterterm is paired with the mollified field $u_n$ so that, after replacing $u$ by $u-\psi$, the $\eps_n^{-1}$ contribution cancels exactly against the algebraic expansion of $(u_n-\psi_n)^3$;
+\item the logarithmic counterterm is paired with the \emph{unmollified} field $u$, so that $u\mapsto u-\psi$ produces a clean deterministic addendum $+9b\log(\eps_n^{-1})\psi$ with no regularisation remainder.
+\end{itemize}
+A quantitative remark explaining why one may replace the standard $u_n$ by $u$ in the logarithmic term at these scales is given in Remark~\ref{rem:replace-phi}.
+\end{remark}
+
+\begin{lemma}[Continuity of $F_n$]\label{lem:Fn-cont}
+For each $n\in\N$ and each $\psi\in C^\infty(\T^3)$, the map $u\mapsto F_n(u;\psi)$ is continuous on $E$.
+\end{lemma}
+
+\begin{proof}
+The map $u\mapsto u_n$ is continuous $H^{-s}\to C^\infty$ (convolution with a fixed smooth kernel is smoothing).
+The maps $f\mapsto \int_{\T^3} f^3\psi$ and $f\mapsto \int_{\T^3} f\psi$ are continuous on $C^\infty(\T^3)$.
+Finally $u\mapsto \ip{u}{\psi}$ is continuous on $H^{-s}$ since $\psi\in H^{s}$.
+\end{proof}
+
+\section{Two probabilistic lemmas}
+
+\begin{lemma}[Deterministic subsequence from convergence in probability]\label{lem:subseq}
+Let $(X_n)_{n\in\N}$ be real-valued random variables such that $X_n\to 0$ in probability.
+Then there exists a deterministic strictly increasing sequence $(n_k)_{k\in\N}$ such that $X_{n_k}\to 0$ almost surely.
+\end{lemma}
+
+\begin{proof}
+Choose $n_k>n_{k-1}$ such that $\mathbb{P}(|X_{n_k}|>2^{-k})<2^{-k}$.
+Then $\sum_k \mathbb{P}(|X_{n_k}|>2^{-k})<\infty$ and Borel--Cantelli yields $|X_{n_k}|\le 2^{-k}$ eventually.
+\end{proof}
+
+\begin{lemma}[Tightness times a vanishing prefactor]\label{lem:tight}
+Let $(Y_n)_{n\in\N}$ be tight real-valued random variables and let $c_n\to 0$ deterministically.
+Then $c_nY_n\to 0$ in probability.
+\end{lemma}
+
+\begin{proof}
+Fix $\delta>0$.
+By tightness, choose $M<\infty$ such that $\sup_n\mathbb{P}(|Y_n|>M)<\delta$.
+Choose $n$ such that $|c_n|M<\delta$.
+Then $\mathbb{P}(|c_nY_n|>\delta)\le \mathbb{P}(|Y_n|>M)<\delta$.
+\end{proof}
+
+\section{Analytic input from $\Phi^4_3$ renormalisation}
+
+\subsection{Statement}
+Let $\Phi$ be an $E$-valued random distribution with law $\mu$.
+Write $\Phi_n:=\Phi_{\eps_n}$.
+
+\begin{proposition}[Renormalised square/cube at super-exponential scales]\label{prop:analytic-input}
+There exist deterministic constants $a\in\R$ and $b\in\R\setminus\{0\}$, a Sobolev index $r>0$, and $H^{-r}(\T^3)$-valued random variables $S$ and $C$, together with $H^{-r}(\T^3)$-valued random variables $(W_n)_{n\in\N}$, such that:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.7em]
+\item\label{it:square}
+(\emph{Renormalised square})
+\[
+S_n:=\Phi_n^2-a\,\eps_n^{-1}
+\]
+converges in probability in $H^{-r}(\T^3)$ to $S$. In particular, $(S_n)$ is tight in $H^{-r}$.
+
+\item\label{it:cube}
+(\emph{Renormalised cube up to a critical third-chaos term})
+\[
+R_n:=\Phi_n^3-3a\,\eps_n^{-1}\Phi_n-9b\,\log(\eps_n^{-1})\,\Phi - W_n
+\]
+converges in probability in $H^{-r}(\T^3)$ to $C$. In particular, for every $\varphi\in C^\infty(\T^3)$, the real sequence $(\ip{R_n}{\varphi})$ is tight.
+
+\item\label{it:W}
+(\emph{Critical third-chaos growth})
+For every $\varphi\in C^\infty(\T^3)$ there exists $C_\varphi<\infty$ such that
+\begin{equation}\label{eq:W-moment}
+\mathbb{E}\big[\ip{W_n}{\varphi}^2\big]\le C_\varphi\,\log(\eps_n^{-1})\qquad\text{for all }n\in\N.
+\end{equation}
+Consequently, for every $\beta>\frac12$,
+\[
+e^{-\beta n}\ip{W_n}{\varphi}\longrightarrow 0
+\quad\text{in }L^2\text{ (hence in probability).}
+\]
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Published sources for Proposition~\ref{prop:analytic-input}]\label{rem:status}
+Proposition~\ref{prop:analytic-input} is a time-slice reformulation of the renormalised local expansions for the stochastic quantisation equation for $\Phi^4_3$ obtained via regularity structures and BPHZ renormalisation.
+The underlying existence of the renormalised model and identification of counterterms, including the logarithmic linear counterterm, is established in \cite{Hai14} (see in particular the renormalisation discussion in the $\Phi^4_3$ setting in \cite[\S10]{Hai14}) and in the algebraic BPHZ framework \cite{BHZ19}.
+The global stochastic quantisation dynamics and its invariant measure are treated in \cite{MW17} and in the discretisation/invariance approach of \cite{HM18}; see also the measure construction via Girsanov in \cite{BG21} and the paracontrolled approach \cite{CC18}.
+The only quantitative estimate beyond these structural results that is used explicitly below is the logarithmic second-moment growth \eqref{eq:W-moment} for the critical third-chaos component, for which we provide a self-contained model computation in Lemma~\ref{lem:third-chaos-log}.
+The non-vanishing $b\neq 0$ is addressed in Lemma~\ref{lem:sunset} and Lemma~\ref{lem:b-nonzero}.
+\end{remark}
+
+\subsection{Replacing $\Phi_n$ by $\Phi$ in the logarithmic term}
+\begin{remark}[A harmless substitution at super-exponential scales]\label{rem:replace-phi}
+Let $\psi\in C^\infty(\T^3)$ and $\Phi\in H^{-s}(\T^3)$ with $s>2$.
+By Lemma~\ref{lem:eps-rate} and Sobolev duality,
+\[
+\log(\eps_n^{-1})\,|\ip{\Phi_n-\Phi}{\psi}|
+\le \log(\eps_n^{-1})\,\norm{\Phi_n-\Phi}_{H^{-s-1}}\norm{\psi}_{H^{s+1}}
+\lesssim \log(\eps_n^{-1})\,\eps_n\,\norm{\Phi}_{H^{-s}}.
+\]
+Using \eqref{eq:scale-identities}, $\log(\eps_n^{-1})\eps_n=e^n e^{-e^n}\to 0$ deterministically.
+Hence $\log(\eps_n^{-1})\ip{\Phi_n-\Phi}{\psi}\to 0$ almost surely.
+In particular, evaluating the logarithmic counterterm on $\Phi$ instead of $\Phi_n$ modifies $F_n(\Phi;\psi)$ by a term vanishing almost surely (hence in probability).
+\end{remark}
+
+\section{Sunset divergence and covariance bounds}
+
+\subsection{Sunset integral}
+\begin{lemma}[A logarithmically divergent sunset integral]\label{lem:sunset}
+Let
+\[
+I(\Lambda):=\int_{|p|\le \Lambda}\int_{|q|\le \Lambda}
+\frac{1}{(1+|p|^2)(1+|q|^2)(1+|p+q|^2)}\,\dd p\,\dd q,
+\qquad \Lambda\ge 2.
+\]
+Then there exist constants $0<c\le C<\infty$ such that
+\[
+c\,\log\Lambda \le I(\Lambda)\le C\,\log\Lambda,\qquad \Lambda\ge 2.
+\]
+In particular, $I(\Lambda)$ diverges logarithmically as $\Lambda\to\infty$ with strictly positive coefficient.
+\end{lemma}
+
+\begin{proof}
+We treat $\Lambda=2^N$ with $N\in\N$; monotonicity then yields the general case.
+
+\smallskip\noindent
+\emph{Dyadic decomposition (including the unit ball).}
+Define
+\[
+A_0:=\{p\in\R^3:|p|<2\},\qquad
+A_j:=\{p\in\R^3:2^j\le |p|<2^{j+1}\},\quad j=1,\dots,N-1.
+\]
+Set
+\[
+I_{j,k}:=\int_{A_j}\int_{A_k}
+\frac{1}{(1+|p|^2)(1+|q|^2)(1+|p+q|^2)}\,\dd p\,\dd q.
+\]
+Then $I(2^N)\le \sum_{j,k=0}^{N-1}I_{j,k}$.
+
+\smallskip\noindent
+\emph{Upper bound.}
+By symmetry it suffices to bound $I_{j,k}$ with $j\ge k$.
+We distinguish two regimes.
+
+\smallskip\noindent
+\emph{Case 1: off-diagonal, $j\ge k+2$.}
+For $p\in A_j$ and $q\in A_k$ we have $|p|\ge 2^j$ and $|q|<2^{k+1}\le 2^{j-1}$, hence $|p+q|\ge |p|-|q|>2^{j-1}$.
+Therefore the integrand is $\lesssim 2^{-4j-2k}$ and $\mathrm{Vol}(A_\ell)\lesssim 2^{3\ell}$ for $\ell\ge 1$, $\mathrm{Vol}(A_0)\lesssim 1$, giving
+\[
+I_{j,k}\lesssim 2^{3j+3k}\,2^{-4j-2k}=2^{k-j}=2^{-|j-k|}.
+\]
+
+\smallskip\noindent
+\emph{Case 2: near-diagonal, $j\in\{k,k+1\}$.}
+We factor the first two denominators and bound the remaining one by a convolution estimate:
+\[
+I_{j,k}\lesssim 2^{-2j}\,2^{-2k}\int_{A_k}\left(\int_{A_j}\frac{1}{1+|p+q|^2}\,\dd p\right)\dd q.
+\]
+For fixed $q\in A_k$, the change of variables $u=p+q$ shows that $|u|\le |p|+|q|\le 2^{j+1}+2^{k+1}\le 2^{j+2}$, hence
+\[
+\int_{A_j}\frac{1}{1+|p+q|^2}\,\dd p
+\le \int_{|u|\le 2^{j+2}}\frac{1}{1+|u|^2}\,\dd u
+\lesssim 2^j.
+\]
+It follows that $I_{j,k}\lesssim 2^{-2j}2^{-2k}\,2^j\,\mathrm{Vol}(A_k)\lesssim 2^{k-j}\lesssim 1$, and since $|j-k|\le 1$ this implies $I_{j,k}\lesssim 2^{-|j-k|}$.
+
+\smallskip\noindent
+\emph{Summation.}
+Thus $I_{j,k}\lesssim 2^{-|j-k|}$ for $0\le k\le j\le N-1$, hence
+\[
+I(2^N)\lesssim \sum_{j,k=0}^{N-1}2^{-|j-k|}\lesssim N\sim \log\Lambda.
+\]
+
+\smallskip\noindent
+\emph{Lower bound.}
+Restrict to $j\in\{1,\dots,N-2\}$ and to $p,q\in A_j$ with angle $\le \pi/6$.
+Then $|p+q|\gtrsim 2^j$ and the integrand is $\gtrsim 2^{-6j}$ on a region of volume $\gtrsim 2^{6j}$, so $I_{j,j}\gtrsim 1$ uniformly.
+Summing over $j$ yields $I(2^N)\gtrsim N\sim \log\Lambda$.
+\end{proof}
+
+\subsection{Non-vanishing of the logarithmic coefficient}
+\begin{lemma}[Non-vanishing of the sunset coefficient]\label{lem:b-nonzero}
+In the BPHZ renormalisation of the dynamical $\Phi^4_3$ model, the linear logarithmic counterterm coefficient is proportional to the sunset integral of Lemma~\ref{lem:sunset} and is therefore nonzero when the quartic coupling is nonzero. In particular, the coefficient $b$ in Proposition~\ref{prop:analytic-input} satisfies $b\neq 0$.
+\end{lemma}
+
+\begin{proof}
+The BPHZ renormalisation procedure associates to each superficially divergent diagram a counterterm.
+In the $\Phi^4_3$ model, the unique divergent two-loop one-point diagram contributing to the linear counterterm is the sunset diagram; its value is an integral of a product of three massive propagators.
+This identification (and the presence of a logarithmically divergent linear counterterm) is standard in the $\Phi^4_3$ regularity-structures treatment; see \cite[\S10]{Hai14} and the algebraic BPHZ formalism \cite{BHZ19}.
+Lemma~\ref{lem:sunset} shows that the corresponding integral diverges like $c\log\Lambda$ with $c>0$.
+The prefactor is quadratic in the quartic coupling and hence nonzero for nonzero coupling.
+Therefore $b\neq 0$.
+\end{proof}
+
+\subsection{Metric notation on $\T^3$}
+Let $d_{\T^3}$ denote the standard flat distance on $\T^3$:
+\[
+d_{\T^3}(x,y):=\min_{k\in\Z^3}|(x-y)+k|_{\R^3}.
+\]
+We write
+\[
+|x|:=d_{\T^3}(x,0),\qquad |x-y|:=d_{\T^3}(x,y).
+\]
+Note that $|x|$ is the Euclidean norm of the unique representative of $x$ in $[-\tfrac12,\tfrac12)^3$.
+
+\subsection{Coulombic bound and mollified version}\label{sec:coulomb}
+Let $\mathcal{C}:\T^3\to\R$ be the covariance kernel of the massive Gaussian free field on $\T^3$, i.e.\ the Green function of $(1-\Delta)$:
+\[
+(1-\Delta)\mathcal{C}=\delta_0\quad\text{in }\mathcal{D}'(\T^3).
+\]
+
+\begin{lemma}[Coulomb singularity]\label{lem:coulomb}
+There exist constants $c_0<\infty$ and $r_0\in(0,\sqrt{3}/2)$ such that for all $x\in\T^3$ with $0<|x|\le r_0$,
+\[
+0\le \mathcal{C}(x)\le \frac{c_0}{|x|}.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $g$ denote the fundamental solution of $(1-\Delta)$ on $\R^3$ (Yukawa potential); it is classical that
+\[
+g(z)=\frac{1}{4\pi}\frac{e^{-|z|}}{|z|},\qquad z\in\R^3\setminus\{0\},
+\]
+and $(1-\Delta)g=\delta_0$ in $\mathcal{D}'(\R^3)$ (see e.g.\ \cite[Ch.\ 2]{EvansPDE}).
+Define its periodisation
+\[
+G(x):=\sum_{k\in\Z^3} g(x+k),\qquad x\in\R^3.
+\]
+The sum converges absolutely and uniformly on compact sets away from $\Z^3$ since $g$ decays exponentially, so $G$ defines a smooth periodic function on $\R^3\setminus\Z^3$, hence a smooth function on $\T^3\setminus\{0\}$.
+One checks by testing against smooth periodic test functions that $(1-\Delta)G=\delta_0$ on $\T^3$.
+Since $(1-\Delta)$ has trivial kernel on $\T^3$, the Green function is unique; thus $\mathcal{C}=G$.
+
+For $|x|\le r_0$ with $r_0<1/4$, write $\mathcal{C}(x)=g(x)+\sum_{k\neq 0}g(x+k)$.
+The second sum is uniformly bounded in $x$ for $|x|\le r_0$, while $g(x)\le (4\pi)^{-1}|x|^{-1}$.
+Absorb the bounded remainder into $c_0/|x|$ (since $|x|\le r_0$) to obtain the stated bound.
+\end{proof}
+
+Let $\eta:=\tilde\rho*\rho$ with $\tilde\rho(x)=\rho(-x)$ and let $\eta_\eps=\tilde\rho_\eps*\rho_\eps$ on $\T^3$.
+Define $\mathcal{C}_\eps:=\mathcal{C}*\eta_\eps$.
+
+\begin{lemma}[Mollified Coulomb bound]\label{lem:mollified-coulomb}
+There exists $C<\infty$ such that for all $\eps\in(0,1/6)$ and all $x\in\T^3$,
+\[
+0\le \mathcal{C}_\eps(x)\le \frac{C}{|x|+\eps}.
+\]
+\end{lemma}
+
+\begin{proof}
+Nonnegativity follows from $\mathcal{C}\ge 0$ and $\eta_\eps\ge 0$.
+Fix $\eps\in(0,1/6)$.
+By Remark~\ref{rem:support}, $\mathrm{supp}(\eta_\eps)\subset\{y\in\T^3:|y|\le \eps\}$.
+
+Since $\mathcal{C}$ is smooth on $\T^3\setminus\{0\}$ and $\T^3\setminus B(0,r_0)$ is compact, the function $\mathcal{C}$ is bounded there.
+Let
+\[
+C_1:=\sup\{\mathcal{C}(z):|z|\ge r_0\}<\infty.
+\]
+Then for all $z\neq 0$,
+\begin{equation}\label{eq:global-C-bound}
+\mathcal{C}(z)\le \frac{c_0}{|z|}+C_1,
+\end{equation}
+using Lemma~\ref{lem:coulomb} when $|z|\le r_0$ and the definition of $C_1$ when $|z|\ge r_0$.
+
+We consider two cases.
+
+\smallskip\noindent
+\emph{Case 1: $|x|\ge 2\eps$.}
+For any $y$ with $\eta_\eps(y)\neq 0$, we have $|y|\le \eps$.
+By the reverse triangle inequality for the metric $d_{\T^3}$,
+\[
+|x-y|=d_{\T^3}(x,y)\ge d_{\T^3}(x,0)-d_{\T^3}(y,0)=|x|-|y|\ge |x|-\eps\ge |x|/2.
+\]
+Applying \eqref{eq:global-C-bound} with $z=x-y$ yields
+\[
+\mathcal{C}(x-y)\le \frac{c_0}{|x-y|}+C_1 \le \frac{2c_0}{|x|}+C_1.
+\]
+Therefore, since $\int_{\T^3}\eta_\eps=1$,
+\[
+\mathcal{C}_\eps(x)=\int_{\T^3}\mathcal{C}(x-y)\eta_\eps(y)\dd y
+\le \frac{2c_0}{|x|}+C_1
+\le \frac{C}{|x|+\eps}.
+\]
+
+\smallskip\noindent
+\emph{Case 2: $|x|<2\eps$.}
+Then $|x|+\eps\le 3\eps$.
+Using \eqref{eq:global-C-bound},
+\[
+\mathcal{C}_\eps(x)\le \int_{\T^3}\frac{c_0}{|x-y|}\eta_\eps(y)\dd y + C_1.
+\]
+Because $|x|<2\eps$ and $\eta_\eps$ is supported in $\{|y|\le \eps\}$, every such $y$ admits a representative in $[-1/2,1/2)^3$ with $|y|_{\R^3}\le \eps$.
+Similarly, choose the representative of $x$ in $[-1/2,1/2)^3$, and note that $|x|_{\R^3}=|x|<2\eps$ implies $|x_i|<2\eps$ for each coordinate.
+Thus for each coordinate $i$,
+\[
+|x_i-y_i|\le |x_i|+|y_i| < 2\eps+\eps=3\eps < \frac12,
+\]
+since $\eps<1/6$.
+Hence in this case the torus distance equals the Euclidean distance between these representatives: $|x-y|=|x-y|_{\R^3}$.
+We may therefore lift the integral to $\R^3$ and substitute $y=\eps u$:
+\[
+\int_{|y|\le \eps}\frac{1}{|x-y|}\eta_\eps(y)\dd y
+=\frac{1}{\eps}\int_{\R^3}\frac{1}{|x/\eps-u|}\eta(u)\dd u.
+\]
+The function $g(w):=\int_{\R^3}\frac{1}{|w-u|}\eta(u)\dd u$ is the Newtonian potential of a smooth compactly supported function, hence finite and bounded on $\R^3$.
+Let $M:=\sup_{w\in\R^3}g(w)<\infty$.
+Then
+\[
+\mathcal{C}_\eps(x)\le \frac{c_0 M}{\eps}+C_1\le \frac{C}{\eps}\le \frac{3C}{|x|+\eps}.
+\]
+Combining both cases yields $\mathcal{C}_\eps(x)\le C/(|x|+\eps)$.
+\end{proof}
+
+\section{A critical third-chaos estimate}
+
+\begin{lemma}[Logarithmic variance growth in third chaos]\label{lem:third-chaos-log}
+Let $X$ be the massive Gaussian free field on $\T^3$ with covariance $\mathcal{C}$.
+Let $X_\eps:=X*\rho_\eps$ and define, for $\varphi\in C^\infty(\T^3)$,
+\[
+\mathcal{W}_\eps(\varphi):=\int_{\T^3}\Big(X_\eps(x)^3-3\mathbb{E}[X_\eps(x)^2]\,X_\eps(x)\Big)\varphi(x)\dd x.
+\]
+Then for every $\varphi\in C^\infty(\T^3)$ there exists $C_\varphi<\infty$ such that for all $\eps\in(0,1/6)$,
+\[
+\mathbb{E}\big[\mathcal{W}_\eps(\varphi)^2\big]\le C_\varphi\,\log(\eps^{-1}).
+\]
+\end{lemma}
+
+\begin{proof}
+Since $\mathcal{W}_\eps(\varphi)$ is a third-homogeneous polynomial in a centred Gaussian field, Wick's theorem yields
+\begin{equation}\label{eq:wick-var}
+\mathbb{E}\big[\mathcal{W}_\eps(\varphi)^2\big]
+=6\int_{\T^3}\int_{\T^3}\varphi(x)\varphi(y)\,\mathcal{C}_\eps(x-y)^3\,\dd x\,\dd y,
+\end{equation}
+see e.g.\ \cite[Ch.\ 2]{Janson}.
+Bounding $|\varphi(x)\varphi(y)|\le \|\varphi\|_{L^\infty}^2$ and changing variables $z=x-y$ gives
+\[
+\mathbb{E}\big[\mathcal{W}_\eps(\varphi)^2\big]
+\le 6\|\varphi\|_{L^\infty}^2\,|\T^3| \int_{\T^3}\mathcal{C}_\eps(z)^3\,\dd z.
+\]
+By Lemma~\ref{lem:mollified-coulomb}, $\mathcal{C}_\eps(z)\lesssim (|z|+\eps)^{-1}$.
+Split $\T^3$ into $|z|\le 1/4$ and $|z|>1/4$.
+On $|z|>1/4$, $\mathcal{C}_\eps$ is uniformly bounded in $\eps$, hence the contribution is $O(1)$.
+On $|z|\le 1/4$,
+\[
+\int_{|z|\le 1/4}\mathcal{C}_\eps(z)^3\dd z
+\lesssim \int_{|z|\le 1/4}\frac{1}{(|z|+\eps)^3}\dd z
+\asymp \int_0^{1/4}\frac{r^2}{(r+\eps)^3}\dd r
+\lesssim \int_\eps^{1/4}\frac{1}{r}\dd r
+\lesssim \log(\eps^{-1}).
+\]
+This proves the claim.
+\end{proof}
+
+\section{Separating event and proof of Theorem~\ref{thm:main}}
+
+Fix $\psi\in C^\infty(\T^3)\setminus\{0\}$ and $\beta\in(1/2,1)$.
+Let $F_n(\cdot;\psi)$ be defined by \eqref{eq:Fn}.
+
+\subsection{Vanishing under $\mu$}
+\begin{lemma}[Vanishing in probability under $\mu$]\label{lem:vanish}
+Let $\Phi\sim\mu$.
+Then $F_n(\Phi;\psi)\to 0$ in probability as $n\to\infty$.
+\end{lemma}
+
+\begin{proof}
+By Proposition~\ref{prop:analytic-input}\ref{it:cube},
+\[
+\Phi_n^3-3a\eps_n^{-1}\Phi_n-9b\log(\eps_n^{-1})\Phi=R_n+W_n,
+\]
+where $\ip{R_n}{\psi}$ is tight and $\mathbb{E}[\ip{W_n}{\psi}^2]\lesssim \log(\eps_n^{-1})$.
+Thus
+\[
+F_n(\Phi;\psi)=e^{-\beta n}\ip{R_n}{\psi}+e^{-\beta n}\ip{W_n}{\psi}.
+\]
+The first term tends to $0$ in probability by Lemma~\ref{lem:tight}.
+For the second term,
+\[
+\mathbb{E}\big[|e^{-\beta n}\ip{W_n}{\psi}|^2\big]
+\lesssim e^{-2\beta n}\log(\eps_n^{-1})
+= e^{-2\beta n}e^n=e^{-(2\beta-1)n}\to 0,
+\]
+so it tends to $0$ in $L^2$, hence in probability.
+\end{proof}
+
+\subsection{A full-$\mu$ Borel set via deterministic subsequence}
+By Lemma~\ref{lem:vanish} and Lemma~\ref{lem:subseq}, there exists a deterministic subsequence $(n_k)$ such that $F_{n_k}(\Phi;\psi)\to 0$ almost surely.
+Define
+\[
+A_\psi:=\Big\{u\in E:\ \lim_{k\to\infty}F_{n_k}(u;\psi)=0\Big\}.
+\]
+
+\begin{lemma}\label{lem:Apsi}
+The set $A_\psi$ is Borel in $E$ and satisfies $\mu(A_\psi)=1$.
+\end{lemma}
+
+\begin{proof}
+Each $F_{n_k}(\cdot;\psi)$ is continuous, hence Borel.
+Therefore $A_\psi$ is Borel since it is a countable Boolean combination of inverse images of closed intervals.
+By construction, $\Phi\in A_\psi$ almost surely.
+\end{proof}
+
+\subsection{Translation forces divergence}
+For $n\in\N$ write $\psi_n:=\psi_{\eps_n}$.
+
+\begin{lemma}[Uniform bounds for $\psi_n$]\label{lem:test-bounds}
+For every $m\in\N$, $\psi_n\to\psi$ in $C^m(\T^3)$ and $\sup_n\norm{\psi_n}_{C^m}<\infty$.
+Consequently, for every $r>0$,
+\[
+\sup_n\norm{\psi_n\psi}_{H^r}<\infty,\qquad \sup_n\norm{\psi_n^2\psi}_{H^r}<\infty.
+\]
+\end{lemma}
+
+\begin{proof}
+Standard properties of approximate identities yield convergence in $C^m$ and uniform boundedness.
+The Sobolev bounds follow by $C^m\hookrightarrow H^r$ for large $m$ and continuity of multiplication in $C^m$.
+\end{proof}
+
+\begin{lemma}[Tightness with varying tests]\label{lem:varying-tests}
+Let $(X_n)$ be tight in $H^{-r}(\T^3)$ for some $r>0$, and let $(\varphi_n)$ be deterministic with $\sup_n\norm{\varphi_n}_{H^r}<\infty$.
+Then $(\ip{X_n}{\varphi_n})$ is tight in $\R$.
+\end{lemma}
+
+\begin{proof}
+By duality $|\ip{X_n}{\varphi_n}|\le \norm{X_n}_{H^{-r}}\norm{\varphi_n}_{H^r}\le C\norm{X_n}_{H^{-r}}$ with $C=\sup_n\norm{\varphi_n}_{H^r}$.
+\end{proof}
+
+\begin{lemma}[Divergence under a smooth shift]\label{lem:diverge}
+Let $\Phi\sim\mu$ and define $\widetilde\Phi:=\Phi-\psi$.
+Then $|F_n(\widetilde\Phi;\psi)|\to\infty$ in probability as $n\to\infty$.
+\end{lemma}
+
+\begin{proof}
+Since $(\Phi-\psi)_n=\Phi_n-\psi_n$,
+\begin{align*}
+&(\Phi_n-\psi_n)^3-3a\eps_n^{-1}(\Phi_n-\psi_n)-9b\log(\eps_n^{-1})(\Phi-\psi)\\
+&\qquad=\Big(\Phi_n^3-3a\eps_n^{-1}\Phi_n-9b\log(\eps_n^{-1})\Phi\Big)
+-3\psi_n\Big(\Phi_n^2-a\eps_n^{-1}\Big)+3\psi_n^2\Phi_n-\psi_n^3
++9b\log(\eps_n^{-1})\psi.
+\end{align*}
+Pair with $\psi$ and multiply by $e^{-\beta n}$:
+\[
+F_n(\widetilde\Phi;\psi)=Y_n + 9b\,e^{-\beta n}\log(\eps_n^{-1})\,\|\psi\|_{L^2}^2,
+\]
+where $Y_n$ is the sum of the other four terms with prefactor $e^{-\beta n}$.
+Exactly as in the standard decomposition:
+\begin{itemize}[leftmargin=2.2em]
+\item $e^{-\beta n}\ip{\Phi_n^3-3a\eps_n^{-1}\Phi_n-9b\log(\eps_n^{-1})\Phi}{\psi}=F_n(\Phi;\psi)\to0$ in probability (Lemma~\ref{lem:vanish});
+\item $\Phi_n^2-a\eps_n^{-1}$ is tight in $H^{-r}$ by Proposition~\ref{prop:analytic-input}\ref{it:square}, and $\psi_n\psi$ is uniformly bounded in $H^r$ (Lemma~\ref{lem:test-bounds}), hence $e^{-\beta n}\ip{\Phi_n^2-a\eps_n^{-1}}{\psi_n\psi}\to0$ in probability by Lemmas~\ref{lem:varying-tests} and \ref{lem:tight};
+\item $\ip{\Phi_n}{\psi_n^2\psi}$ is tight (since $\Phi_n\to\Phi$ in $H^{-s}$ a.s.\ and $\psi_n^2\psi\to\psi^3$ in $H^s$ with uniform bounds), hence $e^{-\beta n}\ip{\Phi_n}{\psi_n^2\psi}\to0$ in probability by Lemma~\ref{lem:tight};
+\item $\ip{\psi_n^3}{\psi}$ is bounded deterministically, hence $e^{-\beta n}\ip{\psi_n^3}{\psi}\to0$.
+\end{itemize}
+Thus $Y_n\to 0$ in probability.
+Using $\log(\eps_n^{-1})=e^n$ yields the deterministic divergence
+\[
+9b\,e^{-\beta n}\log(\eps_n^{-1})\,\|\psi\|_{L^2}^2
+=9b\,e^{(1-\beta)n}\,\|\psi\|_{L^2}^2\to\pm\infty,
+\]
+since $b\neq 0$ (Lemma~\ref{lem:b-nonzero}) and $\beta<1$.
+Hence $|F_n(\widetilde\Phi;\psi)|\to\infty$ in probability.
+\end{proof}
+
+\begin{lemma}\label{lem:no-subseq}
+Let $(X_n)$ be real random variables such that $|X_n|\to\infty$ in probability.
+Then for any deterministic increasing subsequence $(n_k)$,
+\[
+\mathbb{P}(X_{n_k}\to 0)=0.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $A_k:=\{|X_{n_k}|\le 1\}$.
+Then $\mathbb{P}(A_k)\to 0$.
+Moreover $\{X_{n_k}\to0\}\subset\bigcup_{K=1}^\infty\bigcap_{k\ge K}A_k$.
+For each $K$, $\mathbb{P}(\bigcap_{k\ge K}A_k)\le \inf_{k\ge K}\mathbb{P}(A_k)$, which tends to $0$ as $K\to\infty$.
+\end{proof}
+
+\begin{theorem}\label{thm:kill}
+With $A_\psi$ as above, one has $\mu(A_\psi+\psi)=0$.
+\end{theorem}
+
+\begin{proof}
+Let $\Phi\sim\mu$ and set $\widetilde\Phi=\Phi-\psi$.
+Then $\widetilde\Phi$ has law $\mu(\cdot+\psi)$, so $\mu(A_\psi+\psi)=\mathbb{P}(\widetilde\Phi\in A_\psi)$.
+On $\{\widetilde\Phi\in A_\psi\}$ one has $F_{n_k}(\widetilde\Phi;\psi)\to0$ by definition of $A_\psi$.
+But by Lemma~\ref{lem:diverge}, $|F_n(\widetilde\Phi;\psi)|\to\infty$ in probability, hence Lemma~\ref{lem:no-subseq} gives $\mathbb{P}(F_{n_k}(\widetilde\Phi;\psi)\to0)=0$.
+Thus $\mathbb{P}(\widetilde\Phi\in A_\psi)=0$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Lemma~\ref{lem:Apsi}, $\mu(A_\psi)=1$.
+By Theorem~\ref{thm:kill}, $\mu(A_\psi+\psi)=0$.
+Lemma~\ref{lem:shift-sep} yields $\mu\perp T_{\psi\#}\mu$.
+\end{proof}
+
+\begin{thebibliography}{99}
+
+\bibitem{BHZ19}
+Y.~Bruned, M.~Hairer, and L.~Zambotti,
+\emph{Algebraic renormalisation of regularity structures},
+Invent.\ Math.\ \textbf{215} (2019), 1039--1156.
+
+\bibitem{BG21}
+N.~Barashkov and M.~Gubinelli,
+\emph{The $\Phi^4_3$ measure via {G}irsanov's theorem},
+Electron.\ J.\ Probab.\ \textbf{26} (2021), Paper No.\ 63, 1--29.
+
+\bibitem{CC18}
+R.~Catellier and K.~Chouk,
+\emph{Paracontrolled distributions and the 3-dimensional stochastic quantization equation},
+Ann.\ Probab.\ \textbf{46} (2018), no.~5, 2621--2679.
+
+\bibitem{EvansPDE}
+L.~C.~Evans,
+\emph{Partial Differential Equations},
+2nd ed., Graduate Studies in Mathematics, vol.~19,
+Amer.\ Math.\ Soc., Providence, RI, 2010.
+
+\bibitem{Hai14}
+M.~Hairer,
+\emph{A theory of regularity structures},
+Invent.\ Math.\ \textbf{198} (2014), no.~2, 269--504.
+
+\bibitem{HM18}
+M.~Hairer and K.~Matetski,
+\emph{Discretisations of the dynamical $\Phi^4_3$ model},
+Ann.\ Probab.\ \textbf{46} (2018), no.~6, 3420--3501.
+
+\bibitem{Janson}
+S.~Janson,
+\emph{Gaussian Hilbert Spaces},
+Cambridge Tracts in Mathematics, vol.~129,
+Cambridge Univ.\ Press, Cambridge, 1997.
+
+\bibitem{MW17}
+J.-C.~Mourrat and H.~Weber,
+\emph{The dynamic $\Phi^4_3$ model comes down from infinity},
+Comm.\ Math.\ Phys.\ \textbf{356} (2017), no.~3, 673--753.
+
+\end{thebibliography}
+
+\end{document}

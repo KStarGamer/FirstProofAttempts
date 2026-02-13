@@ -1,0 +1,454 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+% ---------- theorem environments ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- macros ----------
+\newcommand{\Sn}{S_n}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\supp}{\operatorname{Supp}}
+\newcommand{\ellpart}{\ell}
+
+\title[No stochastic Markov chain for $q=1$ interpolation ASEP weights]{A sign obstruction for $q=1$ interpolation ASEP weights on strict restricted orbits}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Let $\lambda=(\lambda_1>\cdots>\lambda_n\ge 0)$ be a strict partition with a unique part of size $0$ and no part of size $1$
+(``restricted'' in the sense of the problem statement), and let $\Sn(\lambda)$ be the set of rearrangements of the parts of $\lambda$.
+Ben Dali--Williams defined the interpolation ASEP polynomials $F^*_\mu(\bx;q,t)$ (nonsymmetric; indexed by compositions $\mu$) and
+the interpolation Macdonald polynomials $P^*_\lambda(\bx;q,t)$ (symmetric; indexed by partitions $\lambda$).
+A natural question asks whether there exists a \emph{nontrivial} Markov chain on $\Sn(\lambda)$ whose stationary distribution is
+\[
+\pi(\mu)\;=\;\frac{F^*_\mu(\bx;1,t)}{P^*_\lambda(\bx;1,t)}\qquad(\mu\in\Sn(\lambda)),
+\]
+with transition probabilities described without using the polynomials $F^*_\mu$ as primitives.
+
+In the standard probabilistic parameter domain $x_i>0$ and $0<t<1$, we prove an unconditional negative answer:
+for every restricted $\lambda$ and every $t\in(0,1)$, there exist positive parameters $\bx\in(0,\infty)^n$ such that
+$P^*_\lambda(\bx;1,t)>0$ but the ratio vector has a negative entry (indeed, a certain ``zero-position'' marginal is negative).
+Hence it cannot be the stationary distribution of any genuine Markov chain at those parameters, and therefore no Markov chain can
+realize the displayed formula uniformly over the positive parameter domain.
+The proof uses only the $q=1$ factorization and partial symmetrization identities of Ben Dali--Williams.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+%------------------------------------------------------------
+\section{Introduction}
+
+\subsection{The orbit and the restricted hypothesis}
+
+Fix $n\ge 2$ and let
+\[
+\lambda=(\lambda_1>\lambda_2>\cdots>\lambda_n\ge 0)
+\]
+be a strict partition. Its symmetric-group orbit is the finite set
+\[
+\Sn(\lambda):=\Bigl\{\mu\in\NN^n:\{\mu_1,\dots,\mu_n\}=\{\lambda_1,\dots,\lambda_n\}\Bigr\}.
+\]
+We assume throughout that $\lambda$ is \emph{restricted} in the sense of the problem statement:
+\begin{enumerate}[label=(\roman*), leftmargin=2.3em]
+\item $\lambda$ has a unique part equal to $0$;
+\item $\lambda$ has no part equal to $1$.
+\end{enumerate}
+
+\subsection{The target ratios and the meaning of ``Markov chain''}
+
+Ben Dali--Williams \cite{BDW} define interpolation ASEP polynomials and interpolation Macdonald polynomials.
+They denote the interpolation ASEP polynomials by $f^*_\mu(\bx;q,t)$; in this paper we adopt the notation of the problem statement
+and write
+\[
+F^*_\mu(\bx;q,t):=f^*_\mu(\bx;q,t),
+\qquad
+P^*_\lambda(\bx;q,t)
+\]
+for the interpolation Macdonald polynomial. We are interested in the specialization $q=1$.
+
+A discrete-time Markov chain on a finite state space $\Omega$ is a stochastic matrix $K=(K(\omega,\omega'))_{\omega,\omega'\in\Omega}$
+with $K(\omega,\omega')\ge 0$ and $\sum_{\omega'}K(\omega,\omega')=1$ for all $\omega$.
+A stationary distribution is a probability vector $\pi$ with $\pi(\omega)\ge 0$, $\sum_\omega \pi(\omega)=1$, and $\pi K=\pi$.
+Likewise, for a continuous-time Markov chain with generator $Q$, a stationary distribution is a probability vector $\pi$ solving $\pi Q=0$.
+In either case, \emph{a stationary distribution must be entrywise nonnegative.}
+
+The problem asks whether there exists a \emph{nontrivial} Markov chain on $\Sn(\lambda)$ whose stationary distribution is
+\begin{equation}\label{eq:pi-def}
+\pi(\mu)=\frac{F^*_\mu(\bx;1,t)}{P^*_\lambda(\bx;1,t)}\qquad(\mu\in\Sn(\lambda)),
+\end{equation}
+with the additional constraint that the transition probabilities should not be described using the polynomials $F^*_\mu$ themselves.
+
+To interpret \eqref{eq:pi-def} probabilistically one must fix numerical parameters $(\bx,t)$.
+In integrable probability, one typically works in the positive domain
+\begin{equation}\label{eq:positive-domain}
+x_i>0\ (1\le i\le n),\qquad 0<t<1.
+\end{equation}
+Our main result shows that restrictedness of $\lambda$ does \emph{not} force the ratios \eqref{eq:pi-def} to be nonnegative on this domain.
+
+\subsection{Main result}
+
+\begin{theorem}[Universal sign obstruction]\label{thm:main}
+Let $n\ge 2$ and let $\lambda=(\lambda_1>\cdots>\lambda_n\ge 0)$ be restricted (unique $0$, no part $1$).
+Fix any $t\in(0,1)$. Then there exists $\bx\in(0,\infty)^n$ such that:
+\begin{enumerate}[label=\textup{(\alph*)}, leftmargin=2.3em]
+\item $P^*_\lambda(\bx;1,t)>0$ (so \eqref{eq:pi-def} is well-defined);
+\item there exists $\mu\in\Sn(\lambda)$ with $\displaystyle \frac{F^*_\mu(\bx;1,t)}{P^*_\lambda(\bx;1,t)}<0$.
+\end{enumerate}
+Consequently, there is no (discrete- or continuous-time) Markov chain on $\Sn(\lambda)$ whose stationary distribution equals
+\eqref{eq:pi-def} \emph{uniformly for all} positive parameter choices \eqref{eq:positive-domain}.
+\end{theorem}
+
+\begin{remark}[Resolution of the problem]
+Under the standard probabilistic interpretation (transition probabilities are nonnegative reals), Theorem~\ref{thm:main} gives a complete
+negative answer: the prescribed ratios are not always probabilities even for restricted $\lambda$, so they cannot be stationary laws of genuine
+Markov chains on the full positive parameter domain. This resolves the existence question as stated.
+\end{remark}
+
+%------------------------------------------------------------
+\section{Ben Dali--Williams identities at $q=1$}\label{sec:BDW}
+
+We recall the $q=1$ identities from \cite{BDW} that we need: a symmetrization identity (Proposition~2.15 in \cite{BDW}),
+and a partial symmetrization plus factorization identity (Theorem~7.1 in \cite{BDW}).
+
+\subsection{Support}
+For $\mu=(\mu_1,\dots,\mu_n)\in\NN^n$ define the support
+\[
+\supp(\mu):=\{i\in[n]: \mu_i>0\},\qquad [n]:=\{1,2,\dots,n\}.
+\]
+
+\subsection{Symmetrization}
+The interpolation Macdonald polynomial $P^*_\lambda$ symmetrizes the interpolation ASEP polynomials $F^*_\mu$.
+
+\begin{proposition}\label{prop:sym}
+For any partition $\lambda$,
+\begin{equation}\label{eq:symmetrization}
+P^*_\lambda(\bx;q,t)=\sum_{\mu\in\Sn(\lambda)} F^*_\mu(\bx;q,t).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+This is Proposition~2.15 in \cite{BDW}. For completeness: Ben Dali--Williams show that the sum on the right-hand side is symmetric and
+satisfies the vanishing conditions that characterize $P^*_\lambda$.
+\end{proof}
+
+In particular, whenever $P^*_\lambda(\bx;1,t)\neq 0$, the ratios \eqref{eq:pi-def} sum to $1$.
+
+\begin{corollary}\label{cor:sum1}
+If $P^*_\lambda(\bx;1,t)\neq 0$, then $\sum_{\mu\in\Sn(\lambda)} \pi(\mu)=1$ for $\pi$ defined by \eqref{eq:pi-def}.
+\end{corollary}
+
+\begin{proof}
+Divide \eqref{eq:symmetrization} (with $q=1$) by $P^*_\lambda(\bx;1,t)$.
+\end{proof}
+
+\subsection{Inhomogeneous elementary symmetric functions at $q=1$}
+
+Fix $n\ge 1$. For each $k\ge 0$, define
+\begin{equation}\label{eq:estar}
+e_k^*(x_1,\dots,x_n;t)
+:=
+\sum_{\substack{S\subseteq[n]\\ |S|=k}}
+\ \prod_{i\in S}
+\left(x_i-\frac{t^{\#(S^c\cap [i-1])}}{t^{n-1}}\right),
+\end{equation}
+where $S^c=[n]\setminus S$ and $[i-1]=\{1,2,\dots,i-1\}$.
+This is the definition in Section~7 of \cite{BDW}. (Ben Dali--Williams write $e_k^\ast$ for this function.)
+
+\subsection{Partial symmetrization and factorization at $q=1$}
+
+Let $\lambda'$ denote the conjugate partition of $\lambda$, and $\ellpart(\lambda)$ the number of positive parts of $\lambda$.
+
+\begin{theorem}\label{thm:BDW71}
+Let $\lambda$ be a partition with $\lambda_1>0$.
+For any subset $S\subseteq[n]$ with $|S|=\ellpart(\lambda)$,
+\begin{equation}\label{eq:BDW50}
+\sum_{\mu\in\Sn(\lambda):\,\supp(\mu)=S} F^*_\mu(\bx;1,t)
+=
+\left(\prod_{i\in S}\left(x_i-\frac{t^{\#(S^c\cap [i-1])}}{t^{n-1}}\right)\right)
+\cdot \prod_{2\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t).
+\end{equation}
+Consequently,
+\begin{equation}\label{eq:BDW51}
+P^*_\lambda(\bx;1,t)=\prod_{1\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+This is Theorem~7.1 in \cite{BDW}. The identity \eqref{eq:BDW50} is equation (50) there, and \eqref{eq:BDW51} is equation (51) there.
+\end{proof}
+
+%------------------------------------------------------------
+\section{A ``zero-position'' marginal formula for restricted $\lambda$}\label{sec:marginal}
+
+The key point is that when $\lambda$ has a unique $0$, support is equivalent to specifying the position of that zero.
+Theorem~\ref{thm:BDW71} then yields an explicit formula for the total weight of orbit elements with the zero at a given position.
+
+\subsection{Restrictedness forces $\ellpart(\lambda)=n-1$}
+
+\begin{lemma}\label{lem:length}
+If $\lambda=(\lambda_1>\cdots>\lambda_n\ge 0)$ has a unique part equal to $0$, then $\ellpart(\lambda)=n-1$, hence $\lambda'_1=n-1$.
+\end{lemma}
+
+\begin{proof}
+Exactly $n-1$ parts of $\lambda$ are positive. The first part of the conjugate partition equals the number of positive parts, so $\lambda'_1=n-1$.
+\end{proof}
+
+\subsection{Explicit support factors}
+
+For each $i\in[n]$, define the $(n-1)$-element subset
+\[
+S_i:=[n]\setminus\{i\}.
+\]
+For a restricted $\lambda$, each $\mu\in\Sn(\lambda)$ has exactly one zero coordinate, and $\supp(\mu)=S_i$ if and only if $\mu_i=0$.
+
+Define
+\begin{equation}\label{eq:Ai-def}
+A_i(\bx;t):=
+\left(\prod_{j=1}^{i-1}\bigl(x_j-t^{-(n-1)}\bigr)\right)\cdot
+\left(\prod_{j=i+1}^{n}\bigl(x_j-t^{-(n-2)}\bigr)\right),
+\qquad (1\le i\le n),
+\end{equation}
+with the convention that an empty product is $1$.
+
+\begin{lemma}\label{lem:support-sum}
+Let $\lambda$ be restricted. Then for each $i\in[n]$,
+\begin{equation}\label{eq:support-sum}
+\sum_{\mu\in\Sn(\lambda):\,\mu_i=0} F^*_\mu(\bx;1,t)
+=
+A_i(\bx;t)\cdot \prod_{2\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:length}, $\ellpart(\lambda)=n-1$, so we may apply Theorem~\ref{thm:BDW71} with $S=S_i$.
+
+On the left-hand side of \eqref{eq:BDW50}, $\supp(\mu)=S_i$ is equivalent to $\mu_i=0$.
+On the right-hand side of \eqref{eq:BDW50}, we compute the product
+\[
+\prod_{j\in S_i}\left(x_j-\frac{t^{\#(S_i^c\cap [j-1])}}{t^{n-1}}\right),
+\qquad S_i^c=\{i\}.
+\]
+If $j<i$ then $i\notin[j-1]$, so $\#(S_i^c\cap [j-1])=0$ and the factor equals $x_j-t^{-(n-1)}$.
+If $j>i$ then $i\in[j-1]$, so $\#(S_i^c\cap [j-1])=1$ and the factor equals $x_j-t^{-(n-2)}$.
+Multiplying over $j\neq i$ yields exactly $A_i(\bx;t)$.
+\end{proof}
+
+\subsection{Normalized ``zero-position'' marginal}
+
+\begin{corollary}[Zero-position marginal]\label{cor:marginal}
+Let $\lambda$ be restricted and assume $P^*_\lambda(\bx;1,t)\neq 0$. Then for each $i\in[n]$,
+\begin{equation}\label{eq:marginal}
+\sum_{\mu\in\Sn(\lambda):\,\mu_i=0}\pi(\mu)
+=
+\frac{A_i(\bx;t)}{e^*_{n-1}(\bx;t)}.
+\end{equation}
+Moreover,
+\begin{equation}\label{eq:e-n-1-sumAi}
+e^*_{n-1}(\bx;t)=\sum_{i=1}^n A_i(\bx;t).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Divide \eqref{eq:support-sum} by $P^*_\lambda(\bx;1,t)$ and use the factorization \eqref{eq:BDW51}.
+By Lemma~\ref{lem:length}, $\lambda'_1=n-1$, so
+\[
+P^*_\lambda(\bx;1,t)
+=
+e^*_{n-1}(\bx;t)\cdot \prod_{2\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t),
+\]
+and the common factor $\prod_{j\ge 2} e^*_{\lambda'_j}$ cancels, yielding \eqref{eq:marginal}.
+
+Finally, \eqref{eq:e-n-1-sumAi} follows directly from the definition \eqref{eq:estar}: the $(n-1)$-subsets of $[n]$ are exactly
+$S_i=[n]\setminus\{i\}$, and the corresponding product is $A_i(\bx;t)$ by the same computation as in Lemma~\ref{lem:support-sum}.
+\end{proof}
+
+\begin{remark}[Independence from the positive parts of $\lambda$]
+The right-hand side of \eqref{eq:marginal} depends only on $n$ and $(\bx,t)$, and on the fact that $\lambda$ has exactly one zero.
+In particular, for restricted strict $\lambda$ this marginal is independent of the actual positive parts of $\lambda$.
+\end{remark}
+
+%------------------------------------------------------------
+\section{Proof of Theorem~\ref{thm:main}: making a marginal negative}\label{sec:proof}
+
+Fix $t\in(0,1)$. We now choose explicit $\bx\in(0,\infty)^n$ such that
+\begin{itemize}[leftmargin=2.3em]
+\item $e^*_{n-1}(\bx;t)>0$ and $P^*_\lambda(\bx;1,t)>0$;
+\item $A_i(\bx;t)<0$ for some $i$,
+\end{itemize}
+so that the marginal \eqref{eq:marginal} is negative. That forces at least one negative entry of $\pi$.
+
+\subsection{Parameter choice}
+
+Choose $x_1$ such that
+\begin{equation}\label{eq:x1-choice}
+t^{-(n-2)}<x_1<t^{-(n-1)}.
+\end{equation}
+(This interval is nonempty since $t^{-(n-2)}<t^{-(n-1)}$ for $0<t<1$.)
+
+Let $M>0$ be a parameter and set
+\begin{equation}\label{eq:Mchoice}
+x_2=x_3=\cdots=x_n=M.
+\end{equation}
+
+\begin{lemma}\label{lem:Ai-signs}
+Assume \eqref{eq:x1-choice} and \eqref{eq:Mchoice} with $M>t^{-(n-1)}$.
+Then $A_1(\bx;t)>0$ and $A_i(\bx;t)<0$ for every $i\in\{2,3,\dots,n\}$.
+\end{lemma}
+
+\begin{proof}
+For $i=1$,
+\[
+A_1(\bx;t)=\prod_{j=2}^{n}\bigl(M-t^{-(n-2)}\bigr)=\bigl(M-t^{-(n-2)}\bigr)^{n-1}>0.
+\]
+For $i\ge 2$, the product $A_i(\bx;t)$ includes the factor $(x_1-t^{-(n-1)})$, which is negative by \eqref{eq:x1-choice};
+all other factors are of the form $(M-t^{-(n-1)})$ or $(M-t^{-(n-2)})$, positive since $M>t^{-(n-1)}$.
+\end{proof}
+
+\subsection{Positivity of $e^*_{n-1}$}
+
+\begin{lemma}\label{lem:e-n-1-positive}
+Assume \eqref{eq:x1-choice} and \eqref{eq:Mchoice}. If $M$ satisfies
+\begin{equation}\label{eq:M-explicit-bound}
+M-t^{-(n-2)}>(n-1)\bigl(t^{-(n-1)}-x_1\bigr),
+\end{equation}
+then $e^*_{n-1}(\bx;t)>0$.
+\end{lemma}
+
+\begin{proof}
+Let
+\[
+B:=M-t^{-(n-1)},\qquad C:=M-t^{-(n-2)}.
+\]
+Then $C>B>0$ once $M>t^{-(n-1)}$.
+
+We have $A_1(\bx;t)=C^{n-1}$ as above.
+For $i\ge 2$, using \eqref{eq:Ai-def} and \eqref{eq:Mchoice},
+\[
+A_i(\bx;t)=(x_1-t^{-(n-1)})\cdot B^{\,i-2}\,C^{\,n-i}.
+\]
+Hence $\abs{A_i(\bx;t)}\le (t^{-(n-1)}-x_1)\,C^{n-2}$ since $B^{i-2}C^{n-i}\le C^{n-2}$.
+Summing over $i\ge 2$ and using \eqref{eq:e-n-1-sumAi} gives
+\[
+e^*_{n-1}(\bx;t)=\sum_{i=1}^n A_i(\bx;t)
+\ge C^{n-1}-(n-1)\bigl(t^{-(n-1)}-x_1\bigr)C^{n-2}
+= C^{n-2}\Bigl(C-(n-1)(t^{-(n-1)}-x_1)\Bigr),
+\]
+which is positive under \eqref{eq:M-explicit-bound}.
+\end{proof}
+
+\subsection{Positivity of $P^*_\lambda(\bx;1,t)$ for large $M$}
+
+We now ensure the factorization \eqref{eq:BDW51} is positive.
+Since $\lambda$ is restricted, all column lengths $\lambda'_j$ satisfy $0\le \lambda'_j\le n-1$ (the height $n$ cannot occur because
+$\lambda$ has only $n-1$ positive parts).
+
+\begin{lemma}\label{lem:estar-positive-largeM}
+Fix $t\in(0,1)$ and $x_1>0$, and set $x_2=\cdots=x_n=M$.
+For each $k\in\{1,2,\dots,n-1\}$, one has $e^*_k(\bx;t)>0$ for all sufficiently large $M$.
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:estar}, $e^*_k(\bx;t)$ is a polynomial in $M$.
+Consider the contribution from subsets $S\subseteq\{2,3,\dots,n\}$ with $|S|=k$.
+For such $S$, each factor in the product is $(M-\text{constant})$, so the product has leading term $M^k$ with coefficient $1$.
+There are $\binom{n-1}{k}$ such subsets, hence the coefficient of $M^k$ in $e^*_k(\bx;t)$ is at least $\binom{n-1}{k}>0$.
+All other subsets $S$ that contain $1$ contribute terms of degree at most $k-1$ in $M$.
+Therefore $e^*_k(\bx;t)\to +\infty$ as $M\to\infty$, and so $e^*_k(\bx;t)>0$ for all sufficiently large $M$.
+\end{proof}
+
+\begin{corollary}\label{cor:P-positive}
+Let $\lambda$ be restricted. Fix $t\in(0,1)$ and choose $\bx$ as in \eqref{eq:x1-choice}--\eqref{eq:Mchoice}.
+If $M$ is sufficiently large and also satisfies \eqref{eq:M-explicit-bound}, then $P^*_\lambda(\bx;1,t)>0$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:length}, $\lambda'_1=n-1$, and by \eqref{eq:BDW51},
+\[
+P^*_\lambda(\bx;1,t)=\prod_{1\le j\le \lambda_1} e^*_{\lambda'_j}(\bx;t).
+\]
+The factor $e^*_{\lambda'_1}=e^*_{n-1}$ is positive by Lemma~\ref{lem:e-n-1-positive}.
+All remaining factors are among $e^*_0,e^*_1,\dots,e^*_{n-1}$; here $e^*_0=1$ and
+$e^*_k>0$ for $1\le k\le n-1$ when $M$ is large by Lemma~\ref{lem:estar-positive-largeM}.
+\end{proof}
+
+\subsection{Negative marginal and conclusion}
+
+\begin{lemma}\label{lem:negative-marginal}
+Let $\lambda$ be restricted. Fix $t\in(0,1)$ and choose $\bx$ as in \eqref{eq:x1-choice}--\eqref{eq:Mchoice}.
+If $M$ satisfies Corollary~\ref{cor:P-positive}, then for each $i\in\{2,\dots,n\}$,
+\[
+\sum_{\mu\in\Sn(\lambda):\,\mu_i=0}\pi(\mu)\;<\;0.
+\]
+\end{lemma}
+
+\begin{proof}
+By Corollary~\ref{cor:P-positive}, $P^*_\lambda(\bx;1,t)>0$ and hence $\pi$ is defined by \eqref{eq:pi-def}.
+By Lemma~\ref{lem:Ai-signs}, $A_i(\bx;t)<0$ for all $i\ge 2$.
+By Lemma~\ref{lem:e-n-1-positive}, $e^*_{n-1}(\bx;t)>0$.
+Therefore \eqref{eq:marginal} is negative for $i\ge 2$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Fix $t\in(0,1)$ and choose $x_1$ as in \eqref{eq:x1-choice}.
+Choose $M$ large enough that \eqref{eq:M-explicit-bound} holds and Corollary~\ref{cor:P-positive} applies.
+Then $P^*_\lambda(\bx;1,t)>0$, and Lemma~\ref{lem:negative-marginal} gives some $i\ge 2$ with
+\[
+\sum_{\mu\in\Sn(\lambda):\,\mu_i=0}\pi(\mu)<0.
+\]
+If all $\pi(\mu)$ were nonnegative, this sum of some of the $\pi(\mu)$ would be $\ge 0$.
+Hence there exists $\mu$ with $\mu_i=0$ and $\pi(\mu)<0$, proving (b).
+
+Finally, a stationary distribution of any genuine Markov chain is a probability vector and cannot have a negative entry.
+Thus, at these positive parameters there exists \emph{no} Markov chain with stationary distribution \eqref{eq:pi-def}.
+In particular, there is no Markov chain realizing \eqref{eq:pi-def} uniformly on the full positive domain \eqref{eq:positive-domain}.
+\end{proof}
+
+%------------------------------------------------------------
+\section{Discussion: the nontriviality constraint}\label{sec:discussion}
+
+\begin{remark}[Why generic Metropolis--Hastings does not answer the problem]
+If for some parameter point one \emph{assumes} all ratios \eqref{eq:pi-def} are strictly positive, then one can always manufacture a reversible
+Markov chain by Metropolis--Hastings or heat-bath updates on any connected graph on $\Sn(\lambda)$, using acceptance probabilities expressed in terms
+of the target weights.
+However, such constructions necessarily require evaluating (or otherwise accessing) the global weights $F^*_\mu(\bx;1,t)$ as functions of the state $\mu$,
+which is precisely what the problem statement rules out by its definition of ``nontrivial''.
+Theorem~\ref{thm:main} shows that even before addressing nontriviality, there is a more basic obstruction: restrictedness does not guarantee positivity,
+so the displayed ratios are not uniformly stationary distributions of genuine Markov chains on the positive parameter domain.
+\end{remark}
+
+\begin{remark}[A minimal two-state illustration]
+For $n=2$ and $\lambda=(k,0)$ with $k\ge 2$, $\Sn(\lambda)=\{(k,0),(0,k)\}$.
+Theorem~\ref{thm:BDW71} yields explicit formulas for the ratios, and one can write down local reversible two-state dynamics when those ratios are nonnegative.
+This illustrates what a ``local rational-function'' construction can look like, but does not contradict Theorem~\ref{thm:main} since the obstruction is
+global over the full parameter domain.
+\end{remark}
+
+%------------------------------------------------------------
+\begin{thebibliography}{99}
+
+\bibitem{BDW}
+H.~Ben Dali and L.~K.~Williams,
+\emph{A combinatorial formula for interpolation Macdonald polynomials},
+arXiv:2510.02587v2 [math.CO] (2025).
+
+\end{thebibliography}
+
+\end{document}
